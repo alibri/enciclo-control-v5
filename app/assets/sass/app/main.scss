@@ -1,0 +1,11 @@
+@media print {
+    .noprint {
+       visibility: hidden;
+    }
+
+    @page {
+        size: A4; /* Tamaño del papel */
+        margin: 1cm; /* Márgenes de la página */
+        /* Otros estilos de página, como encabezados y pies de página, pueden ser especificados aquí */
+    }
+ }

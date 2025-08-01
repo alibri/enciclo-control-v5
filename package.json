@@ -1,0 +1,45 @@
+{
+  "name": "enciclo-control-4",
+  "version": "4.0.34",
+  "private": true,
+  "type": "module",
+  "license": "proprietary",
+  "scripts": {
+    "build": "nuxt build",
+    "dev": "nuxt dev",
+    "generate": "nuxi generate --dotenv .env.prod && rm -rf ../enciclo-v4/public/control && cp -rf .output/public ../enciclo-v4/public/control",
+    "preview": "nuxt preview",
+    "postinstall": "nuxt prepare"
+  },
+  "dependencies": {
+    "@matb85/photoeditor": "^2.1.0",
+    "@primeuix/themes": "^1.2.3",
+    "@rotsen/vue-filerobot-image-editor": "^0.2.0",
+    "better-sqlite3": "^12.2.0",
+    "chart.js": "^4.5.0",
+    "clipboard": "^2.0.11",
+    "flag-icons": "^7.5.0",
+    "markdown-it": "^14.1.0",
+    "md5-typescript": "^1.0.5",
+    "nuxt": "^4.0.1",
+    "pinia": "^3.0.3",
+    "primeflex": "^4.0.0",
+    "primeicons": "^7.0.0",
+    "primevue": "^4.3.7",
+    "vue": "^3.5.18",
+    "vue-axios": "^3.5.2",
+    "vue-chartjs": "^5.3.2",
+    "vue-router": "^4.5.1",
+    "vue3-json-viewer": "^2.4.1"
+  },
+  "devDependencies": {
+    "@formkit/nuxt": "^1.6.9",
+    "@nuxt/content": "^3.6.3",
+    "@nuxtjs/i18n": "^10.0.3",
+    "@pinia/nuxt": "^0.11.2",
+    "@primevue/nuxt-module": "^4.3.7",
+    "@unocss/nuxt": "^66.3.3",
+    "@vueuse/nuxt": "^13.6.0",
+    "sass": "^1.89.2"
+  }
+}
