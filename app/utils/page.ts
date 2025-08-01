@@ -3,6 +3,7 @@ import ChatService from '~/services/chatService';
 import WikiEditor from '~/components/WikiEditor.vue';
 import ChatViewer from '~/components/ChatViewer.vue';
 
+
 export const editOnFly = async (dialog: any, page: { collection: string, title: string }) => {
   const pageService = new PageService();
   const response = await pageService.getPageWiki(page.collection, page.title);

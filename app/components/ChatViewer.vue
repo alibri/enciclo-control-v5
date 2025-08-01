@@ -9,7 +9,7 @@ const { t } = useI18n();
 
 const dialogRef = inject<Ref<{ data: { chat: string } }>>('dialogRef');
 
-const chat = ref(dialogRef!.value.data.chat);
+const chat = ref<any>(dialogRef!.value.data.chat);
 chat.value.response.langs = getChatLanguages(chat.value.response);
 console.log('ChatViewer', chat.value.response.langs);
 
@@ -48,10 +48,10 @@ const getLanguageFlag = (lang: string) => {
   <div class="mb-2 bg-gray-100 p-3">
     <div v-html="formatLike(chat?.like)" />
     <TabView>
-      <TabPanel :header="t('Principal')">
+      <TabPanel :header="t('Principal')" value="principal">
         <p class="m-0" v-html="formatStringPre(chat?.response?.content)" />
       </TabPanel>
-      <TabPanel v-for="(translation, index) in chat?.response?.langs" :key="index">
+      <TabPanel v-for="(translation, index) in chat?.response?.langs" :key="index" :value="translation">
         <template #header>
           <div class="flex items-center gap-2">
             <template v-if="getLanguageFlag(translation).type === 'fi'">
@@ -62,7 +62,7 @@ const getLanguageFlag = (lang: string) => {
             </template>
           </div>
         </template>
-        <p class="m-0" v-html="formatStringPre(chat?.response?.translations.find(t => t.key === translation)?.value)" />
+        <p class="m-0" v-html="formatStringPre(chat?.response?.translations.find((t: any) => t.key === translation)?.value)" />
       </TabPanel>
     </TabView>
   </div>
@@ -70,25 +70,25 @@ const getLanguageFlag = (lang: string) => {
     <div class="bg-gray-100 p-3">
       <h4>{{ t('Sabías que') }}</h4>
       <TabView>
-      <TabPanel :header="t('Principal')">
+      <TabPanel :header="t('Principal')" value="sabias-principal">
         <strong>{{ chat?.response.titular }}</strong>
         <p class="mb-3">
           {{ chat?.response?.sabias }}
         </p>
       </TabPanel>
-      <TabPanel v-for="(translation, index) in chat?.response?.translations.find(t => t.key === 'titular').value" :key="index">
+      <TabPanel v-for="(translation, index) in chat?.response?.translations?.find((t: any) => t.key === 'titular').value" :key="index" :value="'sabias-' + index">
         <template #header>
           <div class="flex items-center gap-2">
-            <template v-if="getLanguageFlag(index).type === 'fi'">
-              <span :class="'fi fi-' + getLanguageFlag(index).value" class="w-4 h-4"></span>
+            <template v-if="getLanguageFlag(String(index)).type === 'fi'">
+              <span :class="'fi fi-' + getLanguageFlag(String(index)).value" class="w-4 h-4"></span>
             </template>
             <template v-else>
-              <img :src="getLanguageFlag(index).value" :alt="index" class="w-4 h-4 object-contain" />
+              <img :src="getLanguageFlag(String(index)).value" :alt="String(index)" class="w-4 h-4 object-contain" />
             </template>
           </div>
         </template>
         <strong>{{ translation }}</strong>
-        <p class="mb-3">{{ chat?.response?.translations.find(t => t.key === 'sabias').value[index] }}</p>
+        <p class="mb-3">{{ chat?.response?.translations.find((t: any) => t.key === 'sabias').value[index] }}</p>
       </TabPanel>
     </TabView>
     </div> 
@@ -174,7 +174,7 @@ const getLanguageFlag = (lang: string) => {
         </Column>
         <Column field="value" class="text-right">
           <template #body="slotProps">
-            <span class="text-gray-500 text-sm" style="font-family: system-ui;">{{ formatIntNumber(slotProps.data.value, 6)
+            <span class="text-gray-500 text-sm" style="font-family: system-ui;">{{ formatIntNumber(slotProps.data.value)
             }}</span>
           </template>
         </Column>

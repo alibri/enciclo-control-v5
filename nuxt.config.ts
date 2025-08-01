@@ -1,6 +1,6 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
-import Aura from '@primeuix/themes/aura';
-import Lara from '@primeuix/themes/lara';
+import Aura from '@primevue/themes/aura';
+import Lara from '@primevue/themes/lara';
 import pkg from './package.json';
 import tailwindcss from "@tailwindcss/vite";
 
