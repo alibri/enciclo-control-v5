@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { FilterMatchMode, FilterOperator } from 'primevue/api';
+// import { FilterMatchMode, FilterOperator } from 'primevue/api';
 import EntityService from '~/services/entityService';
 
 const { filters } = usePrimeDataTable();
@@ -49,7 +49,7 @@ const loadData = async () => {
   loading.value = true;
 
   const data = getParamsData(lazyParams.value);
-  data.keyword = keyword.value;
+  (data as any).keyword = keyword.value;
   const response = await entityService.getEntities(data);
   if (checkLogged(response)) {
     stats.value = response?.data?.value?.list;

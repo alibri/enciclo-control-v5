@@ -50,58 +50,47 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <span>
-    <div class="grid">
-      <div class="col-12 lg:col-6 xl:col-6">
-        <div class="card mb-0">
-          <div class="flex justify-content-between mb-3">
-            <div>
-              <span class="block text-500 font-medium mb-3">{{ t('Sesiones Activas') }}</span>
-              <div class="text-900 font-medium text-xl">
-                {{ sessions.length }}
-              </div>
-            </div>
-            <div
-              class="flex align-items-center justify-content-center bg-cyan-100 border-round"
-              style="width: 2.5rem; height: 2.5rem"
-            >
-              <i class="pi pi-star text-cyan-500 text-xl" />
+  <div class="grid grid-cols-12 gap-8">
+    <div class="col-span-12 lg:col-span-6 xl:col-span-6">
+      <div class="bg-white rounded-lg shadow-md p-6 mb-0">
+        <div class="flex justify-between mb-3">
+          <div>
+            <span class="block text-gray-500 font-medium mb-3">{{ t('Sesiones Activas') }}</span>
+            <div class="text-gray-900 font-medium text-xl">
+              {{ sessions.length }}
             </div>
           </div>
-        </div>
-      </div>
-
-      <div class="col-12 lg:col-6 xl:col-6">
-        <div class="card">
-          <h5>{{ t('Sesiones Activas') }}</h5>
-          <SimpleSessionsDataTable :value="sessions" :rows="5" :show-user="true" :show-end="true"/>
-        </div>
-      </div>
-    </div>
-    <div class="card">
-      <div class="grid p-1">
-        <div class="col-12 lg:col-12 xl:col-12 noprint">
-          <div class="card flex justify-content-center">
-            <div class="flex-auto-">
-              <InputGroup>
-                <Calendar
-                  v-model="dates"
-                  selection-mode="range"
-                  :manual-input="true"
-                  :placeholder="t('Periodo')"
-                />
-                <Button icon="pi pi-refresh" severity="success" @click="loadData()" />
-              </InputGroup>
-            </div>
+          <div class="flex items-center justify-center bg-cyan-100 rounded-full" style="width: 2.5rem; height: 2.5rem">
+            <i class="pi pi-star text-cyan-500 text-xl" />
           </div>
         </div>
       </div>
     </div>
 
-    <div class="grid">
-      <div class="col-12">
-        <UserStatsComplete :value="stats" :show-user="true" />
+    <div class="col-span-12 lg:col-span-6 xl:col-span-6">
+      <div class="bg-white rounded-lg shadow-md p-6">
+        <h5>{{ t('Sesiones Activas') }}</h5>
+        <SimpleSessionsDataTable :value="sessions" :rows="5" :show-user="true" :show-end="true" />
       </div>
     </div>
-  </span>
+  </div>
+
+  <div class="grid grid-cols-12 gap-8 mt-1">
+    <div class="col-span-12">
+
+        <div class="bg-white rounded-lg shadow-md- p-6 flex justify-center">
+          <div class="flex-1">
+            <InputGroup>
+              <Calendar v-model="dates" selection-mode="range" :manual-input="true" :placeholder="t('Periodo')" />
+              <Button icon="pi pi-refresh" severity="success" @click="loadData()" />
+            </InputGroup>
+          </div>
+        </div>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-12 gap-8 mt-1">
+    <UserStatsComplete :value="stats" :show-user="true" />
+  </div>
+
 </template>

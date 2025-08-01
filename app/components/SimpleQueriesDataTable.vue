@@ -32,13 +32,13 @@ const exportCSV = ($event: MouseEvent) => {
 <template>
   <DataTable ref="dt" :value="value" :rows="rows" :paginator="paginator" responsive-layout="scroll">
     <template #header>
-      <div style="text-align: right">
+      <div class="text-right">
         <Button size="small" icon="pi pi-file-excel" :label="t('Exportar')" @click="exportCSV($event)" outlined />
       </div>
     </template>
     <Column v-if="showUser" field="user" :header="t('Usuario')" :sortable="true" style="width: 15%">
       <template #body="slotProps">
-        <NuxtLink :to="'/users/'+slotProps.data.user" class="text-red-500 border-none border-bottom-1 border-dotted">
+        <NuxtLink :to="'/users/'+slotProps.data.user" class="text-red-500 border-none border-b border-dotted">
           {{ slotProps.data.user }}
         </NuxtLink>
       </template>
@@ -66,7 +66,7 @@ const exportCSV = ($event: MouseEvent) => {
     </Column>
     <Column field="from" :header="t('De')" :sortable="true" class="text-center text-sm" />
     <Column field="to" :header="t('Hasta')" :sortable="true" class="text-center text-sm" />
-    <Column field="total" :header="t('Total')" :sortable="true" class="text-right text-sm ">
+    <Column field="total" :header="t('Total')" :sortable="true" class="text-right text-sm">
       <template #body="slotProps">
         {{ formatIntNumber(slotProps.data.total) }}
       </template>

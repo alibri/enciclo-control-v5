@@ -210,6 +210,8 @@ primevue.config.locale.dateFormat = 'dd/mm/yy';
 primevue.config.locale.firstDayOfWeek = 1;
 
 console.log(runtimeConfig.public.APP_VERSION);
+const apiBaseUrl = getApiUrl();
+console.log(apiBaseUrl);
 </script>
 
 <template>

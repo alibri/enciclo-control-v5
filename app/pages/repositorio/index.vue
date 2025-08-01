@@ -1,5 +1,5 @@
 <script setup lang='ts'>
-import { FilterMatchMode, FilterOperator } from 'primevue/api';
+import { FilterMatchMode, FilterOperator } from 'primevue';
 import { onMounted } from 'vue';
 import IconField from 'primevue/iconfield';
 import InputIcon from 'primevue/inputicon';

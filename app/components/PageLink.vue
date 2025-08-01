@@ -23,11 +23,11 @@ const openEditor = async () => {
 
 <template>
   <span>
-    <a style="cursor: pointer;" @click="openPage(getPageLink(page.collection, page.title))"><i class="pi pi-external-link bg-green-500 text-white p-1 border-round" /></a>
-    <a style="cursor: pointer;" class="ml-1" @click="openEditor()"><i class="pi pi-file-edit bg-red-500 text-white p-1 border-round" /></a>
-    <a style="cursor: pointer;" class="font-bold border-none border-bottom-1 border-dotted ml-1" @click="pageStore.loadPage(page.collection, page.title)">
+    <a style="cursor: pointer;" @click="openPage(getPageLink(page.collection, page.title))"><i class="pi pi-external-link bg-green-500 text-white p-1 rounded-full" /></a>
+    <a style="cursor: pointer;" class="ml-1" @click="openEditor()"><i class="pi pi-file-edit bg-red-500 text-white p-1 rounded-full" /></a>
+    <a style="cursor: pointer;" class="font-bold border-none border-b border-dotted ml-1" @click="pageStore.loadPage(page.collection, page.title)">
       <strong>{{ page.title }}</strong>
     </a>
-    <a style="cursor: pointer;" @click="editOnFly(dialog, page)"><i class="pi pi-pencil bg-blue-500 text-white p-1 border-round ml-1" /></a>
+    <a style="cursor: pointer;" @click="editOnFly(dialog, page)"><i class="pi pi-pencil bg-blue-500 text-white p-1 rounded-full ml-1" /></a>
   </span>
 </template>

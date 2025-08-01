@@ -136,185 +136,165 @@ const chartOptions = computed(() => {
         }
       }
     }
-  }; ;
+  };;
   return options;
 });
 
 </script>
 
 <template>
-  <span>
-    <div class="card">
-      <div class="grid p-1">
-        <div class="col-12 lg:col-6 xl:col-6">
-          <div class="card mb-2">
-            <div class="flex justify-content-between mb-3">
-              <div>
-                <span class="block text-500 font-medium mb-3">{{ t('Total Logins') }}</span>
-                <div class="text-900 font-medium text-xl">
-                  {{ loginlength }}
-                </div>
-              </div>
-              <div
-                class="flex align-items-center justify-content-center bg-blue-100 border-round noprint"
-                style="width: 2.5rem; height: 2.5rem"
-              >
-                <i class="pi pi-sign-in text-blue-500 text-xl" />
-              </div>
-            </div>
-          </div>
-          <div class="card">
-            <Chart type="line" :data="chartLogins" :options="chartOptions" class="h-30rem" />
-          </div>
-        </div>
-        <div class="col-12 lg:col-6 xl:col-6">
-          <div class="card mb-2">
-            <div class="flex justify-content-between mb-3">
-              <div>
-                <span class="block text-500 font-medium mb-3">{{ t('Páginas Vistas') }}</span>
-                <div class="text-900 font-medium text-xl">
-                  {{ pageslength }}
-                </div>
-              </div>
-              <div
-                class="flex align-items-center justify-content-center bg-green-100 border-round noprint"
-                style="width: 2.5rem; height: 2.5rem"
-              >
-                <i class="pi pi-copy text-green-500 text-xl" />
-              </div>
-            </div>
-          </div>
-          <div class="card">
-            <Chart type="line" :data="chartPages" :options="chartOptions" class="h-30rem" />
-          </div>
-        </div>
-        <div class="col-12 lg:col-6 xl:col-6">
-          <div class="card mb-2">
-            <div class="flex justify-content-between mb-3">
-              <div>
-                <span class="block text-500 font-medium mb-3">{{ t('Tiempo Total') }}</span>
-                <div class="text-900 font-medium text-xl">
-                  {{ total_time }}
-                </div>
-              </div>
-              <div
-                class="flex align-items-center justify-content-center bg-red-100 border-round noprint"
-                style="width: 2.5rem; height: 2.5rem"
-              >
-                <i class="pi pi-clock text-red-500 text-xl" />
-              </div>
-            </div>
-          </div>
-          <div class="card">
-            <Chart type="line" :data="chartTime" :options="chartOptions" class="h-30rem" />
-          </div>
-        </div>
-        <div class="col-12 lg:col-6 xl:col-6">
-          <div class="card mb-2">
-            <div class="flex justify-content-between mb-3">
-              <div>
-                <span class="block text-500 font-medium mb-3">{{ t('Total Pregúntame') }}</span>
-                <div class="text-900 font-medium text-xl">
-                  {{ chatslength }}
-                </div>
-              </div>
-              <div
-                class="flex align-items-center justify-content-center bg-yellow-100 border-round noprint"
-                style="width: 2.5rem; height: 2.5rem"
-              >
-                <i class="pi pi-comment text-yellow-500 text-xl" />
-              </div>
-            </div>
-          </div>
-          <div class="card">
-            <Chart type="line" :data="chartChats" :options="chartOptions" class="h-30rem" />
-          </div>
-        </div>
-        <div class="col-12 lg:col-6 xl:col-6 noprint">
-          <div class="card noprint">
-            <h4>{{ t('Sesiones') }}</h4>
-            <SimpleSessionsDataTable
-              :value="value.logins"
-              :rows="10"
-              :paginator="true"
-              :show-end="true"
-              :show-user="showUser"
-            />
-          </div>
-        </div>
-        <div class="col-12 lg:col-6 xl:col-6 noprint">
-          <div class="card noprint">
-            <h4>{{ t('Páginas') }}</h4>
-            <SimplePagesDataTable :value="value.pages" :rows="10" :paginator="true" :show-user="showUser" />
-          </div>
-        </div>
 
-        <div class="col-12 lg:col-6 xl:col-6 noprint">
-          <div class="card mb-2">
-            <div class="flex justify-content-between mb-3">
-              <div>
-                <span class="block text-500 font-medium mb-3">{{ t('Total Consultas') }}</span>
-                <div class="text-900 font-medium text-xl">
-                  {{ querieslength }}
-                </div>
-              </div>
-              <div
-                class="flex align-items-center justify-content-center bg-cyan-100 border-round"
-                style="width: 2.5rem; height: 2.5rem"
-              >
-                <i class="pi pi-question-circle text-cyan-500 text-xl" />
-              </div>
+    <div class="col-span-12 lg:col-span-6 xl:col-span-6">
+      <div class="bg-white rounded-lg shadow-md p-6 mb-2">
+        <div class="flex justify-between mb-3">
+          <div>
+            <span class="block text-gray-500 font-medium mb-3">{{ t('Total Logins') }}</span>
+            <div class="text-gray-900 font-medium text-xl">
+              {{ loginlength }}
             </div>
           </div>
-          <div class="card">
-            <SimpleQueriesDataTable :value="props.value.queries" :rows="10" :paginator="true" :show-user="showUser" />
-          </div>
-        </div>
-
-        <div class="col-12 lg:col-6 xl:col-6 noprint">
-          <div class="card mb-2">
-            <div class="flex justify-content-between mb-3">
-              <div>
-                <span class="block text-500 font-medium mb-3">{{ t('Total Pregúntame') }}</span>
-                <div class="text-900 font-medium text-xl">
-                  {{ chatslength }}
-                </div>
-              </div>
-              <div
-                class="flex align-items-center justify-content-center bg-yellow-100 border-round"
-                style="width: 2.5rem; height: 2.5rem"
-              >
-                <i class="pi pi-print text-yellow-500 text-xl" />
-              </div>
-            </div>
-          </div>
-          <div class="card">
-            <SimpleChatsDataTable :value="props.value.chats" :rows="10" :paginator="true" :show-user="showUser" />
-          </div>
-        </div>
-
-        <div class="col-12 lg:col-6 xl:col-6 noprint">
-          <div class="card mb-2">
-            <div class="flex justify-content-between mb-3">
-              <div>
-                <span class="block text-500 font-medium mb-3">{{ t('Total Impresiones') }}</span>
-                <div class="text-900 font-medium text-xl">
-                  {{ printslength }}
-                </div>
-              </div>
-              <div
-                class="flex align-items-center justify-content-center bg-green-100 border-round"
-                style="width: 2.5rem; height: 2.5rem"
-              >
-                <i class="pi pi-print text-green-500 text-xl" />
-              </div>
-            </div>
-          </div>
-          <div class="card">
-            <SimplePrintsDataTable :value="props.value.prints" :rows="10" :paginator="true" :show-user="showUser" />
+          <div class="flex items-center justify-center bg-blue-100 rounded-full print:hidden"
+            style="width: 2.5rem; height: 2.5rem">
+            <i class="pi pi-sign-in text-blue-500 text-xl" />
           </div>
         </div>
       </div>
+      <div class="bg-white rounded-lg shadow-md p-6">
+        <Chart type="line" :data="chartLogins" :options="chartOptions" class="h-30rem" />
+      </div>
     </div>
-  </span>
+
+    <div class="col-span-12 lg:col-span-6 xl:col-span-6">
+      <div class="bg-white rounded-lg shadow-md p-6 mb-2">
+        <div class="flex justify-between mb-3">
+          <div>
+            <span class="block text-gray-500 font-medium mb-3">{{ t('Páginas Vistas') }}</span>
+            <div class="text-gray-900 font-medium text-xl">
+              {{ pageslength }}
+            </div>
+          </div>
+          <div class="flex items-center justify-center bg-green-100 rounded-full print:hidden"
+            style="width: 2.5rem; height: 2.5rem">
+            <i class="pi pi-copy text-green-500 text-xl" />
+          </div>
+        </div>
+      </div>
+      <div class="bg-white rounded-lg shadow-md p-6">
+        <Chart type="line" :data="chartPages" :options="chartOptions" class="h-30rem" />
+      </div>
+    </div>
+
+    <div class="col-span-12 lg:col-span-6 xl:col-span-6">
+      <div class="bg-white rounded-lg shadow-md p-6 mb-2">
+        <div class="flex justify-between mb-3">
+          <div>
+            <span class="block text-gray-500 font-medium mb-3">{{ t('Tiempo Total') }}</span>
+            <div class="text-gray-900 font-medium text-xl">
+              {{ total_time }}
+            </div>
+          </div>
+          <div class="flex items-center justify-center bg-red-100 rounded-full print:hidden"
+            style="width: 2.5rem; height: 2.5rem">
+            <i class="pi pi-clock text-red-500 text-xl" />
+          </div>
+        </div>
+      </div>
+      <div class="bg-white rounded-lg shadow-md p-6">
+        <Chart type="line" :data="chartTime" :options="chartOptions" class="h-30rem" />
+      </div>
+    </div>
+
+    <div class="col-span-12 lg:col-span-6 xl:col-span-6">
+      <div class="bg-white rounded-lg shadow-md p-6 mb-2">
+        <div class="flex justify-between mb-3">
+          <div>
+            <span class="block text-gray-500 font-medium mb-3">{{ t('Total Pregúntame') }}</span>
+            <div class="text-gray-900 font-medium text-xl">
+              {{ chatslength }}
+            </div>
+          </div>
+          <div class="flex items-center justify-center bg-yellow-100 rounded-full print:hidden"
+            style="width: 2.5rem; height: 2.5rem">
+            <i class="pi pi-comment text-yellow-500 text-xl" />
+          </div>
+        </div>
+      </div>
+      <div class="bg-white rounded-lg shadow-md p-6">
+        <Chart type="line" :data="chartChats" :options="chartOptions" class="h-30rem" />
+      </div>
+    </div>
+
+    <div class="col-span-12 lg:col-span-6 xl:col-span-6 print:hidden">
+      <div class="bg-white rounded-lg shadow-md p-6 print:hidden">
+        <h4>{{ t('Sesiones') }}</h4>
+        <SimpleSessionsDataTable :value="value.logins" :rows="10" :paginator="true" :show-end="true"
+          :show-user="showUser" />
+      </div>
+    </div>
+
+    <div class="col-span-12 lg:col-span-6 xl:col-span-6 print:hidden">
+      <div class="bg-white rounded-lg shadow-md p-6 print:hidden">
+        <h4>{{ t('Páginas') }}</h4>
+        <SimplePagesDataTable :value="value.pages" :rows="10" :paginator="true" :show-user="showUser" />
+      </div>
+    </div>
+
+    <div class="col-span-12 lg:col-span-6 xl:col-span-6 print:hidden">
+      <div class="bg-white rounded-lg shadow-md p-6 mb-2">
+        <div class="flex justify-between mb-3">
+          <div>
+            <span class="block text-gray-500 font-medium mb-3">{{ t('Total Consultas') }}</span>
+            <div class="text-gray-900 font-medium text-xl">
+              {{ querieslength }}
+            </div>
+          </div>
+          <div class="flex items-center justify-center bg-cyan-100 rounded-full" style="width: 2.5rem; height: 2.5rem">
+            <i class="pi pi-question-circle text-cyan-500 text-xl" />
+          </div>
+        </div>
+      </div>
+      <div class="bg-white rounded-lg shadow-md p-6">
+        <SimpleQueriesDataTable :value="props.value.queries" :rows="10" :paginator="true" :show-user="showUser" />
+      </div>
+    </div>
+
+    <div class="col-span-12 lg:col-span-6 xl:col-span-6 print:hidden">
+      <div class="bg-white rounded-lg shadow-md p-6 mb-2">
+        <div class="flex justify-between mb-3">
+          <div>
+            <span class="block text-gray-500 font-medium mb-3">{{ t('Total Pregúntame') }}</span>
+            <div class="text-gray-900 font-medium text-xl">
+              {{ chatslength }}
+            </div>
+          </div>
+          <div class="flex items-center justify-center bg-yellow-100 rounded-full"
+            style="width: 2.5rem; height: 2.5rem">
+            <i class="pi pi-print text-yellow-500 text-xl" />
+          </div>
+        </div>
+      </div>
+      <div class="bg-white rounded-lg shadow-md p-6">
+        <SimpleChatsDataTable :value="props.value.chats" :rows="10" :paginator="true" :show-user="showUser" />
+      </div>
+    </div>
+
+    <div class="col-span-12 lg:col-span-6 xl:col-span-6 print:hidden">
+      <div class="bg-white rounded-lg shadow-md p-6 mb-2">
+        <div class="flex justify-between mb-3">
+          <div>
+            <span class="block text-gray-500 font-medium mb-3">{{ t('Total Impresiones') }}</span>
+            <div class="text-gray-900 font-medium text-xl">
+              {{ printslength }}
+            </div>
+          </div>
+          <div class="flex items-center justify-center bg-green-100 rounded-full" style="width: 2.5rem; height: 2.5rem">
+            <i class="pi pi-print text-green-500 text-xl" />
+          </div>
+        </div>
+      </div>
+      <div class="bg-white rounded-lg shadow-md p-6">
+        <SimplePrintsDataTable :value="props.value.prints" :rows="10" :paginator="true" :show-user="showUser" />
+      </div>
+    </div>
+
 </template>

@@ -37,7 +37,7 @@ const exportCSV = () => {
 <template>
   <DataTable ref="dt" :value="value" :rows="rows" :paginator="paginator" responsive-layout="scroll">
     <template #header>
-      <div style="text-align: right">
+      <div class="text-right">
         <Button size="small" icon="pi pi-file-excel" :label="t('Exportar')" @click="exportCSV($event)" outlined />
       </div>
     </template>
@@ -47,10 +47,10 @@ const exportCSV = () => {
       :header="t('Usuario')"
       :sortable="true"
       style="width: 15%"
-      class="text-color-secondary"
+      class="text-gray-600"
     >
       <template #body="slotProps">
-        <NuxtLink :to="'/users/'+slotProps.data.user" class="text-red-500 border-none border-bottom-1 border-dotted">
+        <NuxtLink :to="'/users/'+slotProps.data.user" class="text-red-500 border-none border-b border-dotted">
           {{ slotProps.data.user }}
         </NuxtLink>
       </template>

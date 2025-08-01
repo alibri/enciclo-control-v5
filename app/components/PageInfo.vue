@@ -78,16 +78,16 @@ onMounted(() => {
 
 <template>
   <span>
-    <div class="card">
+    <div class="bg-white rounded-lg shadow-md p-6">
       <h2><span class="text-blue-500">{{ info?.title }}</span></h2>
       <h4>{{ collection }} -> {{ page }}</h4>
       <div class="grid p-1">
-        <div class="col-1">
-          <div class="p-d-flex p-jc-center p-ai-center">
+        <div class="col-span-1">
+          <div class="flex justify-center items-center">
             <img :src="info?.img" :alt="t('[SIN IMAGEN]')" class="responsive-image">
           </div>
         </div>
-        <div class="col-11">
+        <div class="col-span-11">
           <p>
             <Accordion>
               <AccordionTab :header="t('Descripción')">
@@ -125,8 +125,8 @@ onMounted(() => {
         </div>
       </div>
     </div>
-    <div class="card flex justify-content-center">
-      <div class="flex-auto-">
+    <div class="bg-white rounded-lg shadow-md p-6 flex justify-center">
+      <div class="flex-1">
         <InputGroup>
           <Calendar v-model="dates" selection-mode="range" :manual-input="true" :placeholder="t('Periodo')" />
           <Button icon="pi pi-refresh" severity="success" @click="loadData()" />
@@ -134,59 +134,59 @@ onMounted(() => {
       </div>
     </div>
     <div class="grid p-1">
-      <div class="col-12 lg:col-6 xl:col-4">
-        <div class="card mb-2">
-          <div class="flex justify-content-between mb-3">
+      <div class="col-span-12 lg:col-span-6 xl:col-span-4">
+        <div class="bg-white rounded-lg shadow-md p-6 mb-2">
+          <div class="flex justify-between mb-3">
             <div>
-              <span class="block text-500 font-medium mb-3">{{ t('Completa') }}</span>
-              <div class="text-900 font-medium text-xl">
+              <span class="block text-gray-500 font-medium mb-3">{{ t('Completa') }}</span>
+              <div class="text-gray-900 font-medium text-xl">
                 {{ pageslength }}
               </div>
             </div>
-            <div class="flex align-items-center justify-content-center bg-orange-100 border-round" style="width: 2.5rem; height: 2.5rem">
+            <div class="flex items-center justify-center bg-orange-100 rounded-full" style="width: 2.5rem; height: 2.5rem">
               <i class="pi pi-copy text-orange-500 text-xl" />
             </div>
           </div>
         </div>
-        <div class="card">
+        <div class="bg-white rounded-lg shadow-md p-6">
           <SimplePagesDataTable :value="stats?.pages || []" :rows="10" :paginator="true" :show-user="true" :show-title="false" />
         </div>
       </div>
 
-      <div class="col-12 lg:col-6 xl:col-4">
-        <div class="card mb-2">
-          <div class="flex justify-content-between mb-3">
+      <div class="col-span-12 lg:col-span-6 xl:col-span-4">
+        <div class="bg-white rounded-lg shadow-md p-6 mb-2">
+          <div class="flex justify-between mb-3">
             <div>
-              <span class="block text-500 font-medium mb-3">{{ t('Vista Previa') }}</span>
-              <div class="text-900 font-medium text-xl">
+              <span class="block text-gray-500 font-medium mb-3">{{ t('Vista Previa') }}</span>
+              <div class="text-gray-900 font-medium text-xl">
                 {{ previewslength }}
               </div>
             </div>
-            <div class="flex align-items-center justify-content-center bg-blue-100 border-round" style="width: 2.5rem; height: 2.5rem">
+            <div class="flex items-center justify-center bg-blue-100 rounded-full" style="width: 2.5rem; height: 2.5rem">
               <i class="pi pi-eye text-cyan-500 text-xl" />
             </div>
           </div>
         </div>
-        <div class="card">
+        <div class="bg-white rounded-lg shadow-md p-6">
           <SimplePagesDataTable :value="stats?.previews || []" :rows="10" :paginator="true" :show-user="true" :show-title="false" />
         </div>
       </div>
 
-      <div class="col-12 lg:col-6 xl:col-4">
-        <div class="card mb-2">
-          <div class="flex justify-content-between mb-3">
+      <div class="col-span-12 lg:col-span-6 xl:col-span-4">
+        <div class="bg-white rounded-lg shadow-md p-6 mb-2">
+          <div class="flex justify-between mb-3">
             <div>
-              <span class="block text-500 font-medium mb-3">{{ t('Impresiones') }}</span>
-              <div class="text-900 font-medium text-xl">
+              <span class="block text-gray-500 font-medium mb-3">{{ t('Impresiones') }}</span>
+              <div class="text-gray-900 font-medium text-xl">
                 {{ printslength }}
               </div>
             </div>
-            <div class="flex align-items-center justify-content-center bg-green-100 border-round" style="width: 2.5rem; height: 2.5rem">
+            <div class="flex items-center justify-center bg-green-100 rounded-full" style="width: 2.5rem; height: 2.5rem">
               <i class="pi pi-print text-green-500 text-xl" />
             </div>
           </div>
         </div>
-        <div class="card">
+        <div class="bg-white rounded-lg shadow-md p-6">
           <SimplePrintsDataTable :value="stats?.prints || []" :rows="10" :paginator="true" :show-user="true" :show-title="false" />
         </div>
       </div>

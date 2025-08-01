@@ -24,8 +24,8 @@ const saveWiki = async () => {
       <Button icon="pi pi-save" outlined severity="primary" @click="saveWiki()" />
     </template>
   </Toolbar>
-  <div class="flex align-items-center gap-3 mb-2">
-    <Textarea v-model="wiki" rows="20" class="flex-auto" />
+  <div class="flex items-center gap-3 mb-2">
+    <Textarea v-model="wiki" rows="20" class="flex-1" />
   </div>
 </template>
 

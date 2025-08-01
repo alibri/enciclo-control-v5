@@ -30,22 +30,22 @@ const getLanguageFlag = (lang: string) => {
 
 <template>
   <div class="mb-2">
-    <span class="bg-green-300 text-white border-1 p-1 m-1 text-xs" severity="success">{{ formatDateTime(chat?.date) }}</span>
-    <span class="bg-yellow-300 text-white border-1 p-1 m-1 text-xs" severity="warning">{{ chat?.collection }}</span>
-    <span class="bg-blue-300 text-white border-1 p-1 m-1 text-xs" severity="info">{{ chat?.user }}</span>
-    <span class="bg-red-300 text-white border-1 p-1 m-1 text-xs" severity="danger">{{ formatFloat(chat?.time, 6) }}s </span>
-    <span class="bg-green-400 text-white border-1 p-1 m-1 text-xs" severity="contrast">{{ formatIntNumber(chat?.prompt_tokens + chat?.completion_tokens) }} tokens</span>
-    <span class="bg-green-500 text-white border-1 p-1 m-1 text-xs" severity="success">{{ chat?.response?.model }}</span>
-    <span v-show="chat?.response?.idioma" class="bg-blue-500 text-white border-1 p-1 m-1 text-xs" severity="success">{{ chat?.response?.idioma }}</span>
+    <span class="bg-green-300 text-white border p-1 m-1 text-xs" severity="success">{{ formatDateTime(chat?.date) }}</span>
+    <span class="bg-yellow-300 text-white border p-1 m-1 text-xs" severity="warning">{{ chat?.collection }}</span>
+    <span class="bg-blue-300 text-white border p-1 m-1 text-xs" severity="info">{{ chat?.user }}</span>
+    <span class="bg-red-300 text-white border p-1 m-1 text-xs" severity="danger">{{ formatFloat(chat?.time, 6) }}s </span>
+    <span class="bg-green-400 text-white border p-1 m-1 text-xs" severity="contrast">{{ formatIntNumber(chat?.prompt_tokens + chat?.completion_tokens) }} tokens</span>
+    <span class="bg-green-500 text-white border p-1 m-1 text-xs" severity="success">{{ chat?.response?.model }}</span>
+    <span v-show="chat?.response?.idioma" class="bg-blue-500 text-white border p-1 m-1 text-xs" severity="success">{{ chat?.response?.idioma }}</span>
   </div>
   <div class="m-1">
     <Chip class="py-0 pl-0 pr-3">
-      <span class="bg-pink-600 text-white border-circle w-2rem h-2rem flex align-items-center justify-content-center">{{ chat?.counter }}</span>
+      <span class="bg-pink-600 text-white rounded-full w-8 h-8 flex items-center justify-center">{{ chat?.counter }}</span>
       <ChatLink :code="chat?.code" :link="chat?.short_url" />
     </Chip>
   </div>
 
-  <div class="mb-2 surface-200 p-3">
+  <div class="mb-2 bg-gray-100 p-3">
     <div v-html="formatLike(chat?.like)" />
     <TabView>
       <TabPanel :header="t('Principal')">
@@ -53,12 +53,12 @@ const getLanguageFlag = (lang: string) => {
       </TabPanel>
       <TabPanel v-for="(translation, index) in chat?.response?.langs" :key="index">
         <template #header>
-          <div class="flex align-items-center gap-2">
+          <div class="flex items-center gap-2">
             <template v-if="getLanguageFlag(translation).type === 'fi'">
-              <span :class="'fi fi-' + getLanguageFlag(translation).value" class="w-1rem h-1rem"></span>
+              <span :class="'fi fi-' + getLanguageFlag(translation).value" class="w-4 h-4"></span>
             </template>
             <template v-else>
-              <img :src="getLanguageFlag(translation).value" :alt="translation" class="w-1rem h-1rem object-contain" />
+              <img :src="getLanguageFlag(translation).value" :alt="translation" class="w-4 h-4 object-contain" />
             </template>
           </div>
         </template>
@@ -67,7 +67,7 @@ const getLanguageFlag = (lang: string) => {
     </TabView>
   </div>
   <template v-if="chat?.response?.sabias">
-    <div class="surface-200 p-3">
+    <div class="bg-gray-100 p-3">
       <h4>{{ t('Sabías que') }}</h4>
       <TabView>
       <TabPanel :header="t('Principal')">
@@ -78,12 +78,12 @@ const getLanguageFlag = (lang: string) => {
       </TabPanel>
       <TabPanel v-for="(translation, index) in chat?.response?.translations.find(t => t.key === 'titular').value" :key="index">
         <template #header>
-          <div class="flex align-items-center gap-2">
+          <div class="flex items-center gap-2">
             <template v-if="getLanguageFlag(index).type === 'fi'">
-              <span :class="'fi fi-' + getLanguageFlag(index).value" class="w-1rem h-1rem"></span>
+              <span :class="'fi fi-' + getLanguageFlag(index).value" class="w-4 h-4"></span>
             </template>
             <template v-else>
-              <img :src="getLanguageFlag(index).value" :alt="index" class="w-1rem h-1rem object-contain" />
+              <img :src="getLanguageFlag(index).value" :alt="index" class="w-4 h-4 object-contain" />
             </template>
           </div>
         </template>
@@ -127,7 +127,7 @@ const getLanguageFlag = (lang: string) => {
         <div v-for="(source, index) in chat?.response.sources" :key="index">
           <li class="mb-3">
             <a :href="source.source" target="_blank">[{{ source.collection }}] - {{ source.title }}</a>
-            <p class="text-sm text-500">
+            <p class="text-sm text-gray-500">
               {{ source.content }}
             </p>
           </li>
@@ -158,7 +158,7 @@ const getLanguageFlag = (lang: string) => {
         </Column>
         <Column field="value" class="text-right">
           <template #body="slotProps">
-            <span class="text-500 text-sm" style="font-family: system-ui;">{{ formatFloat(slotProps.data.value, 6)
+            <span class="text-gray-500 text-sm" style="font-family: system-ui;">{{ formatFloat(slotProps.data.value, 6)
             }}s</span>
           </template>
         </Column>
@@ -174,7 +174,7 @@ const getLanguageFlag = (lang: string) => {
         </Column>
         <Column field="value" class="text-right">
           <template #body="slotProps">
-            <span class="text-500 text-sm" style="font-family: system-ui;">{{ formatIntNumber(slotProps.data.value, 6)
+            <span class="text-gray-500 text-sm" style="font-family: system-ui;">{{ formatIntNumber(slotProps.data.value, 6)
             }}</span>
           </template>
         </Column>

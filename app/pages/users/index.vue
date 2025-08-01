@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { consola } from 'consola';
-import { FilterMatchMode, FilterOperator } from 'primevue/api';
+// import { FilterMatchMode, FilterOperator } from 'primevue/api';
 import { useToast } from 'primevue/usetoast';
 import { useConfirm } from 'primevue/useconfirm';
 import UserService from '~/services/userService';
@@ -166,11 +166,11 @@ const addUser = async () => {
       showError.value = true;
       showMessage('error', t('Error'), response?.data?.value?.message);
     } else {
-      if (newUser.value?.begin) {
-        newUser.value.begin = newUser.value?.period[0];
+      if (newUser.value?.begin && newUser.value?.period?.[0]) {
+        newUser.value.begin = newUser.value.period[0];
       }
-      if (newUser.value?.end) {
-        newUser.value.end = newUser.value?.period[1];
+      if (newUser.value?.end && newUser.value?.period?.[1]) {
+        newUser.value.end = newUser.value.period[1];
       }
       consola.log('ADD USER', response);
       showMessage('info', t('Usuarios'), t('Usuario {id} {status}').replace('{id}', response?.data?.value?.id).replace('{status}', (id !== null ? 'Actualizado' : 'Creado')));
@@ -283,7 +283,7 @@ const toggle = (event: Event, data: any) => {
     menu.value.toggle(event);
     // Almacenar los datos del usuario para usarlos en los comandos
     console.log('toggle', event, data);
-    items.value[0].items.forEach((item: any) => {
+    items.value[0]?.items?.forEach((item: any) => {
         menuData.value = data;
         // item.command = () => item.command(menuData.value);
     });

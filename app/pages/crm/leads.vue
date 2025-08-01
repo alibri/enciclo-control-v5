@@ -1,5 +1,5 @@
 <script setup  lang="ts">
-import { FilterMatchMode, FilterOperator } from 'primevue/api';
+// import { FilterMatchMode, FilterOperator } from 'primevue/api';
 import CRMService from '~/services/crmService';
 import MessageService from '~/services/messageService';
 
@@ -23,8 +23,8 @@ const stats = ref();
 const dt = ref();
 const totalRecords = ref(0);
 
-const selectedMensaje = ref(null);
-const selectedStatus = ref(null);
+const selectedMensaje = ref<any>(null);
+const selectedStatus = ref<any>(null);
 const messages = ref([]);
 const showEnviarMensaje = ref(false);
 
@@ -68,13 +68,15 @@ const loadData = async () => {
   loading.value = false;
 };
 
+/*
 const exportFunction = async (data: any) => {
   return await statsService.exportQueries(data);
 };
+*/
 
-const exportData = async () => {
-  await exportDataGeneric(t('Exportando datos sesiones'), exportFunction);
-};
+// const exportData = async () => {
+//   await exportDataGeneric(t('Exportando datos sesiones'), exportFunction);
+// };
 
 const onPage = (event: any) => {
   lazyParams.value = event;
@@ -184,7 +186,7 @@ onMounted(() => {
                   class="p-button-secondary"
                   @click="loadData()"
                 />
-                <Button icon="pi pi-file-excel" class="p-button-success ml-2" @click="exportData()" />
+                <!-- <Button icon="pi pi-file-excel" class="p-button-success ml-2" @click="exportData()" /> -->
                 <span class="ml-5 text-xs">{{ t('Registros') }}: {{ formatIntNumber(totalRecords) }} {{ t('consultas') }}</span>
               </div>
             </div>
@@ -203,7 +205,7 @@ onMounted(() => {
                 icon="pi pi-envelope"
                 @click="sendMessage(slotProps.data)"
               />
-              <Button
+              <!-- <Button
                 severity="success"
                 text
                 icon="pi pi-pencil"
@@ -214,7 +216,7 @@ onMounted(() => {
                 text
                 icon="pi pi-trash"
                 @click="deleteUser(slotProps.data)"
-              />
+              /> -->
             </template>
           </Column>
           <Column field="status" :header="t('Estado')" :sortable="true" style="width: 15%">

@@ -34,13 +34,13 @@ const exportCSV = ($event: MouseEvent) => {
 <template>
   <DataTable ref="dt" :value="value" :rows="rows" :paginator="paginator" responsive-layout="scroll">
     <template #header>
-      <div style="text-align: right">
+      <div class="text-right">
         <Button size="small" icon="pi pi-file-excel" :label="t('Exportar')" @click="exportCSV($event)" outlined />
       </div>
     </template>
     <Column v-if="showUser" field="user" :header="t('Usuario')" :sortable="true" style="width: 15%">
       <template #body="slotProps">
-        <NuxtLink :to="'/users/'+slotProps.data.user" class="text-red-500 border-none border-bottom-1 border-dotted">
+        <NuxtLink :to="'/users/'+slotProps.data.user" class="text-red-500 border-none border-b border-dotted">
           {{ slotProps.data.user }}
         </NuxtLink>
       </template>
@@ -48,7 +48,7 @@ const exportCSV = ($event: MouseEvent) => {
     <Column field="collection" :header="t('Colección')" :sortable="true" style="width: 15%" class="text-yellow-500" />
     <Column field="query" :header="t('Pregunta')" :sortable="true" style="width: 50%">
       <template #body="slotProps">
-        <a style="cursor: pointer;" class="font-bold border-none border-bottom-1 border-dotted ml-1" @click="showChat(dialog, slotProps.data.id)">
+        <a style="cursor: pointer;" class="font-bold border-none border-b border-dotted ml-1" @click="showChat(dialog, slotProps.data.id)">
           <strong>{{ slotProps.data.query }}</strong>
         </a>          
       </template>
@@ -63,7 +63,7 @@ const exportCSV = ($event: MouseEvent) => {
         {{ slotProps.data.time }}s
       </template>            
     </Column>
-    <Column field="prompt_tokens" :header="t('T.In')" :sortable="true" class=" text-right text-xs text-blue-500">
+    <Column field="prompt_tokens" :header="t('T.In')" :sortable="true" class="text-right text-xs text-blue-500">
       <template #body="slotProps">
         {{ formatIntNumber(slotProps.data.prompt_tokens) }}
       </template>            

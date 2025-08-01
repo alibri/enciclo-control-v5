@@ -136,17 +136,17 @@ const config = {
         <TabView>
           <TabPanel :header="t('Contenido')">
             <div class="grid">
-              <div v-for="image in images" :key="image" class="col-3">
-                <div class="p-1 border-1 border-600">
+              <div v-for="image in images" :key="image" class="col-span-3">
+                <div class="p-1 border border-gray-600">
                   <Button class="text-sm ml-1" rounded severity="warning" icon="pi pi-pencil" @click="editImage(image)" />
                   <Button class="text-sm" rounded severity="primary" icon="pi pi-check" @click="selectImage(image)" />
-                  <Image :src="image" class="border-top-1 mt-1" width="200px" @dblclick="selectImage(image)" />
+                  <Image :src="image" class="border-t mt-1" width="200px" @dblclick="selectImage(image)" />
                 </div>
               </div>
             </div>
           </TabPanel>
           <TabPanel :header="t('Media')">
-            <div class="card">
+            <div class="bg-white rounded-lg shadow-md p-6">
               <FileUpload
                 name="demo[]"
                 accept="image/*"
@@ -163,22 +163,22 @@ const config = {
               </FileUpload>
             </div>
             <div class="grid">
-              <div v-for="image in media" :key="image" class="col-3">
-                <div class="p-1 border-1 border-200">
+              <div v-for="image in media" :key="image" class="col-span-3">
+                <div class="p-1 border border-gray-200">
                   <Button class="text-sm" rounded severity="warning" icon="pi pi-pencil" @click="editImage(image)" />
                   <Button class="text-sm" rounded severity="primary" icon="pi pi-check" @click="selectImage(image)" />
-                  <Image :src="image" class="border-top-1 mt-1" width="200px" @dblclick="selectImage(image)" />
+                  <Image :src="image" class="border-t mt-1" width="200px" @dblclick="selectImage(image)" />
                 </div>
               </div>
             </div>
           </TabPanel>
           <TabPanel :header="t('Repositorio')">
             <div class="grid">
-              <div v-for="image in repositorio" :key="image" class="col-3">
-                <div class="p-1 border-1 border-200">
+              <div v-for="image in repositorio" :key="image" class="col-span-3">
+                <div class="p-1 border border-gray-200">
                   <Button class="text-sm" rounded severity="warning" icon="pi pi-pencil" @click="editImage(image)" />
                   <Button class="text-sm" rounded severity="primary" icon="pi pi-check" @click="selectImage(image)" />
-                  <Image :src="image" class="border-top-1 mt-1" width="200px" @dblclick="selectImage(image)" />
+                  <Image :src="image" class="border-t mt-1" width="200px" @dblclick="selectImage(image)" />
                 </div>
               </div>
             </div>

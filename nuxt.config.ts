@@ -2,12 +2,16 @@
 import Aura from '@primeuix/themes/aura';
 import Lara from '@primeuix/themes/lara';
 import pkg from './package.json';
+import tailwindcss from "@tailwindcss/vite";
 
 export default defineNuxtConfig({
   // @ts-ignore - PrimeVue module configuration
   compatibilityDate: '2025-07-15',
-  devtools: { enabled: true },  
+  devtools: { enabled: true },
   ssr: false,
+  alias: {
+    quill: process.env.NODE_ENV === 'development' ? 'quill/dist/quill.js' : 'quill'
+  },
   runtimeConfig: {
     public: {
       APP_VERSION: pkg.version,
@@ -55,6 +59,7 @@ export default defineNuxtConfig({
     options: {
       ripple: true,
       inputVariant: 'filled',
+      darkModeSelector: '.app-dark',
       theme: {
         preset: Lara
       }
@@ -65,7 +70,14 @@ export default defineNuxtConfig({
     // 'primevue/resources/primevue.css',
     // 'primevue/resources/themes/lara-light-blue/theme.css',
     'primeicons/primeicons.css',
-    'primeflex/primeflex.css',
+    //'primeflex/primeflex.css',
+    '~/assets/css/main.css',
+    '~/assets/tailwind.css', '~/assets/styles.scss'
     //'@sfxcode/formkit-primevue/dist/sass/formkit-primevue.scss'
-  ]
+  ],
+  vite: { 
+    plugins: [
+      tailwindcss()
+    ], 
+  },
 })

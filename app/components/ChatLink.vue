@@ -15,7 +15,7 @@ const props = defineProps({
 </script>
 
 <template>
-  <a style="cursor: pointer;" :href="link" target="_blank" class="text-blue-500 border-none border-bottom-1 border-dotted ml-1">
+  <a style="cursor: pointer;" :href="link" target="_blank" class="text-blue-500 border-none border-b border-dotted ml-1">
     {{ code }} <i class="pi pi-external-link" />
   </a>
 </template>
