@@ -223,5 +223,5 @@ console.log(apiBaseUrl);
 </template>
 
 <style lang='scss'>
-@use 'App.scss' as *;
+// @use 'App.scss' as *;
 </style>

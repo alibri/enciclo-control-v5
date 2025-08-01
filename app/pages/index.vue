@@ -92,5 +92,4 @@ onUnmounted(() => {
   <div class="grid grid-cols-12 gap-8 mt-1">
     <UserStatsComplete :value="stats" :show-user="true" />
   </div>
-
 </template>

@@ -1,11 +1,12 @@
 <script setup lang='ts'>
+import { useLayout } from './composables/layout'
 import { ref, computed, onMounted, onBeforeUnmount } from 'vue';
 import { useRouter } from 'vue-router';
 import { storeToRefs } from 'pinia'; // import storeToRefs helper hook from pinia
 import { useAuthStore } from '~/stores/auth'; // import the auth store we just created
-
+const { onMenuToggle, toggleDarkMode, isDarkTheme } = useLayout()
 const { t } = useI18n();
-const { layoutConfig, onMenuToggle } = useLayout();
+//const { layoutConfig, onMenuToggle } = useLayout();
 const outsideClickListener = ref<((event: MouseEvent) => void) | null>(null);
 const topbarMenuActive = ref(false);
 const router = useRouter();
@@ -74,40 +75,47 @@ const logout = () => {
   router.push('/auth/login');
 };
 
-const runtimeConfig = useRuntimeConfig();
 </script>
 
 <template>
-  <div class="layout-topbar noprint">
-    <NuxtLink to="/" class="layout-topbar-logo">
-      <span style="color: var(--primary-color)">{{ runtimeConfig.public.APP_TITLE }} {{ runtimeConfig.public.APP_VERSION }}</span>
-    </NuxtLink>
 
-    <button class="p-link layout-menu-button layout-topbar-button" @click="onMenuToggle()">
+  <div class="layout-topbar noprint">
+    <button
+      class="p-link layout-menu-button layout-topbar-button"
+      @click="onMenuToggle()"
+    >
       <i class="pi pi-bars" />
     </button>
 
-    <button class="p-link layout-topbar-menu-button layout-topbar-button" @click="onTopBarMenuButton()">
+    <button
+      class="p-link layout-topbar-menu-button layout-topbar-button"
+      @click="onTopBarMenuButton()"
+    >
       <i class="pi pi-ellipsis-v" />
     </button>
-
-    <div class="layout-topbar-menu" :class="topbarMenuClasses">
+        <div class="layout-topbar-menu" :class="topbarMenuClasses">
+      <button
+        type="button"
+        class="layout-topbar-button"
+        @click="toggleDarkMode"
+      >
+        <i :class="['pi', { 'pi-moon': isDarkTheme, 'pi-sun': !isDarkTheme }]" />
+        <span>Dark Mode</span>
+      </button>
       <button v-if="!authenticated" class="p-link">
         <i class="pi pi-sign-in" />
         <nuxt-link to="/auth/login">
           {{ t('Login') }}
         </nuxt-link>
       </button>
+
       <button v-if="authenticated" class="p-link">
         <i class="pi pi-sign-out" />&nbsp;
         <nuxt-link @click="logout">
           {{ t('Logout') }}
         </nuxt-link>
       </button>
-      <button class="p-link layout-topbar-button" @click="toggle">
-        <i class="pi pi-cog" />
-        <span>{{ t('Settings') }}</span>
-      </button>
+
     </div>
   </div>
 </template>

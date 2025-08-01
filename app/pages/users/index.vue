@@ -311,14 +311,14 @@ const exportData = () => {
 </script>
 
 <template>
-  <div class="card">
-    <h2>{{ t('Usuarios') }}</h2>
-    <div class="grid panel-demo p-1">
-      <div class="col-12">
+  <div class="bg-white rounded-lg shadow-md p-6">
+    <h2 class="text-2xl font-bold text-gray-800 mb-6">{{ t('Usuarios') }}</h2>
+    <div class="grid grid-cols-12 gap-4 p-1">
+      <div class="col-span-12">
         <Toolbar>
           <template #start>
-            <Button :label="t('Nuevo')" icon="fas fa-file" style="margin-left: 0.5em" @click="openNewUser()" />
-            <i class="fas fa-grip-lines-vertical p-toolbar-separator" />
+            <Button :label="t('Nuevo')" icon="fas fa-file" class="ml-2" @click="openNewUser()" />
+            <i class="fas fa-grip-lines-vertical mx-2 text-gray-300" />
           </template>
           <template #end>
             <FileUpload
@@ -339,7 +339,7 @@ const exportData = () => {
           </template>
         </Toolbar>
       </div>
-      <div class="col-12">
+      <div class="col-span-12">
         <DataTable
           ref="dt"
           v-model:filters="filters"
@@ -365,7 +365,7 @@ const exportData = () => {
           @filter="onFilter($event)"
           >
           <template #header>
-            <div class="flex justify-content-between justify-items-center">
+            <div class="flex justify-between items-center">
               <div class="left-0">
                 <Button
                   icon="pi pi-refresh"
@@ -375,7 +375,7 @@ const exportData = () => {
                 />
                 <Button icon="pi pi-file-excel" class="p-button-success ml-2" @click="exportData()" />
               </div>
-              <div class="flex align-items-center gap-2">
+              <div class="flex items-center gap-2">
                 <Button
                   type="button"
                   icon="pi pi-filter-slash"
@@ -390,10 +390,10 @@ const exportData = () => {
             </div>
           </template>
           <template #empty>
-            {{ t('No se han encontrado datos.') }}
+            <div class="text-center text-gray-500 py-8">{{ t('No se han encontrado datos.') }}</div>
           </template>
           <template #loading>
-            {{ t('Cargando datos..') }} <i class="pi pi-spin pi-spinner" style="font-size: 2rem" />
+            <div class="text-center text-gray-600 py-8">{{ t('Cargando datos..') }} <i class="pi pi-spin pi-spinner" style="font-size: 2rem" /></div>
           </template>
           <Column header="#">
             <template #body="slotProps">              
@@ -431,10 +431,10 @@ const exportData = () => {
               </NuxtLink>
             </template>
           </Column>
-          <Column field="grupo" :header="t('Grupo')" :sortable="true" class="font-bold-">
+          <Column field="grupo" :header="t('Grupo')" :sortable="true" class="font-bold">
             <template #body="slotProps">
               <NuxtLink :to="'/users/g__'+slotProps.data.grupo">
-                <span class="font-bold border-none border-bottom-1 border-dotted">{{ slotProps.data.grupo }}</span>
+                <span class="font-bold border-b border-dotted border-gray-300">{{ slotProps.data.grupo }}</span>
               </NuxtLink>
             </template>
           </Column>
@@ -463,28 +463,28 @@ const exportData = () => {
           <Column field="isadmin" :header="t('Admin')" :sortable="true" class="text-center">
             <template #body="slotProps">
               <i
-                :class="'pi ' + (slotProps.data.isadmin ? 'pi pi-check bg-purple-500 text-white font-bold border-round m-2 p-2' : '')"
+                :class="'pi ' + (slotProps.data.isadmin ? 'pi pi-check bg-purple-500 text-white font-bold rounded-full m-2 p-2' : '')"
               />
             </template>
           </Column>
           <Column field="iseditor" :header="t('Editor')" :sortable="true" class="text-center">
             <template #body="slotProps">
               <i
-                :class="'pi ' + (slotProps.data.iseditor ? 'pi pi-check bg-green-500 text-white font-bold border-round m-2 p-2' : '')"
+                :class="'pi ' + (slotProps.data.iseditor ? 'pi pi-check bg-green-500 text-white font-bold rounded-full m-2 p-2' : '')"
               />
             </template>
           </Column>
           <Column field="istester" :header="t('Tester')" :sortable="true" class="text-center">
             <template #body="slotProps">
               <i
-                :class="'pi ' + (slotProps.data.istester ? 'pi pi-check bg-orange-500 text-white font-bold border-round m-2 p-2' : '')"
+                :class="'pi ' + (slotProps.data.istester ? 'pi pi-check bg-orange-500 text-white font-bold rounded-full m-2 p-2' : '')"
               />
             </template>
           </Column>
           <Column field="isenabled" :header="t('Activo')" :sortable="true" class="text-center">
             <template #body="slotProps">
               <i
-                :class="'pi ' + (slotProps.data.isenabled ? 'pi-check bg-primary text-white font-bold border-round m-2 p-2' : 'pi-times bg-pink-500 text-white font-bold border-round m-2 p-2')"
+                :class="'pi ' + (slotProps.data.isenabled ? 'pi-check bg-blue-500 text-white font-bold rounded-full m-2 p-2' : 'pi-times bg-pink-500 text-white font-bold rounded-full m-2 p-2')"
               />
             </template>
           </Column>
@@ -500,30 +500,30 @@ const exportData = () => {
               />
             </template>
           </Column>
-          <Column field="geoip" :header="t('GeoIP')" class="text-yellow-500" />
-          <Column field="referer" :header="t('Referer')" class="text-xs text-green-500" />
-          <Column field="email" :header="t('Email')" :sortable="true" class="text-xs text-blue-500" />
+          <Column field="geoip" :header="t('GeoIP')" class="text-yellow-600" />
+          <Column field="referer" :header="t('Referer')" class="text-xs text-green-600" />
+          <Column field="email" :header="t('Email')" :sortable="true" class="text-xs text-blue-600" />
           <Column field="meta" :header="t('Meta')" :sortable="true" class="text-xs" />
           <Column field="created_at" :header="t('Creado')" :sortable="true" class="text-xs">
             <template #body="slotProps">
-              {{ new Date(slotProps.data.created_at).toLocaleString('es-ES', {
+              <span class="text-gray-700">{{ new Date(slotProps.data.created_at).toLocaleString('es-ES', {
                 day: '2-digit',
                 month: '2-digit',
                 year: 'numeric',
                 hour: '2-digit',
                 minute: '2-digit'
-              }) }}
+              }) }}</span>
             </template>
           </Column>
           <Column field="updated_at" :header="t('Actualizado')" :sortable="true" class="text-xs">
             <template #body="slotProps">
-              {{ new Date(slotProps.data.updated_at).toLocaleString('es-ES', {
+              <span class="text-gray-700">{{ new Date(slotProps.data.updated_at).toLocaleString('es-ES', {
                 day: '2-digit',
                 month: '2-digit',
                 year: 'numeric',
                 hour: '2-digit',
                 minute: '2-digit'
-              }) }}
+              }) }}</span>
             </template>
           </Column>
         </DataTable>
@@ -531,89 +531,77 @@ const exportData = () => {
 
       <Dialog v-model:visible="displayNewUser" :modal="true">
         <template #header>
-          <h3><i class="pi pi-user" /> {{ usuarioText }}</h3>
+          <h3 class="text-lg font-semibold text-gray-800"><i class="pi pi-user" /> {{ usuarioText }}</h3>
         </template>
 
-        <div class="row">
-          <div class="p-fluid col-">
-            <div class="formgroup-inline">
-              <div class="field-checkbox">
+        <div class="grid grid-cols-12 gap-4">
+          <div class="col-span-12">
+            <div class="flex flex-wrap gap-4 mb-4">
+              <div class="flex items-center gap-2">
                 <ToggleButton v-model="newUser.isenabled" :on-label="t('Sí')" :off-label="t('No')" on-icon="pi pi-check" off-icon="pi pi-times" />
-                &nbsp;<span class="pi pi-check" /> <label for="isenabled">{{ t('Activo') }}</label>
+                <span class="pi pi-check text-green-600" /> <label for="isenabled" class="text-gray-700 font-medium">{{ t('Activo') }}</label>
               </div>
-            </div>
-          </div>
-          <div class="p-fluid col-12-">
-            <div class="formgroup-inline">
-              <div class="field-checkbox">
+              <div class="flex items-center gap-2">
                 <ToggleButton v-model="newUser.isadmin" :on-label="t('Sí')" :off-label="t('No')" on-icon="pi pi-check" off-icon="pi pi-times" />
-                &nbsp;<span class="pi pi-user" /> <label for="isadmin">{{ t('Administrador') }}</label>
+                <span class="pi pi-user text-purple-600" /> <label for="isadmin" class="text-gray-700 font-medium">{{ t('Administrador') }}</label>
               </div>
-            </div>
-          </div>
-          <div class="p-fluid col-12-">
-            <div class="formgroup-inline">
-              <div class="field-checkbox">
+              <div class="flex items-center gap-2">
                 <ToggleButton v-model="newUser.iseditor" :on-label="t('Sí')" :off-label="t('No')" on-icon="pi pi-check" off-icon="pi pi-times" />
-                &nbsp;<span class="pi pi-pencil" /> <label for="iseditor">{{ t('Editor') }}</label>
+                <span class="pi pi-pencil text-blue-600" /> <label for="iseditor" class="text-gray-700 font-medium">{{ t('Editor') }}</label>
               </div>
-            </div>
-          </div>
-          <div class="p-fluid col-12-">
-            <div class="formgroup-inline">
-              <div class="field-checkbox">
+              <div class="flex items-center gap-2">
                 <ToggleButton v-model="newUser.istester" :on-label="t('Sí')" :off-label="t('No')" on-icon="pi pi-check" off-icon="pi pi-times" />
-                &nbsp;<span class="pi pi-comment" /> <label for="istester">{{ t('Pregúntame') }}</label>
+                <span class="pi pi-comment text-orange-600" /> <label for="istester" class="text-gray-700 font-medium">{{ t('Pregúntame') }}</label>
               </div>
             </div>
-            <hr>
-            <div class="formgroup-inline row">
-              <div class="field col-2">
-                <label for="licencias">{{ t('Licencias') }}</label>
+            <hr class="my-4 border-gray-200">
+            <div class="grid grid-cols-12 gap-4 mb-4">
+              <div class="col-span-2">
+                <label for="licencias" class="block text-sm font-medium text-gray-700 mb-2">{{ t('Licencias') }}</label>
                 <InputNumber id="licencias" v-model="newUser.licenses" mode="decimal" />
               </div>
-              <div class="field col-4">
-                <label for="begin">{{ t('Desde') }}</label>
+              <div class="col-span-4">
+                <label for="begin" class="block text-sm font-medium text-gray-700 mb-2">{{ t('Desde') }}</label>
                 <InputMask v-model="newUser.begin" mask="99/99/9999" placeholder="99/99/9999" slot-char="dd/mm/yyyy" />
               </div>
-              <div class="field col-4">
-                <label for="end">{{ t('Hasta') }}</label>
+              <div class="col-span-4">
+                <label for="end" class="block text-sm font-medium text-gray-700 mb-2">{{ t('Hasta') }}</label>
                 <InputMask v-model="newUser.end" mask="99/99/9999" placeholder="99/99/9999" slot-char="dd/mm/yyyy" />
               </div>
             </div>
 
-            <div class="formgroup-inline row">
-              <div class="field col-9">
-                <label for="name1">{{ t('Nombre') }}</label>
+            <div class="grid grid-cols-12 gap-4 mb-4">
+              <div class="col-span-9">
+                <label for="name1" class="block text-sm font-medium text-gray-700 mb-2">{{ t('Nombre') }}</label>
                 <InputText id="name1" v-model="newUser.name" type="text" />
               </div>
-              <div class="field col-9">
-                <label for="email1">{{ t('Email') }}</label>
+              <div class="col-span-9">
+                <label for="email1" class="block text-sm font-medium text-gray-700 mb-2">{{ t('Email') }}</label>
                 <InputText id="email1" v-model="newUser.email" type="text" />
               </div>
             </div>
-            <div class="formgroup-inline">
-              <div class="field col-6">
-                <label for="user">{{ t('Usuario') }}</label>
+            <div class="grid grid-cols-12 gap-4 mb-4">
+              <div class="col-span-6">
+                <label for="user" class="block text-sm font-medium text-gray-700 mb-2">{{ t('Usuario') }}</label>
                 <InputText id="user" v-model="newUser.user" type="text" />
               </div>
-              <div class="field col-6">
-                <label for="passwd">{{ t('Contraseña') }}</label>
+              <div class="col-span-6">
+                <label for="passwd" class="block text-sm font-medium text-gray-700 mb-2">{{ t('Contraseña') }}</label>
                 <Password id="passwd" v-model="newUser.passwd" type="text" toggle-mask />
               </div>
             </div>
-            <div class="formgroup-inline">
-              <div class="field col-4">
-                <label for="grupo">{{ t('Grupo') }}</label>
+            <div class="grid grid-cols-12 gap-4 mb-4">
+              <div class="col-span-4">
+                <label for="grupo" class="block text-sm font-medium text-gray-700 mb-2">{{ t('Grupo') }}</label>
                 <InputText id="grupo" v-model="newUser.grupo" type="text" />
               </div>
-              <div class="field col-4">
-                <label for="meta">{{ t('Meta') }}</label>
+              <div class="col-span-4">
+                <label for="meta" class="block text-sm font-medium text-gray-700 mb-2">{{ t('Meta') }}</label>
                 <InputText id="meta" v-model="newUser.meta" type="text" />
               </div>
             </div>
-            <div class="field col-12">
-              <label for="email1">{{ t('Colecciones') }}</label>
+            <div class="col-span-12 mb-4">
+              <label for="collections" class="block text-sm font-medium text-gray-700 mb-2">{{ t('Colecciones') }}</label>
               <MultiSelect
                 v-model="newUser.collections"
                 :options="collections"
@@ -623,21 +611,21 @@ const exportData = () => {
                 :placeholder="t('Seleciona Colecciones')"
               />
             </div>
-            <hr>
-            <div class="field col-12">
-              <label for="iprange">{{ t('Rango IP') }}</label>
+            <hr class="my-4 border-gray-200">
+            <div class="col-span-12 mb-4">
+              <label for="iprange" class="block text-sm font-medium text-gray-700 mb-2">{{ t('Rango IP') }}</label>
               <Textarea id="iprange" v-model="newUser.iprange" :auto-resize="true" rows="5" cols="30" />
             </div>
-            <div class="field col-12">
-              <label for="iprange">{{ t('GeoIP') }}</label>
+            <div class="col-span-12 mb-4">
+              <label for="geoip" class="block text-sm font-medium text-gray-700 mb-2">{{ t('GeoIP') }}</label>
               <Textarea id="geoip" v-model="newUser.geoip" :auto-resize="true" rows="5" cols="30" />
             </div>
-            <div class="field col-12">
-              <label for="referer">{{ t('Referer') }}</label>
+            <div class="col-span-12 mb-4">
+              <label for="referer" class="block text-sm font-medium text-gray-700 mb-2">{{ t('Referer') }}</label>
               <Textarea id="referer" v-model="newUser.referer" :auto-resize="true" rows="5" cols="30" />
             </div>
           </div>
-          <Message v-show="showError" severity="error">
+          <Message v-show="showError" severity="error" class="col-span-12">
             {{ errorMessage }}
           </Message>
         </div>
@@ -650,14 +638,3 @@ const exportData = () => {
     </div>
   </div>
 </template>
-
-<style lang="scss" scoped>
-.p-toolbar {
-    padding: 0.2rem;
-}
-
-.p-chip.custom-chip {
-    background: var(--primary-color);
-    color: var(--primary-color-text);
-}
-</style>

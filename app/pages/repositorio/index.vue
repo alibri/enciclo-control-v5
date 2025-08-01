@@ -27,6 +27,7 @@ const totalRecords = ref(0);
 const searchTerm = ref('');
 
 const loadData = async () => {
+  console.log('loadData');
   loading.value = true;
 
   const data = getParamsData(lazyParams.value) as any;
@@ -238,12 +239,12 @@ const onTemplatedUpload = async (event: any) => {
 </script>
 
 <template>
-  <div class="card">
-    <h2>{{ t('Repositorio de Documentos') }}</h2>
+  <div class="bg-white rounded-lg shadow-md p-6">
+    <h2 class="text-2xl font-bold text-gray-800 mb-6">{{ t('Repositorio de Documentos') }}</h2>
 
     <div class="grid grid-cols-12 gap-8 mt-1">
       <div class="col-span-12">
-        <h5>{{ t('Cargar documentos') }}</h5>
+        <h5 class="text-lg font-semibold text-gray-700 mb-4">{{ t('Cargar documentos') }}</h5>
         <FileUpload 
             name="demo[]"
             :customUpload="true"
@@ -265,34 +266,32 @@ const onTemplatedUpload = async (event: any) => {
                         <ProgressBar v-show="uploading" :value="totalSizePercent" :showValue="false" :class="['md:w-80 h-4 w-full md:ml-auto', { 'exceeded-progress-bar': totalSizePercent > 100 }]"
                             ><span class="whitespace-nowrap">{{ formatSize(totalSize) }}</span></ProgressBar
                         >
-                        <span class="text-sm">{{ t('Subiendo...') }}</span>
+                        <span class="text-sm text-gray-600">{{ t('Subiendo...') }}</span>
                     </div>
                 </div>
             </template>
             <template #content="{ files, removeFileCallback }">
-              <!--
               <BlockUI :blocked="uploading">
                 <div v-if="files.length > 0">
-                    <h5>{{ t('Pendientes') }}</h5>
+                    <h5 class="text-lg font-semibold text-gray-700 mb-4">{{ t('Pendientes') }}</h5>
                     <div class="flex flex-wrap p-0 sm:p-5 gap-5">
-                        <div v-for="(file, index) of files" :key="file.name + file.type + file.size" class="card m-0 px-6 flex flex-col border border-surface-border items-center gap-3">
+                        <div v-for="(file, index) of files" :key="file.name + file.type + file.size" class="bg-white rounded-lg shadow-sm border border-gray-200 m-0 px-6 py-4 flex flex-col items-center gap-3">
                             <div v-tooltip.top="file.name">
-                                <i :class="formatFileIcon(file.name.split('.').pop() || '')"></i> <span class="ml-2 text-xs text-500">({{ file.name.split('.').pop() || 'sin extensión' }})</span>
+                                <i :class="formatFileIcon(file.name.split('.').pop() || '')"></i> <span class="ml-2 text-xs text-gray-500">({{ file.name.split('.').pop() || 'sin extensión' }})</span>
                             </div>
-                            <div>{{ formatSize(file.size) }}</div>
+                            <div class="text-sm text-gray-700">{{ formatSize(file.size) }}</div>
                             <Badge :value="t('Pendiente')" severity="warning" />
                             <Button icon="pi pi-times" @click="onRemoveTemplatingFile(file, removeFileCallback, index)" outlined rounded  severity="danger" />
                         </div>
                     </div>
                 </div>
               </BlockUI>
-              -->
             </template>
             <template #empty>
               <BlockUI :blocked="uploading">
                 <div class="flex items-center justify-center flex-col">
-                    <i class="pi pi-cloud-upload border-2 border-circle p-5 text-8xl text-400 border-1" />
-                    <p class="mt-4 mb-0">{{ t('Arrastre y suelte los archivos aquí para cargarlos.') }}</p>
+                    <i class="pi pi-cloud-upload border-2 border-gray-300 rounded-full p-5 text-8xl text-gray-400" />
+                    <p class="mt-4 mb-0 text-gray-600">{{ t('Arrastre y suelte los archivos aquí para cargarlos.') }}</p>
                 </div>
               </BlockUI>
             </template>
@@ -352,10 +351,10 @@ const onTemplatedUpload = async (event: any) => {
             </div>
           </template>
           <template #empty>
-            {{ t('No se han encontrado datos.') }}
+            <div class="text-center text-gray-500 py-8">{{ t('No se han encontrado datos.') }}</div>
           </template>
           <template #loading>
-            {{ t('Cargando datos..') }} <i class="pi pi-spin pi-spinner" style="font-size: 2rem" />
+            <div class="text-center text-gray-600 py-8">{{ t('Cargando datos..') }} <i class="pi pi-spin pi-spinner" style="font-size: 2rem" /></div>
           </template>
           <Column header="#">
             <template #body="slotProps">              
@@ -365,17 +364,17 @@ const onTemplatedUpload = async (event: any) => {
           </Column>
           <Column field="id" :header="t('ID')" :sortable="true">
             <template #body="slotProps">
-              <span class="text-center text-xs text-color font-bold">{{ slotProps.data.id }}</span>
+              <span class="text-center text-xs text-gray-800 font-bold">{{ slotProps.data.id }}</span>
             </template>
           </Column>
           <Column field="created_at" :header="t('Creado')" :sortable="true">
             <template #body="slotProps">
-              <span class="text-sm">{{ formatDateTime(slotProps.data.created_at) }}</span>
+              <span class="text-sm text-gray-700">{{ formatDateTime(slotProps.data.created_at) }}</span>
             </template>
           </Column>
           <Column field="filename" :header="t('Nombre')" :sortable="true" class="text-blue-800">
             <template #body="slotProps">
-              <span v-tooltip="slotProps.data.filename">{{ slotProps.data.filename.substring(0,10) }}...</span>
+              <span v-tooltip="slotProps.data.filename" class="text-blue-800">{{ slotProps.data.filename.substring(0,10) }}...</span>
             </template>
           </Column>
           <Column field="original_filename" :header="t('Fichero')" :sortable="true" class="text-blue-400" />
@@ -386,23 +385,23 @@ const onTemplatedUpload = async (event: any) => {
           </Column>
           <Column field="mime_type" :header="t('Tipo')" :sortable="true" class="text-center">
             <template #body="slotProps">
-              <span class="text-500">{{ slotProps.data.mime_type }}</span>
+              <span class="text-gray-500">{{ slotProps.data.mime_type }}</span>
             </template>
           </Column>
 
           <Column field="file_size" :header="t('Tamaño')" :sortable="true" class="text-right">
             <template #body="slotProps">
-              <span class="text-yellow-500">{{ formatSize(slotProps.data.file_size) }}</span>
+              <span class="text-yellow-600">{{ formatSize(slotProps.data.file_size) }}</span>
             </template>
           </Column>
           <Column field="path" :header="t('Ruta')" :sortable="true">
             <template #body="slotProps">
-              <span v-tooltip="slotProps.data.path">{{ slotProps.data.path.substring(0,10) }}...</span>
+              <span v-tooltip="slotProps.data.path" class="text-gray-700">{{ slotProps.data.path.substring(0,10) }}...</span>
             </template>
           </Column>
           <Column field="updated_at" :header="t('Actualizado')" :sortable="true" class="text-center">
             <template #body="slotProps">
-              <span class="text-sm">{{ formatDateTime(slotProps.data.updated_at) }}</span>
+              <span class="text-sm text-gray-700">{{ formatDateTime(slotProps.data.updated_at) }}</span>
             </template>
           </Column>
         </DataTable>

@@ -57,28 +57,33 @@ export default defineNuxtConfig({
   ],
   // @ts-ignore
   primevue: {
+    importTheme: { from: '@/theme/app-theme.ts' },
     options: {
       ripple: true,
       inputVariant: 'filled',
-      darkModeSelector: '.app-dark',
-      theme: {
+      //darkModeSelector: '.app-dark',
+      
+      /*theme: {
+
         preset: Lara,
         options: {
           prefix: 'p',
           darkModeSelector: 'system',
           cssLayer: false
       }
-      }
+      }*/
     },
     autoImport: true
   },
   css: [
+    '@/assets/styles.scss',
+    '@/assets/tailwind.css',
     // 'primevue/resources/primevue.css',
     // 'primevue/resources/themes/lara-light-blue/theme.css',
-    'primeicons/primeicons.css',
+    //'primeicons/primeicons.css',
     //'primeflex/primeflex.css',
-    '~/assets/css/main.css',
-    '~/assets/tailwind.css', 
+    //'~/assets/css/main.css',
+    //'~/assets/tailwind.css', 
     // '~/assets/styles.scss'
     //'@sfxcode/formkit-primevue/dist/sass/formkit-primevue.scss'
   ],
