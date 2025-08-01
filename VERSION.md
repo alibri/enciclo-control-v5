@@ -1,5 +1,9 @@
 # VERSIONES
 
+## 5.0.0
+
+- Se migra a Nuxt 4 y PrimeVue 4
+
 ## 4.0.33
 
 - Añade la carga de documentos en el repositorio
