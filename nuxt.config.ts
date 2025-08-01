@@ -30,6 +30,7 @@ export default defineNuxtConfig({
     '@formkit/nuxt',
     '@unocss/nuxt',
     '@pinia/nuxt',
+    '@vueuse/nuxt',
     [
       '@nuxtjs/i18n',
       {
@@ -61,7 +62,12 @@ export default defineNuxtConfig({
       inputVariant: 'filled',
       darkModeSelector: '.app-dark',
       theme: {
-        preset: Lara
+        preset: Lara,
+        options: {
+          prefix: 'p',
+          darkModeSelector: 'system',
+          cssLayer: false
+      }
       }
     },
     autoImport: true
@@ -72,7 +78,8 @@ export default defineNuxtConfig({
     'primeicons/primeicons.css',
     //'primeflex/primeflex.css',
     '~/assets/css/main.css',
-    '~/assets/tailwind.css', '~/assets/styles.scss'
+    '~/assets/tailwind.css', 
+    // '~/assets/styles.scss'
     //'@sfxcode/formkit-primevue/dist/sass/formkit-primevue.scss'
   ],
   vite: { 

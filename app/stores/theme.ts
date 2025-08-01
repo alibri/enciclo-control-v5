@@ -7,16 +7,16 @@ export function updateTheme (themeName: string, themeColor: string) {
 export const useThemeStore = defineStore('theme', {
   // a function that returns a fresh state
   state: () => ({
-    themeName: 'lara-light',
+    themeName: 'lara-dark',
     themeColor: 'blue',
-    link: '' //'/themes/lara-light-blue/theme.css'
+    link: '/themes/lara-dark-blue/theme.css'
   }),
   // optional getters
   getters: {
     theme: (state) => {
       return `${state.themeName}-${state.themeColor}`;
     },
-    isDarkMode: state => state.themeName === 'lara-dark'
+    isDarkMode: state => state.themeName === 'lara-dark-'
   },
   // optional actions
   actions: {

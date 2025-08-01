@@ -20,7 +20,7 @@ watch(isSidebarActive, (newVal) => {
 
 const containerClass = computed(() => {
   return {
-    dark: themeStore.isDarkMode,
+    dark: true, //themeStore.isDarkMode,
     'layout-overlay': layoutConfig.menuMode.value === 'overlay',
     'layout-static': layoutConfig.menuMode.value === 'static',
     'layout-static-inactive': layoutState.staticMenuDesktopInactive.value && layoutConfig.menuMode.value === 'static',
@@ -91,7 +91,7 @@ const isOutsideClicked = (event: MouseEvent) => {
             <span class="font-bold">{{ pageStore.title }}</span>
           </div>
         </template>
-        <PageInfo :collection="pageStore.collection" :page="pageStore.title" />
+        <PageInfo :collection="pageStore.collection || undefined" :page="pageStore.title || undefined" />
       </Sidebar>
       <Button icon="pi pi-window-maximize" @click="pageStore.setEditPage(false)" />
     </div>

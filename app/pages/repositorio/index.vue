@@ -1,9 +1,8 @@
 <script setup lang='ts'>
-import { FilterMatchMode, FilterOperator } from 'primevue';
+// import { FilterMatchMode, FilterOperator } from 'primevue';
 import { onMounted } from 'vue';
 import IconField from 'primevue/iconfield';
 import InputIcon from 'primevue/inputicon';
-import ChatLink from '@/components/ChatLink.vue';
 import RepositoryService from '@/services/repositoryService';
 import { formatSize } from '@/utils/format';
 
@@ -156,7 +155,7 @@ const items = ref([
 const toggle = (event: Event, data: any) => {
     menu.value.toggle(event);
     // Almacenar los datos del usuario para usarlos en los comandos
-    items.value[0].items.forEach((item: any) => {
+    items.value[0]?.items?.forEach((item: any) => {
         menuData.value = data;
         // item.command = () => item.command(menuData.value);
     });
@@ -242,8 +241,8 @@ const onTemplatedUpload = async (event: any) => {
   <div class="card">
     <h2>{{ t('Repositorio de Documentos') }}</h2>
 
-    <div class="grid p-1">
-      <div class="col-12">
+    <div class="grid grid-cols-12 gap-8 mt-1">
+      <div class="col-span-12">
         <h5>{{ t('Cargar documentos') }}</h5>
         <FileUpload 
             name="demo[]"
@@ -255,31 +254,31 @@ const onTemplatedUpload = async (event: any) => {
             accept=".pdf,.doc,.docx,.txt"
         >
             <template #header="{ chooseCallback, uploadCallback, clearCallback, files }">
-                <div class="flex flex-wrap justify-content-between align-items-center flex-1 gap-2">
+                <div class="flex flex-wrap justify-between items-center flex-1 gap-2">
                     <div class="flex gap-2">
                         <Button @click="chooseCallback()" icon="pi pi-file-pdf" rounded outlined></Button>
                         <Button @click="uploadEvent(uploadCallback)" icon="pi pi-cloud-upload" rounded outlined severity="success" :disabled="!files || files.length === 0"></Button>
                         <Button @click="clearCallback()" icon="pi pi-times" rounded outlined severity="danger" :disabled="!files || files.length === 0"></Button>
                     </div>
-                    <div v-if="uploading" class="flex align-items-center gap-2">
+                    <div v-if="uploading" class="flex items-center gap-2">
                         <ProgressSpinner style="width: 16px; height: 16px" />
-                        <ProgressBar v-show="uploading" :value="totalSizePercent" :showValue="false" :class="['md:w-20rem h-1rem w-full md:ml-auto', { 'exceeded-progress-bar': totalSizePercent > 100 }]"
-                            ><span class="white-space-nowrap">{{ formatSize(totalSize) }}</span></ProgressBar
+                        <ProgressBar v-show="uploading" :value="totalSizePercent" :showValue="false" :class="['md:w-80 h-4 w-full md:ml-auto', { 'exceeded-progress-bar': totalSizePercent > 100 }]"
+                            ><span class="whitespace-nowrap">{{ formatSize(totalSize) }}</span></ProgressBar
                         >
                         <span class="text-sm">{{ t('Subiendo...') }}</span>
                     </div>
                 </div>
             </template>
             <template #content="{ files, removeFileCallback }">
+              <!--
               <BlockUI :blocked="uploading">
                 <div v-if="files.length > 0">
                     <h5>{{ t('Pendientes') }}</h5>
                     <div class="flex flex-wrap p-0 sm:p-5 gap-5">
-                        <div v-for="(file, index) of files" :key="file.name + file.type + file.size" class="card m-0 px-6 flex flex-column border-1 surface-border align-items-center gap-3">
+                        <div v-for="(file, index) of files" :key="file.name + file.type + file.size" class="card m-0 px-6 flex flex-col border border-surface-border items-center gap-3">
                             <div v-tooltip.top="file.name">
                                 <i :class="formatFileIcon(file.name.split('.').pop() || '')"></i> <span class="ml-2 text-xs text-500">({{ file.name.split('.').pop() || 'sin extensión' }})</span>
                             </div>
-                            <!--<span class="font-semibold" v-tooltip.top="file.name">{{ file.name }}</span>-->
                             <div>{{ formatSize(file.size) }}</div>
                             <Badge :value="t('Pendiente')" severity="warning" />
                             <Button icon="pi pi-times" @click="onRemoveTemplatingFile(file, removeFileCallback, index)" outlined rounded  severity="danger" />
@@ -287,11 +286,12 @@ const onTemplatedUpload = async (event: any) => {
                     </div>
                 </div>
               </BlockUI>
+              -->
             </template>
             <template #empty>
               <BlockUI :blocked="uploading">
-                <div class="flex align-items-center justify-content-center flex-column">
-                    <i class="pi pi-cloud-upload border-2 border-circle p-5 text-8xl text-400 border-400" />
+                <div class="flex items-center justify-center flex-col">
+                    <i class="pi pi-cloud-upload border-2 border-circle p-5 text-8xl text-400 border-1" />
                     <p class="mt-4 mb-0">{{ t('Arrastre y suelte los archivos aquí para cargarlos.') }}</p>
                 </div>
               </BlockUI>
@@ -300,8 +300,8 @@ const onTemplatedUpload = async (event: any) => {
       </div>
 
     </div>
-    <div class="grid p-1">
-      <div class="col-12">
+    <div class="grid grid-cols-12 gap-8 mt-1">
+      <div class="col-span-12">
         <DataTable
           ref="dt"
           v-model:filters="filters"
@@ -327,7 +327,7 @@ const onTemplatedUpload = async (event: any) => {
           @filter="onFilter($event)"
         >
           <template #header>
-            <div class="flex justify-content-between">
+            <div class="flex justify-between">
               <div class="left-0">
                 <Button
                   icon="pi pi-refresh"
@@ -337,7 +337,7 @@ const onTemplatedUpload = async (event: any) => {
                 />
                 <Button icon="pi pi-file-excel" class="p-button-success ml-2" @click="exportData()" />
               </div>
-              <div class="flex align-items-center gap-2">
+              <div class="flex items-center gap-2">
                 <Button
                   type="button"
                   icon="pi pi-filter-slash"
