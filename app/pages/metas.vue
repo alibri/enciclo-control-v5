@@ -106,45 +106,44 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="card">
+  <div class="bg-white rounded-lg shadow-md p-6">
     <ConfirmDialog />
 
-    <h2>{{ t('Metas') }} <span v-if="collection" class="text-600"> 🡢 {{ collection.name }}</span> <span v-if="grupo" class="text-400"> 🡢 {{ grupo.name }}</span> <span v-if="dirty" class="text-red-600">*</span></h2>
+    <h2 class="text-2xl font-bold text-gray-800 mb-6">{{ t('Metas') }} <span v-if="collection" class="text-gray-600"> 🡢 {{ collection.name }}</span> <span v-if="grupo" class="text-gray-400"> 🡢 {{ grupo.name }}</span> <span v-if="dirty" class="text-red-600">*</span></h2>
     <BlockUI :blocked="loading">
-      <div class="grid p-1">
-        <div class="col-6 lg:col-1 xl:col-1">
-          <strong class="text-xl mb-3">{{ t('Colección') }}</strong>
-          <Listbox v-model="collection" :options="collections" option-label="name" invalid="true" class="w-full min-h-full-" />
+      <div class="grid grid-cols-12 gap-4 p-1">
+        <div class="col-span-6 lg:col-span-1 xl:col-span-1">
+          <strong class="text-xl mb-3 block text-gray-800">{{ t('Colección') }}</strong>
+          <Listbox v-model="collection" :options="collections" option-label="name" invalid="true" class="w-full min-h-full" />
         </div>
-        <div class="col-12 lg:col-9 xl:col-9 ">
-          <strong class="text-xl mb-3">{{ t('Configuración') }}</strong>
+        <div class="col-span-12 lg:col-span-9 xl:col-span-9">
+          <strong class="text-xl mb-3 block text-gray-800">{{ t('Configuración') }}</strong>
 
-          <div class="border-1 border-200 p-4">
-            <div class="flex align-items-center gap-3 mb-3">
-              <label for="metaTitle" class="font-semibold w-6rem">{{ t('Título') }}</label>
-              <InputText id="metaTitle" v-model="editData.metaTitle" class="flex-auto" @change="dirty = true" />
+          <div class="border border-gray-200 p-4 rounded-lg">
+            <div class="flex items-center gap-3 mb-3">
+              <label for="metaTitle" class="font-semibold w-24 text-gray-700">{{ t('Título') }}</label>
+              <InputText id="metaTitle" v-model="editData.metaTitle" class="flex-1" @change="dirty = true" />
             </div>
-            <div class="flex align-items-center gap-3 mb-3">
-              <label for="metaCollections" class="font-semibold w-6rem">{{ t('Colecciones') }}</label>
-              <InputText id="metaCollections" v-model="editData.metaCollections" class="flex-auto" @change="dirty = true" />
+            <div class="flex items-center gap-3 mb-3">
+              <label for="metaCollections" class="font-semibold w-24 text-gray-700">{{ t('Colecciones') }}</label>
+              <InputText id="metaCollections" v-model="editData.metaCollections" class="flex-1" @change="dirty = true" />
             </div>
-            <div class="flex align-items-center gap-3 mb-3">
-              <label for="metaAbout" class="font-semibold w-6rem">{{ t('Acerca de') }}</label>
-              <InputText id="metaAbout" v-model="editData.metaAbout" class="flex-auto" @change="dirty = true" />
+            <div class="flex items-center gap-3 mb-3">
+              <label for="metaAbout" class="font-semibold w-24 text-gray-700">{{ t('Acerca de') }}</label>
+              <InputText id="metaAbout" v-model="editData.metaAbout" class="flex-1" @change="dirty = true" />
             </div>
-            <div class="flex align-items-center gap-3 mb-2">
-              <label for="metaImage" class="font-semibold w-6rem">{{ t('Logo') }}</label>
-              <InputText id="metaImage" v-model="editData.metaImage" class="flex-auto" @change="dirty = true" />
+            <div class="flex items-center gap-3 mb-2">
+              <label for="metaImage" class="font-semibold w-24 text-gray-700">{{ t('Logo') }}</label>
+              <InputText id="metaImage" v-model="editData.metaImage" class="flex-1" @change="dirty = true" />
               <ImagenSelect :images="imagesItems" @select="selectImage" />
             </div>
-            <div class="border-1 border-200">
+            <div class="border border-gray-200 p-2 rounded">
               <Image :src="editData.metaImage" width="200px" />
             </div>
           </div>
-          <hr>
-          <div class="flex justify-content-end flex-wrap">
+          <hr class="my-4 border-gray-200">
+          <div class="flex justify-end flex-wrap gap-2">
             <Button
-              class="flex"
               :label="t('Cancelar')"
               text
               :disabled="!dirty"
@@ -153,7 +152,6 @@ onMounted(() => {
               @click="loadDashboard(collection.name)"
             />
             <Button
-              class="flex"
               :label="t('Guardar')"
               outlined
               severity="primary"
@@ -166,8 +164,4 @@ onMounted(() => {
     </BlockUI>
   </div>
 </template>
-<style scoped lang="css">
-#search > .p-inputtext {
-  background-color: rgb(8, 8, 105); /* Cambiar al color de fondo deseado */
-}
-</style>
+

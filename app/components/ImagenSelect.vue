@@ -135,18 +135,20 @@ const config = {
       <BlockUI :blocked="blocked">
         <TabView>
           <TabPanel :header="t('Contenido')">
-            <div class="grid">
+            <div class="grid grid-cols-12 gap-4">
               <div v-for="image in images" :key="image" class="col-span-3">
-                <div class="p-1 border border-gray-600">
-                  <Button class="text-sm ml-1" rounded severity="warning" icon="pi pi-pencil" @click="editImage(image)" />
-                  <Button class="text-sm" rounded severity="primary" icon="pi pi-check" @click="selectImage(image)" />
-                  <Image :src="image" class="border-t mt-1" width="200px" @dblclick="selectImage(image)" />
+                <div class="p-2 border border-gray-300 rounded-lg shadow-sm hover:shadow-md transition-shadow">
+                  <div class="flex gap-1 mb-2">
+                    <Button class="text-xs" rounded severity="warning" icon="pi pi-pencil" @click="editImage(image)" />
+                    <Button class="text-xs" rounded severity="primary" icon="pi pi-check" @click="selectImage(image)" />
+                  </div>
+                  <Image :src="image" class="border-t border-gray-200 pt-2 rounded" width="200px" @dblclick="selectImage(image)" />
                 </div>
               </div>
             </div>
           </TabPanel>
           <TabPanel :header="t('Media')">
-            <div class="bg-white rounded-lg shadow-md p-6">
+            <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 mb-4">
               <FileUpload
                 name="demo[]"
                 accept="image/*"
@@ -158,27 +160,31 @@ const config = {
                 @uploader="onAdvancedUpload($event)"
               >
                 <template #empty>
-                  <p>{{ t('Arrastra y suelta archivos aquí para subirlos') }}</p>
+                  <p class="text-gray-600 text-center py-4">{{ t('Arrastra y suelta archivos aquí para subirlos') }}</p>
                 </template>
               </FileUpload>
             </div>
-            <div class="grid">
+            <div class="grid grid-cols-12 gap-4">
               <div v-for="image in media" :key="image" class="col-span-3">
-                <div class="p-1 border border-gray-200">
-                  <Button class="text-sm" rounded severity="warning" icon="pi pi-pencil" @click="editImage(image)" />
-                  <Button class="text-sm" rounded severity="primary" icon="pi pi-check" @click="selectImage(image)" />
-                  <Image :src="image" class="border-t mt-1" width="200px" @dblclick="selectImage(image)" />
+                <div class="p-2 border border-gray-200 rounded-lg shadow-sm hover:shadow-md transition-shadow">
+                  <div class="flex gap-1 mb-2">
+                    <Button class="text-xs" rounded severity="warning" icon="pi pi-pencil" @click="editImage(image)" />
+                    <Button class="text-xs" rounded severity="primary" icon="pi pi-check" @click="selectImage(image)" />
+                  </div>
+                  <Image :src="image" class="border-t border-gray-200 pt-2 rounded" width="200px" @dblclick="selectImage(image)" />
                 </div>
               </div>
             </div>
           </TabPanel>
           <TabPanel :header="t('Repositorio')">
-            <div class="grid">
+            <div class="grid grid-cols-12 gap-4">
               <div v-for="image in repositorio" :key="image" class="col-span-3">
-                <div class="p-1 border border-gray-200">
-                  <Button class="text-sm" rounded severity="warning" icon="pi pi-pencil" @click="editImage(image)" />
-                  <Button class="text-sm" rounded severity="primary" icon="pi pi-check" @click="selectImage(image)" />
-                  <Image :src="image" class="border-t mt-1" width="200px" @dblclick="selectImage(image)" />
+                <div class="p-2 border border-gray-200 rounded-lg shadow-sm hover:shadow-md transition-shadow">
+                  <div class="flex gap-1 mb-2">
+                    <Button class="text-xs" rounded severity="warning" icon="pi pi-pencil" @click="editImage(image)" />
+                    <Button class="text-xs" rounded severity="primary" icon="pi pi-check" @click="selectImage(image)" />
+                  </div>
+                  <Image :src="image" class="border-t border-gray-200 pt-2 rounded" width="200px" @dblclick="selectImage(image)" />
                 </div>
               </div>
             </div>

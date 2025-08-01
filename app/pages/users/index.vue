@@ -534,9 +534,11 @@ const exportData = () => {
           <h3 class="text-lg font-semibold text-gray-800"><i class="pi pi-user" /> {{ usuarioText }}</h3>
         </template>
 
-        <div class="grid grid-cols-12 gap-4">
+        <div class="grid grid-cols-12 gap-6">
+          <!-- Sección 1: Permisos y Estado -->
           <div class="col-span-12">
-            <div class="flex flex-wrap gap-4 mb-4">
+            <h4 class="text-md font-semibold text-gray-800 mb-3 border-b border-gray-200 pb-2">{{ t('Permisos y Estado') }}</h4>
+            <div class="space-y-3 mb-6">
               <div class="flex items-center gap-2">
                 <ToggleButton v-model="newUser.isenabled" :on-label="t('Sí')" :off-label="t('No')" on-icon="pi pi-check" off-icon="pi pi-times" />
                 <span class="pi pi-check text-green-600" /> <label for="isenabled" class="text-gray-700 font-medium">{{ t('Activo') }}</label>
@@ -554,28 +556,17 @@ const exportData = () => {
                 <span class="pi pi-comment text-orange-600" /> <label for="istester" class="text-gray-700 font-medium">{{ t('Pregúntame') }}</label>
               </div>
             </div>
-            <hr class="my-4 border-gray-200">
-            <div class="grid grid-cols-12 gap-4 mb-4">
-              <div class="col-span-2">
-                <label for="licencias" class="block text-sm font-medium text-gray-700 mb-2">{{ t('Licencias') }}</label>
-                <InputNumber id="licencias" v-model="newUser.licenses" mode="decimal" />
-              </div>
-              <div class="col-span-4">
-                <label for="begin" class="block text-sm font-medium text-gray-700 mb-2">{{ t('Desde') }}</label>
-                <InputMask v-model="newUser.begin" mask="99/99/9999" placeholder="99/99/9999" slot-char="dd/mm/yyyy" />
-              </div>
-              <div class="col-span-4">
-                <label for="end" class="block text-sm font-medium text-gray-700 mb-2">{{ t('Hasta') }}</label>
-                <InputMask v-model="newUser.end" mask="99/99/9999" placeholder="99/99/9999" slot-char="dd/mm/yyyy" />
-              </div>
-            </div>
+          </div>
 
+          <!-- Sección 2: Información Básica -->
+          <div class="col-span-12">
+            <h4 class="text-md font-semibold text-gray-800 mb-3 border-b border-gray-200 pb-2">{{ t('Información Básica') }}</h4>
             <div class="grid grid-cols-12 gap-4 mb-4">
-              <div class="col-span-9">
+              <div class="col-span-6">
                 <label for="name1" class="block text-sm font-medium text-gray-700 mb-2">{{ t('Nombre') }}</label>
                 <InputText id="name1" v-model="newUser.name" type="text" />
               </div>
-              <div class="col-span-9">
+              <div class="col-span-6">
                 <label for="email1" class="block text-sm font-medium text-gray-700 mb-2">{{ t('Email') }}</label>
                 <InputText id="email1" v-model="newUser.email" type="text" />
               </div>
@@ -599,6 +590,25 @@ const exportData = () => {
                 <label for="meta" class="block text-sm font-medium text-gray-700 mb-2">{{ t('Meta') }}</label>
                 <InputText id="meta" v-model="newUser.meta" type="text" />
               </div>
+              <div class="col-span-4">
+                <label for="licencias" class="block text-sm font-medium text-gray-700 mb-2">{{ t('Licencias') }}</label>
+                <InputNumber id="licencias" v-model="newUser.licenses" mode="decimal" />
+              </div>
+            </div>
+          </div>
+
+          <!-- Sección 3: Configuración de Acceso -->
+          <div class="col-span-12">
+            <h4 class="text-md font-semibold text-gray-800 mb-3 border-b border-gray-200 pb-2">{{ t('Configuración de Acceso') }}</h4>
+            <div class="grid grid-cols-12 gap-4 mb-4">
+              <div class="col-span-6">
+                <label for="begin" class="block text-sm font-medium text-gray-700 mb-2">{{ t('Desde') }}</label>
+                <InputMask v-model="newUser.begin" mask="99/99/9999" placeholder="99/99/9999" slot-char="dd/mm/yyyy" />
+              </div>
+              <div class="col-span-6">
+                <label for="end" class="block text-sm font-medium text-gray-700 mb-2">{{ t('Hasta') }}</label>
+                <InputMask v-model="newUser.end" mask="99/99/9999" placeholder="99/99/9999" slot-char="dd/mm/yyyy" />
+              </div>
             </div>
             <div class="col-span-12 mb-4">
               <label for="collections" class="block text-sm font-medium text-gray-700 mb-2">{{ t('Colecciones') }}</label>
@@ -611,20 +621,30 @@ const exportData = () => {
                 :placeholder="t('Seleciona Colecciones')"
               />
             </div>
-            <hr class="my-4 border-gray-200">
-            <div class="col-span-12 mb-4">
-              <label for="iprange" class="block text-sm font-medium text-gray-700 mb-2">{{ t('Rango IP') }}</label>
-              <Textarea id="iprange" v-model="newUser.iprange" :auto-resize="true" rows="5" cols="30" />
+          </div>
+
+          <!-- Sección 4: Restricciones -->
+          <div class="col-span-12">
+            <h4 class="text-md font-semibold text-gray-800 mb-3 border-b border-gray-200 pb-2">{{ t('Restricciones') }}</h4>
+            <div class="grid grid-cols-12 gap-4 mb-4">
+              <div class="col-span-12">
+                <label for="iprange" class="block text-sm font-medium text-gray-700 mb-2">{{ t('Rango IP') }}</label>
+                <Textarea id="iprange" v-model="newUser.iprange" :auto-resize="true" rows="3" cols="30" placeholder="Ej: 192.168.1.0/24, 10.0.0.0/8" />
+              </div>
             </div>
-            <div class="col-span-12 mb-4">
-              <label for="geoip" class="block text-sm font-medium text-gray-700 mb-2">{{ t('GeoIP') }}</label>
-              <Textarea id="geoip" v-model="newUser.geoip" :auto-resize="true" rows="5" cols="30" />
-            </div>
-            <div class="col-span-12 mb-4">
-              <label for="referer" class="block text-sm font-medium text-gray-700 mb-2">{{ t('Referer') }}</label>
-              <Textarea id="referer" v-model="newUser.referer" :auto-resize="true" rows="5" cols="30" />
+            <div class="grid grid-cols-12 gap-4 mb-4">
+              <div class="col-span-6">
+                <label for="geoip" class="block text-sm font-medium text-gray-700 mb-2">{{ t('GeoIP') }}</label>
+                <Textarea id="geoip" v-model="newUser.geoip" :auto-resize="true" rows="3" cols="30" placeholder="Ej: ES, FR, DE" />
+              </div>
+              <div class="col-span-6">
+                <label for="referer" class="block text-sm font-medium text-gray-700 mb-2">{{ t('Referer') }}</label>
+                <Textarea id="referer" v-model="newUser.referer" :auto-resize="true" rows="3" cols="30" placeholder="Ej: *.example.com" />
+              </div>
             </div>
           </div>
+
+          <!-- Mensaje de error -->
           <Message v-show="showError" severity="error" class="col-span-12">
             {{ errorMessage }}
           </Message>

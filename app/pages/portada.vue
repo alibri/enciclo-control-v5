@@ -321,87 +321,87 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="card">
+  <div class="bg-white rounded-lg shadow-md p-6">
     <ConfirmDialog />
     <Dialog v-model:visible="dialogVisible" modal :header="t('Editar')" :style="{ width: '50rem' }">
       <template #header>
-        <div class="inline-flex align-items-center justify-content-center gap-2">
+        <div class="inline-flex items-center justify-center gap-2">
           <Avatar v-if="editData.imagen" :image="editData.imagen" shape="circle" />
-          <span v-if="!editData.id">[{{ t('NUEVO') }}]</span>
-          <span class="font-bold white-space-nowrap"><span class="text-blue-600">{{ grupo?.name }}</span> 🡢 {{ editData.titulo }} </span>
+          <span v-if="!editData.id" class="text-red-600 font-bold">[{{ t('NUEVO') }}]</span>
+          <span class="font-bold whitespace-nowrap"><span class="text-blue-600">{{ grupo?.name }}</span> 🡢 {{ editData.titulo }} </span>
         </div>
       </template>
 
-      <div v-if="!fields.includes('text')" class="flex align-items-center gap-3 mb-3">
-        <label for="search" class="font-semibold w-6rem text-green-700">{{ t('Búsqueda') }}</label>
+      <div v-if="!fields.includes('text')" class="flex items-center gap-3 mb-3">
+        <label for="search" class="font-semibold w-24 text-green-700">{{ t('Búsqueda') }}</label>
         <AutoComplete
           id="search"
           v-model="selectedItem"
           option-label="title"
           :suggestions="filteredEntradas"
-          class="flex-auto mi-input"
+          class="flex-1 mi-input"
           @complete="searchEntrada"
         >
           <template #option="slotProps">
-            <div class="flex align-options-center">
+            <div class="flex items-center">
               <img alt="" :src="slotProps.option.image" style="width: 18px" class="mr-2">
               <div v-html="slotProps.option.title2" />
             </div>
           </template>
         </AutoComplete>
       </div>
-      <div v-if="fields.includes('imagen')" class="flex align-items-center gap-3 mb-3">
-        <label for="imagen" class="font-semibold w-6rem">{{ t('Imagen') }}</label>
-        <InputText id="imagen" v-model="editData.imagen" class="flex-auto" />
+      <div v-if="fields.includes('imagen')" class="flex items-center gap-3 mb-3">
+        <label for="imagen" class="font-semibold w-24">{{ t('Imagen') }}</label>
+        <InputText id="imagen" v-model="editData.imagen" class="flex-1" />
         <ImagenSelect @select="selectImage" :images="imagesItems" />
       </div>
-      <div v-if="fields.includes('imagen')" class="flex align-items-center gap-3 mb-3 border-1 border-200 text-center">
+      <div v-if="fields.includes('imagen')" class="flex items-center gap-3 mb-3 border border-gray-200 text-center">
         <Image :src="editData.imagen" height="60px" />
       </div>
 
-      <div v-if="fields.includes('collection')" class="flex align-items-center gap-3 mb-3">
-        <label for="collection" class="font-semibold w-6rem">{{ t('Colección') }}</label>
-        <InputText id="collection" v-model="editData.collection" class="flex-auto" />
+      <div v-if="fields.includes('collection')" class="flex items-center gap-3 mb-3">
+        <label for="collection" class="font-semibold w-24">{{ t('Colección') }}</label>
+        <InputText id="collection" v-model="editData.collection" class="flex-1" />
       </div>
-      <div v-if="fields.includes('friendly')" class="flex align-items-center gap-3 mb-2">
-        <label for="friendly" class="font-semibold w-6rem">{{ t('Entrada') }}</label>
-        <InputText id="friendly" v-model="editData.friendly" class="flex-auto" />
+      <div v-if="fields.includes('friendly')" class="flex items-center gap-3 mb-2">
+        <label for="friendly" class="font-semibold w-24">{{ t('Entrada') }}</label>
+        <InputText id="friendly" v-model="editData.friendly" class="flex-1" />
       </div>
-      <div v-if="fields.includes('categoria')" class="flex align-items-center gap-3 mb-2">
-        <label for="categoria" class="font-semibold w-6rem">{{ t('Categoría') }}</label>
-        <InputText id="categoria" v-model="editData.categoria" class="flex-auto" />
+      <div v-if="fields.includes('categoria')" class="flex items-center gap-3 mb-2">
+        <label for="categoria" class="font-semibold w-24">{{ t('Categoría') }}</label>
+        <InputText id="categoria" v-model="editData.categoria" class="flex-1" />
       </div>
-      <div v-if="fields.includes('titulo')" class="flex align-items-center gap-3 mb-2">
-        <label for="titulo" class="font-semibold w-6rem">{{ t('Título') }}</label>
-        <InputText id="titulo" v-model="editData.titulo" class="flex-auto" />
+      <div v-if="fields.includes('titulo')" class="flex items-center gap-3 mb-2">
+        <label for="titulo" class="font-semibold w-24">{{ t('Título') }}</label>
+        <InputText id="titulo" v-model="editData.titulo" class="flex-1" />
       </div>
-      <div v-if="fields.includes('titular')" class="flex align-items-center gap-3 mb-2">
-        <label for="titular" class="font-semibold w-6rem">{{ t('Titular') }}</label>
-        <InputText id="titular" v-model="editData.titular" class="flex-auto" />
+      <div v-if="fields.includes('titular')" class="flex items-center gap-3 mb-2">
+        <label for="titular" class="font-semibold w-24">{{ t('Titular') }}</label>
+        <InputText id="titular" v-model="editData.titular" class="flex-1" />
       </div>
-      <!--<div v-if="fields.includes('enlace')" class="flex align-items-center gap-3 mb-2">
-        <label for="enlace" class="font-semibold w-6rem">{{ t('Enlace') }}</label>
-        <InputText id="enlace" v-model="editData.enlace" class="flex-auto" />
+      <!--<div v-if="fields.includes('enlace')" class="flex items-center gap-3 mb-2">
+        <label for="enlace" class="font-semibold w-24">{{ t('Enlace') }}</label>
+        <InputText id="enlace" v-model="editData.enlace" class="flex-1" />
       </div>-->
-      <div v-if="fields.includes('fecha')" class="flex align-items-center gap-3 mb-2">
-        <label for="fecha" class="font-semibold w-6rem">{{ t('Fecha') }}</label>
-        <InputText id="fecha" v-model="editData.fecha" class="flex-auto" />
+      <div v-if="fields.includes('fecha')" class="flex items-center gap-3 mb-2">
+        <label for="fecha" class="font-semibold w-24">{{ t('Fecha') }}</label>
+        <InputText id="fecha" v-model="editData.fecha" class="flex-1" />
       </div>
-      <div v-if="fields.includes('fecha2')" class="flex align-items-center gap-3 mb-2">
-        <label for="fecha2" class="font-semibold w-6rem">{{ t('Fecha 2') }}</label>
-        <InputText id="fecha2" v-model="editData.fecha2" class="flex-auto" />
+      <div v-if="fields.includes('fecha2')" class="flex items-center gap-3 mb-2">
+        <label for="fecha2" class="font-semibold w-24">{{ t('Fecha 2') }}</label>
+        <InputText id="fecha2" v-model="editData.fecha2" class="flex-1" />
       </div>
-      <div v-if="fields.includes('resumen')" class="flex align-items-center gap-3 mb-2">
-        <label for="resumen" class="font-semibold w-6rem">{{ t('Resumen') }}</label>
-        <Textarea id="resumen" v-model="editData.resumen" rows="5" class="flex-auto" />
+      <div v-if="fields.includes('resumen')" class="flex items-center gap-3 mb-2">
+        <label for="resumen" class="font-semibold w-24">{{ t('Resumen') }}</label>
+        <Textarea id="resumen" v-model="editData.resumen" rows="5" class="flex-1" />
       </div>
-      <div v-if="fields.includes('text')" class="flex align-items-center gap-3 mb-2">
-        <label for="text" class="font-semibold w-6rem">{{ t('Texto') }}</label>
-        <Textarea id="text" v-model="editData.text" rows="10" class="flex-auto" />
+      <div v-if="fields.includes('text')" class="flex items-center gap-3 mb-2">
+        <label for="text" class="font-semibold w-24">{{ t('Texto') }}</label>
+        <Textarea id="text" v-model="editData.text" rows="10" class="flex-1" />
       </div>
-      <div v-if="fields.includes('text')" class="flex align-items-center gap-3 mb-2">
-        <label for="html" class="font-semibold w-6rem">{{ t('Texto') }}</label>
-        <Editor v-model="editData.text" editor-style="height: 200px" class="flex-auto" />
+      <div v-if="fields.includes('text')" class="flex items-center gap-3 mb-2">
+        <label for="html" class="font-semibold w-24">{{ t('Texto') }}</label>
+        <Editor v-model="editData.text" editor-style="height: 200px" class="flex-1" />
       </div>
       <template #footer>
         <Button :label="t('Cancelar')" text severity="danger" autofocus @click="dialogVisible = false" />
@@ -409,20 +409,20 @@ onMounted(() => {
       </template>
     </Dialog>
 
-    <h2>{{ t('Portada') }} <span v-if="collection" class="text-600"> 🡢 {{ collection.name }}</span> <span v-if="grupo" class="text-400"> 🡢 {{ grupo.name }}</span></h2>
+    <h2 class="text-2xl font-bold text-gray-800 mb-6">{{ t('Portada') }} <span v-if="collection" class="text-gray-600"> 🡢 {{ collection.name }}</span> <span v-if="grupo" class="text-gray-400"> 🡢 {{ grupo.name }}</span></h2>
     <BlockUI :blocked="loading">
-      <div class="grid p-1">
-        <div class="col-6 lg:col-1 xl:col-1">
-          <strong class="text-xl mb-3">{{ t('Colección') }}</strong>
-          <Listbox v-model="collection" :options="collections" option-label="name" invalid="true" class="w-full min-h-full-" />
+      <div class="grid grid-cols-12 gap-4 p-1">
+        <div class="col-span-6 lg:col-span-1 xl:col-span-1">
+          <strong class="text-xl mb-3 block text-gray-800">{{ t('Colección') }}</strong>
+          <Listbox v-model="collection" :options="collections" option-label="name" invalid="true" class="w-full min-h-full" />
         </div>
-        <div class="col-6 lg:col-2 xl:col-2">
-          <strong class="text-xl mb-3">{{ t('Grupos') }}</strong>
-          <Listbox v-model="grupo" :options="grupos" option-label="name" class="w-full min-h-full-" />
+        <div class="col-span-6 lg:col-span-2 xl:col-span-2">
+          <strong class="text-xl mb-3 block text-gray-800">{{ t('Grupos') }}</strong>
+          <Listbox v-model="grupo" :options="grupos" option-label="name" class="w-full min-h-full" />
         </div>
-        <div class="col-12 lg:col-9 xl:col-9">
-          <strong class="text-xl mb-3">{{ t('Elementos') }}</strong>
-          <div class="card p-fluid">
+        <div class="col-span-12 lg:col-span-9 xl:col-span-9">
+          <strong class="text-xl mb-3 block text-gray-800">{{ t('Elementos') }}</strong>
+          <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
             <DataTable
               v-model:editingRows="editingRows"
               :value="items"
@@ -446,7 +446,7 @@ onMounted(() => {
                   </template>
 
                   <template #center>
-                    <div class="text-xl text-900 font-bold">
+                    <div class="text-xl text-gray-900 font-bold">
                       {{ grupo?.name }}
                     </div>
                   </template>
@@ -464,7 +464,7 @@ onMounted(() => {
                   <ImageUpload v-model="data[field]" />
                 </template>-->
                 <template #body="slotProps">
-                  <img :src="slotProps.data.imagen" style="max-width: 50px; width: 50px;">
+                  <img :src="slotProps.data.imagen" class="max-w-[50px] w-[50px] object-cover rounded">
                 </template>
               </Column>
               <Column v-if="fields.includes('collection')" field="collection" :header="t('Colección')">
@@ -540,8 +540,3 @@ onMounted(() => {
     </BlockUI>
   </div>
 </template>
-<style scoped lang="css">
-#search > .p-inputtext {
-  background-color: rgb(8, 8, 105); /* Cambiar al color de fondo deseado */
-}
-</style>
