@@ -4,7 +4,7 @@ import { ref, computed, onMounted, onBeforeUnmount } from 'vue';
 import { useRouter } from 'vue-router';
 import { storeToRefs } from 'pinia'; // import storeToRefs helper hook from pinia
 import { useAuthStore } from '~/stores/auth'; // import the auth store we just created
-const { onMenuToggle, toggleDarkMode, isDarkTheme } = useLayout()
+const { onMenuToggle, toggleDarkMode, isDarkTheme, layoutConfig } = useLayout()
 const { t } = useI18n();
 //const { layoutConfig, onMenuToggle } = useLayout();
 const outsideClickListener = ref<((event: MouseEvent) => void) | null>(null);
@@ -59,13 +59,6 @@ const isOutsideClicked = (event: MouseEvent) => {
 };
 
 const emit = defineEmits(['menuToggle']);
-
-const themeStore = useThemeStore();
-const op = ref<any>(null);
-
-function toggle (event: any) {
-  op.value.toggle(event);
-}
 
 const { logUserOut } = useAuthStore(); // use authenticateUser action from  auth store
 const { authenticated } = storeToRefs(useAuthStore()); // make authenticated state reactive with storeToRefs

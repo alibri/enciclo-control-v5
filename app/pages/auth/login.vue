@@ -35,6 +35,10 @@ const login = async () => {
 <template>
   <div class="login-container">
     <div class="card">
+      <div class="text-center">
+        <span style="color: var(--primary-color)">{{ runtimeConfig.public.APP_TITLE }} {{
+          runtimeConfig.public.APP_VERSION }}</span>
+      </div>
       <h1 class="text-center">{{ t('Login') }}</h1>
       <form @submit.prevent="login">
         <InputGroup>
