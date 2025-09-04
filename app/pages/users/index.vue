@@ -256,7 +256,7 @@ const items = ref([
                   deleteUser(menuData.value);
                 },
                 class: 'text-red-500'
-            },
+            }/*,
             {
                 label: t('Resetear contraseña'),
                 icon: 'pi pi-key',
@@ -274,7 +274,7 @@ const items = ref([
                 sendAccessData(menuData.value);
               },
               class: 'text-yellow-500'
-            }
+            }*/
         ]
     }
 ]);
@@ -311,8 +311,8 @@ const exportData = () => {
 </script>
 
 <template>
-  <div class="bg-white rounded-lg shadow-md p-6">
-    <h2 class="text-2xl font-bold text-gray-800 mb-6">{{ t('Usuarios') }}</h2>
+  <div class="card">
+    <h2>{{ t('Usuarios') }}</h2>
     <div class="grid grid-cols-12 gap-4 p-1">
       <div class="col-span-12">
         <Toolbar>
@@ -488,7 +488,7 @@ const exportData = () => {
               />
             </template>
           </Column>
-          <Column field="iprange" :header="t('IP')">
+          <Column field="iprange" :header="t('IP')" :sortable="true">
             <template #filter="{ filterModel, filterCallback }">
               <InputText
                 v-model="filterModel.value"
@@ -500,8 +500,8 @@ const exportData = () => {
               />
             </template>
           </Column>
-          <Column field="geoip" :header="t('GeoIP')" class="text-yellow-600" />
-          <Column field="referer" :header="t('Referer')" class="text-xs text-green-600" />
+          <Column field="geoip" :header="t('GeoIP')" class="text-yellow-600" :sortable="true"/>
+          <Column field="referer" :header="t('Referer')" class="text-xs text-green-600" :sortable="true"/>
           <Column field="email" :header="t('Email')" :sortable="true" class="text-xs text-blue-600" />
           <Column field="meta" :header="t('Meta')" :sortable="true" class="text-xs" />
           <Column field="created_at" :header="t('Creado')" :sortable="true" class="text-xs">

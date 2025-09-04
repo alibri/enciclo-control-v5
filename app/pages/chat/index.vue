@@ -43,8 +43,12 @@ const loadData = async () => {
   if (checkLogged(response)) {
     // stats.value = response?.data?.value?.list;
     stats.value = response?.data?.value?.list?.map((item: any) => {
-      item.response = JSON.parse(item.response);
-      item.response.langs = getChatLanguages(item.response);
+      try {
+        item.response = JSON.parse(item.response);
+        item.response.langs = getChatLanguages(item.response);
+      } catch (error) {
+        item.response = {};
+      }
 
       return item;
     });
@@ -90,8 +94,8 @@ onMounted(() => {
 <template>
   <div class="card">
     <h2>{{ t('Consultas Pregúntame') }}</h2>
-    <div class="grid p-1">
-      <div class="col-12">
+    <div class="grid grid-cols-12 p-1">
+      <div class="col-span-12">
         <DataTable
           ref="dt"
           v-model:filters="filters"
@@ -117,7 +121,7 @@ onMounted(() => {
           @filter="onFilter($event)"
         >
           <template #header>
-            <div class="flex justify-content-between justify-items-center">
+            <div class="flex justify-between items-center">
               <div class="left-0">
                 <Button
                   icon="pi pi-refresh"
@@ -127,11 +131,11 @@ onMounted(() => {
                 />
                 <Button icon="pi pi-file-excel" class="p-button-success ml-2" @click="exportData()" />
               </div>
-              <div class="flex align-items-center justify-content-center">
+              <div class="flex items-center justify-center">
                 <label class="mr-2" for="switch1">{{ t('SIN RESPUESTA') }}</label>
-                <InputSwitch v-model="no_respuesta" input-id="switch1" @change="loadData()" />
+                <ToggleSwitch v-model="no_respuesta" id="switch1" @change="loadData()" />
               </div>
-              <div class="flex align-items-center gap-2">
+              <div class="flex items-center gap-2">
                 <Button
                   type="button"
                   icon="pi pi-filter-slash"
@@ -153,7 +157,7 @@ onMounted(() => {
           </template>
           <Column field="id" :header="t('ID')" :sortable="true">
             <template #body="slotProps">
-              <span class="text-center text-xs text-color font-bold">{{ slotProps.data.id }}</span>
+              <span class="text-center text-xs text-gray-700 font-bold">{{ slotProps.data.id }}</span>
             </template>
           </Column>
           <Column field="user" :header="t('Usuario')" :sortable="true">
@@ -168,55 +172,55 @@ onMounted(() => {
               />
             </template>
             <template #body="slotProps">
-              <NuxtLink :to="'/users/'+slotProps.data.user" class="text-red-500  border-none border-bottom-1 border-dotted">
+              <NuxtLink :to="'/users/'+slotProps.data.user" class="text-red-500 border-none border-b border-dotted">
                 {{ slotProps.data.user }}
               </NuxtLink>
             </template>
           </Column>
-          <Column field="collection" :header="t('Colección')" :sortable="true" style="width: 15%" class="text-yellow-500" />
+          <Column field="collection" :header="t('Colección')" :sortable="true" class="text-yellow-500" />
           <Column field="query" :header="t('Pregunta')" :sortable="true" style="width: 50%">
             <template #body="slotProps">
-              <a style="cursor: pointer;" class="font-bold border-none border-bottom-1 border-dotted ml-1" @click="showChat(dialog, slotProps.data.id)">
+              <a style="cursor: pointer;" class="font-bold border-none border-b border-dotted ml-1" @click="showChat(dialog, slotProps.data.id)">
                 {{ slotProps.data.query }}
               </a>
             </template>
           </Column>
-          <Column field="date" :header="t('Fecha')" :sortable="true" style="width: 15%">
+          <Column field="date" :header="t('Fecha')" :sortable="true">
             <template #body="slotProps">
               <span class="text-sm">{{ formatDateTime(slotProps.data.date) }}</span>
             </template>
           </Column>
-          <Column field="like" :header="t('Like')" :sortable="true" style="width: 15%" class="text-center">
+          <Column field="like" :header="t('Like')" :sortable="true" class="text-center">
             <template #body="slotProps">
               <span v-html="formatLike(slotProps.data.like)" />
             </template>
           </Column>
-          <Column field="hayrespuesta" :header="t('¿Respuesta?')" :sortable="false" style="width: 15%" class="text-center">
+          <Column field="hayrespuesta" :header="t('¿Respuesta?')" :sortable="false" class="text-center">
             <template #body="slotProps">
               <span v-html="formatRespuestaSiNo(slotProps.data.hayrespuesta)" />
             </template>
           </Column>
-          <Column field="sabias" :header="t('¿Sabías?')" :sortable="false" style="width: 15%" class="text-center">
+          <Column field="sabias" :header="t('¿Sabías?')" :sortable="false" class="text-center">
             <template #body="slotProps">
               <span v-html="formatSabias(slotProps.data.response?.sabias)" />
             </template>
           </Column>
-          <Column field="response" :header="t('Idioma')" :sortable="false" style="width: 10%" class="text-center">
+          <Column field="response" :header="t('Idioma')" :sortable="false" class="text-center">
             <template #body="slotProps">
-              <span v-show="slotProps.data.response?.idioma" class="bg-blue-300 text-white border-1 p-1 m-1 text-xs">{{ slotProps.data.response?.idioma }}</span>
+              <span v-show="slotProps.data.response?.idioma" class="bg-blue-300 text-white border p-1 m-1 text-xs">{{ slotProps.data.response?.idioma }}</span>
             </template>
           </Column>
-          <Column field="response" :header="t('Traducciones')" :sortable="false" style="width: 10%" class="text-center">
+          <Column field="response" :header="t('Traducciones')" :sortable="false" class="text-center">
             <template #body="slotProps">
-              <span v-for="(translation, index) in slotProps.data.response?.langs" :key="index" class="bg-red-600 text-white border-1 p-1 m-1 text-xs">{{ translation }}</span>
+              <span v-for="(translation, index) in slotProps.data.response?.langs" :key="index" class="bg-red-600 text-white border p-1 m-1 text-xs">{{ translation }}</span>
             </template>
           </Column>
           <Column field="model" :header="t('Modelo')" :sortable="true">
             <template #body="slotProps">
-              <pre class="text-xs text-500">{{ slotProps.data.response.model }}</pre>
+              <pre class="text-xs text-gray-500">{{ slotProps.data.response.model }}</pre>
             </template>
           </Column>
-          <Column field="link" :header="t('Enlace')" :sortable="true" style="width: 15%" class="text-center">
+          <Column field="link" :header="t('Enlace')" :sortable="true" class="text-center">
             <template #body="slotProps">
               <ChatLink v-show="slotProps.data.code" :code="slotProps.data.code" :link="slotProps.data.short_url" />
             </template>
@@ -232,7 +236,7 @@ onMounted(() => {
               {{ slotProps.data.time }}s
             </template>
           </Column>
-          <Column field="prompt_tokens" :header="t('TK.In')" :sortable="true" class=" text-right text-xs text-blue-500">
+          <Column field="prompt_tokens" :header="t('TK.In')" :sortable="true" class="text-right text-xs text-blue-500">
             <template #body="slotProps">
               {{ formatIntNumber(slotProps.data.prompt_tokens) }}
             </template>

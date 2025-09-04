@@ -145,7 +145,7 @@ const chartOptions = computed(() => {
 <template>
 
     <div class="col-span-12 lg:col-span-6 xl:col-span-6">
-      <div class="bg-white rounded-lg shadow-md p-6 mb-2">
+      <div class="border border-gray-200 rounded-lg p-6 mb-2">
         <div class="flex justify-between mb-3">
           <div>
             <span class="block text-gray-500 font-medium mb-3">{{ t('Total Logins') }}</span>
@@ -159,13 +159,13 @@ const chartOptions = computed(() => {
           </div>
         </div>
       </div>
-      <div class="bg-white rounded-lg shadow-md p-6">
-        <Chart type="line" :data="chartLogins" :options="chartOptions" class="h-30rem" />
+      <div class="border border-gray-200 rounded-lg p-6">
+        <Chart type="line" :data="chartLogins" :options="chartOptions" class="h-96" />
       </div>
     </div>
 
     <div class="col-span-12 lg:col-span-6 xl:col-span-6">
-      <div class="bg-white rounded-lg shadow-md p-6 mb-2">
+      <div class="border border-gray-200 rounded-lg p-6 mb-2">
         <div class="flex justify-between mb-3">
           <div>
             <span class="block text-gray-500 font-medium mb-3">{{ t('Páginas Vistas') }}</span>
@@ -179,13 +179,13 @@ const chartOptions = computed(() => {
           </div>
         </div>
       </div>
-      <div class="bg-white rounded-lg shadow-md p-6">
-        <Chart type="line" :data="chartPages" :options="chartOptions" class="h-30rem" />
+      <div class="border border-gray-200 rounded-lg p-6">
+        <Chart type="line" :data="chartPages" :options="chartOptions" class="h-96" />
       </div>
     </div>
 
     <div class="col-span-12 lg:col-span-6 xl:col-span-6">
-      <div class="bg-white rounded-lg shadow-md p-6 mb-2">
+      <div class="border border-gray-200 rounded-lg p-6 mb-2">
         <div class="flex justify-between mb-3">
           <div>
             <span class="block text-gray-500 font-medium mb-3">{{ t('Tiempo Total') }}</span>
@@ -199,13 +199,13 @@ const chartOptions = computed(() => {
           </div>
         </div>
       </div>
-      <div class="bg-white rounded-lg shadow-md p-6">
-        <Chart type="line" :data="chartTime" :options="chartOptions" class="h-30rem" />
+      <div class="border border-gray-200 rounded-lg p-6">
+        <Chart type="line" :data="chartTime" :options="chartOptions" class="h-96" />
       </div>
     </div>
 
     <div class="col-span-12 lg:col-span-6 xl:col-span-6">
-      <div class="bg-white rounded-lg shadow-md p-6 mb-2">
+      <div class="border border-gray-200 rounded-lg p-6 mb-2">
         <div class="flex justify-between mb-3">
           <div>
             <span class="block text-gray-500 font-medium mb-3">{{ t('Total Pregúntame') }}</span>
@@ -219,13 +219,13 @@ const chartOptions = computed(() => {
           </div>
         </div>
       </div>
-      <div class="bg-white rounded-lg shadow-md p-6">
-        <Chart type="line" :data="chartChats" :options="chartOptions" class="h-30rem" />
+      <div class="border border-gray-200 rounded-lg p-6">
+        <Chart type="line" :data="chartChats" :options="chartOptions" class="h-96" />
       </div>
     </div>
 
     <div class="col-span-12 lg:col-span-6 xl:col-span-6 print:hidden">
-      <div class="bg-white rounded-lg shadow-md p-6 print:hidden">
+      <div class="border border-gray-200 rounded-lg p-6 print:hidden">
         <h4>{{ t('Sesiones') }}</h4>
         <SimpleSessionsDataTable :value="value.logins" :rows="10" :paginator="true" :show-end="true"
           :show-user="showUser" />
@@ -233,14 +233,14 @@ const chartOptions = computed(() => {
     </div>
 
     <div class="col-span-12 lg:col-span-6 xl:col-span-6 print:hidden">
-      <div class="bg-white rounded-lg shadow-md p-6 print:hidden">
+      <div class="border border-gray-200 rounded-lg p-6 print:hidden">
         <h4>{{ t('Páginas') }}</h4>
         <SimplePagesDataTable :value="value.pages" :rows="10" :paginator="true" :show-user="showUser" />
       </div>
     </div>
 
     <div class="col-span-12 lg:col-span-6 xl:col-span-6 print:hidden">
-      <div class="bg-white rounded-lg shadow-md p-6 mb-2">
+      <div class="border border-gray-200 rounded-lg p-6 mb-2">
         <div class="flex justify-between mb-3">
           <div>
             <span class="block text-gray-500 font-medium mb-3">{{ t('Total Consultas') }}</span>
@@ -253,13 +253,13 @@ const chartOptions = computed(() => {
           </div>
         </div>
       </div>
-      <div class="bg-white rounded-lg shadow-md p-6">
+      <div class="border border-gray-200 rounded-lg p-6">
         <SimpleQueriesDataTable :value="props.value.queries" :rows="10" :paginator="true" :show-user="showUser" />
       </div>
     </div>
 
     <div class="col-span-12 lg:col-span-6 xl:col-span-6 print:hidden">
-      <div class="bg-white rounded-lg shadow-md p-6 mb-2">
+      <div class="border border-gray-200 rounded-lg p-6 mb-2">
         <div class="flex justify-between mb-3">
           <div>
             <span class="block text-gray-500 font-medium mb-3">{{ t('Total Pregúntame') }}</span>
@@ -273,13 +273,13 @@ const chartOptions = computed(() => {
           </div>
         </div>
       </div>
-      <div class="bg-white rounded-lg shadow-md p-6">
+      <div class="border border-gray-200 rounded-lg p-6">
         <SimpleChatsDataTable :value="props.value.chats" :rows="10" :paginator="true" :show-user="showUser" />
       </div>
     </div>
 
     <div class="col-span-12 lg:col-span-6 xl:col-span-6 print:hidden">
-      <div class="bg-white rounded-lg shadow-md p-6 mb-2">
+      <div class="border border-gray-200 rounded-lg p-6 mb-2">
         <div class="flex justify-between mb-3">
           <div>
             <span class="block text-gray-500 font-medium mb-3">{{ t('Total Impresiones') }}</span>
@@ -292,7 +292,7 @@ const chartOptions = computed(() => {
           </div>
         </div>
       </div>
-      <div class="bg-white rounded-lg shadow-md p-6">
+      <div class="border border-gray-200 rounded-lg p-6">
         <SimplePrintsDataTable :value="props.value.prints" :rows="10" :paginator="true" :show-user="showUser" />
       </div>
     </div>

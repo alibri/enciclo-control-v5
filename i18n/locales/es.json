@@ -185,5 +185,9 @@
     "Subiendo...": "Subiendo...",
     "Pendientes": "Pendientes",
     "Pendiente": "Pendiente",
-    "Success": "Éxito"
+    "Success": "Éxito",
+    "(sin valor)": "(sin valor)",
+    "Búsqueda por texto": "Búsqueda por texto",
+    "Búsqueda por consulta predefinida": "Búsqueda por consulta predefinida",
+    "Selecciona una consulta o un texto de búsqueda": "Selecciona una consulta o un texto de búsqueda"
 }

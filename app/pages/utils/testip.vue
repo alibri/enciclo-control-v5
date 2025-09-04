@@ -47,58 +47,57 @@ const blocked = ref(false);
 
 <template>
     <div class="card">
-        <div class="surface-section text-center mb-1">
-            <div class="mb-3 font-bold text-3xl">
-                <span class="text-blue-600">{{ t('TEST IP') }}</span>
-            </div>
-        </div>
-        <div class="surface-section  text-center mb-5">
-            <BlockUI :blocked="blocked">
-                <div class="grid">
-                    <div class="col-12 md:col-12 mb-12 px-5">
-                        <div class="field">
-                            <label for="ip">{{ t('IP') }}</label>
-                            <InputText id="ip" v-model="ip" class="w-full" />
+        <div class="grid grid-cols-12 p-1">
+            <div class="col-span-12">
+                <h4>{{ t('TEST IP') }}</h4>
+                <BlockUI :blocked="blocked">
+                    <div class="grid grid-cols-1 gap-4">
+                        <div class="col-span-1 md:col-span-1 mb-12 px-5">
+                            <FloatLabel variant="on">
+                                <InputText id="ip" v-model="ip" class="w-full" />
+                                <label for="ip">{{ t('IP')
+                                }}</label>
+                            </FloatLabel>
+                        </div>
+                        <div class="col-span-1 flex justify-center">
+                            <Button :label="t('Test IP')" icon="pi pi-check" @click="testIP" />
                         </div>
                     </div>
-                    <div class="col-12 flex justify-content-center">
-                        <Button :label="t('Test IP')" icon="pi pi-check" @click="testIP" />
-                    </div>
+                </BlockUI>
+                <div v-if="resultIP" v-html="resultIP"
+                    class="w-auto h-auto text-white bg-gray-800 text-left text-sm p-2 rounded">
                 </div>
-            </BlockUI>
-            <div v-if="resultIP" v-html="resultIP"
-                class="w-auto h-auto text-0 surface-800 text-left text-sm p-2">
             </div>
         </div>
     </div>
     <div class="card">
-        <div class="surface-section text-center mb-1">
-            <div class="mb-3 font-bold text-3xl">
-                <span class="text-blue-600">{{ t('TEST Rango IP') }}</span>
-            </div>
-        </div>
-        <div class="surface-section  text-center mb-5">
-            <BlockUI :blocked="blocked">
-                <div class="grid">
-                    <div class="col-12 md:col-12 mb-12 px-5">
-                        <div class="field">
-                            <label for="ipRange">{{ t('IP') }}</label>
-                            <InputText id="ipRange" v-model="ipRange" class="w-full" />
+        <div class="grid grid-cols-12 p-1">
+            <div class="col-span-12">
+                <h4>{{ t('TEST Rango IP') }}</h4>
+                <BlockUI :blocked="blocked">
+                    <div class="grid grid-cols-1 gap-4">
+                        <div class="col-span-1 md:col-span-1 mb-12 px-5">
+                            <FloatLabel variant="on">
+                                <InputText id="ipRange" v-model="ipRange" class="w-full" />
+                                <label for="ipRange">{{
+                                    t('IP') }}</label>
+                            </FloatLabel>
+                        </div>
+                        <div class="col-span-1 md:col-span-1 mb-12 px-5">
+                            <FloatLabel variant="on">
+                                <label for="rango">{{
+                                    t('Rango') }}</label>
+                                <Textarea id="rango" v-model="rango" class="w-full" rows="5" />
+                            </FloatLabel>
+                        </div>
+                        <div class="col-span-1 flex justify-center">
+                            <Button :label="t('Test Rango IP')" icon="pi pi-check" @click="testIPRange" />
                         </div>
                     </div>
-                    <div class="col-12 md:col-12 mb-12 px-5">
-                        <div class="field">
-                            <label for="rango">{{ t('Rango') }}</label>
-                            <Textarea id="rango" v-model="rango" class="w-full" rows="5" />
-                        </div>
-                    </div>
-                    <div class="col-12 flex justify-content-center">
-                        <Button :label="t('Test Rango IP')" icon="pi pi-check" @click="testIPRange" />
-                    </div>
+                </BlockUI>
+                <div v-if="resultIPRange" v-html="resultIPRange"
+                    class="w-auto h-auto text-white bg-gray-800 text-left text-sm p-2 rounded">
                 </div>
-            </BlockUI>
-            <div v-if="resultIPRange" v-html="resultIPRange"
-                class="w-auto h-auto text-0 surface-800 text-left text-sm p-2">
             </div>
         </div>
     </div>

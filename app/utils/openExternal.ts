@@ -2,6 +2,7 @@ import { currentDomain } from './api';
 
 export const getPageLink = (collection: string, title: string): string => {
   const runtimeConfig = useRuntimeConfig();
+  console.log('PAGE_BASE_URL', runtimeConfig.public?.PAGE_BASE_URL);
   return runtimeConfig.public?.PAGE_BASE_URL
     ?.replace('{collection}', collection)
     ?.replace('{title}', title)

@@ -120,7 +120,7 @@ onMounted(() => {
       <div class="card">
         <h2>{{ t("Buscar Entidades") }}</h2>
         <div class="grid p-1">
-          <div class="col-8">
+          <div class="col-span-8">
             <label class="font-bold">{{ t('Texto de origen') }}</label>
             <div class="pb-2">
               <Textarea v-model="respuesta" rows="10" cols="30" class="flex-auto  w-full" />
@@ -134,7 +134,7 @@ onMounted(() => {
               />
             </div>
           </div>
-          <div class="col-4">
+          <div class="col-span-4">
             <div>
               <DataTable
                 :value="entidadesEncontradas"
@@ -173,7 +173,7 @@ onMounted(() => {
       <div class="card">
         <h2>{{ t("Prueba de Entidades") }}</h2>
         <div class="grid p-1">
-          <div class="col-4">
+          <div class="col-span-4">
             <div>
               <Textarea v-model="entidades" auto-resize rows="5" cols="30" class="flex-auto" />
             </div>
@@ -194,7 +194,7 @@ onMounted(() => {
               />
             </div>
           </div>
-          <div class="col-8">
+          <div class="col-span-8">
             <PagesDataTable :value="pages" :rows="50" :paginator="true" />
           </div>
         </div>
@@ -203,7 +203,7 @@ onMounted(() => {
       <div class="card">
         <h2>{{ t("Entidades") }}</h2>
         <div class="grid p-1">
-          <div class="col-12">
+          <div class="col-span-12">
             <DataTable
               ref="dt"
               v-model:filters="filters"

@@ -78,7 +78,7 @@ onMounted(() => {
 
 <template>
   <span>
-    <div class="bg-white rounded-lg shadow-md p-6">
+    <div class=" shadow-md p-6">
       <h2><span class="text-blue-500">{{ info?.title }}</span></h2>
       <h4>{{ collection }} -> {{ page }}</h4>
       <div class="grid p-1">
@@ -125,7 +125,7 @@ onMounted(() => {
         </div>
       </div>
     </div>
-    <div class="bg-white rounded-lg shadow-md p-6 flex justify-center">
+    <div class=" shadow-md p-6 flex justify-center">
       <div class="flex-1">
         <InputGroup>
           <Calendar v-model="dates" selection-mode="range" :manual-input="true" :placeholder="t('Periodo')" />
@@ -135,7 +135,7 @@ onMounted(() => {
     </div>
     <div class="grid p-1">
       <div class="col-span-12 lg:col-span-6 xl:col-span-4">
-        <div class="bg-white rounded-lg shadow-md p-6 mb-2">
+        <div class=" shadow-md p-6 mb-2">
           <div class="flex justify-between mb-3">
             <div>
               <span class="block text-gray-500 font-medium mb-3">{{ t('Completa') }}</span>
@@ -148,13 +148,13 @@ onMounted(() => {
             </div>
           </div>
         </div>
-        <div class="bg-white rounded-lg shadow-md p-6">
+        <div class=" shadow-md p-6">
           <SimplePagesDataTable :value="stats?.pages || []" :rows="10" :paginator="true" :show-user="true" :show-title="false" />
         </div>
       </div>
 
       <div class="col-span-12 lg:col-span-6 xl:col-span-4">
-        <div class="bg-white rounded-lg shadow-md p-6 mb-2">
+        <div class=" shadow-md p-6 mb-2">
           <div class="flex justify-between mb-3">
             <div>
               <span class="block text-gray-500 font-medium mb-3">{{ t('Vista Previa') }}</span>
@@ -167,13 +167,13 @@ onMounted(() => {
             </div>
           </div>
         </div>
-        <div class="bg-white rounded-lg shadow-md p-6">
+        <div class=" shadow-md p-6">
           <SimplePagesDataTable :value="stats?.previews || []" :rows="10" :paginator="true" :show-user="true" :show-title="false" />
         </div>
       </div>
 
       <div class="col-span-12 lg:col-span-6 xl:col-span-4">
-        <div class="bg-white rounded-lg shadow-md p-6 mb-2">
+        <div class=" shadow-md p-6 mb-2">
           <div class="flex justify-between mb-3">
             <div>
               <span class="block text-gray-500 font-medium mb-3">{{ t('Impresiones') }}</span>
@@ -186,7 +186,7 @@ onMounted(() => {
             </div>
           </div>
         </div>
-        <div class="bg-white rounded-lg shadow-md p-6">
+        <div class=" shadow-md p-6">
           <SimplePrintsDataTable :value="stats?.prints || []" :rows="10" :paginator="true" :show-user="true" :show-title="false" />
         </div>
       </div>

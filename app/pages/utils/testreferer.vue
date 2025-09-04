@@ -47,59 +47,55 @@ const blocked = ref(false);
     
 <template>
     <div class="card">
-        <div class="surface-section text-center mb-1">
-            <div class="mb-3 font-bold text-3xl">
-                <span class="text-blue-600">{{ t('TEST Referer') }}</span>
-            </div>
-        </div>
-        <div class="surface-section  text-center mb-5">
-            <BlockUI :blocked="blocked">
-                <div class="grid">
-                    <div class="col-12 md:col-12 mb-12 px-5">
-                        <div class="field">
-                            <label for="referer">{{ t('Referer') }}</label>
-                            <InputText id="referer" v-model="referersingle" class="w-full" />
+        <div class="grid grid-cols-12 p-1">
+            <div class="col-span-12">
+                <h4>{{ t('TEST Referer') }}</h4>
+                <BlockUI :blocked="blocked">
+                    <div class="grid grid-cols-12 gap-4">
+                        <div class="col-span-12 md:col-span-12 mb-12 px-5">
+                            <FloatLabel variant="on">
+                                <InputText id="referer" v-model="referersingle" class="w-full" />
+                                <label for="referer">{{ t('Referer') }}</label>
+                            </FloatLabel>
+                        </div>
+                        <div class="col-span-12 flex justify-center">
+                            <Button :label="t('Test Referer')" icon="pi pi-check" @click="testRefererReferer" />
                         </div>
                     </div>
-                    <div class="col-12 flex justify-content-center">
-                        <Button :label="t('Test Referer')" icon="pi pi-check" @click="testRefererReferer" />
-                    </div>
+                </BlockUI>
+                <div v-if="resultRefererReferer" v-html="resultRefererReferer"
+                    class="w-auto h-auto text-gray-900 bg-gray-800 text-left text-sm p-2">
                 </div>
-            </BlockUI>
-            <div v-if="resultRefererReferer" v-html="resultRefererReferer"
-                class="w-auto h-auto text-0 surface-800 text-left text-sm p-2    ">
             </div>
         </div>
     </div>
     <div class="card">
-        <div class="surface-section text-center mb-1">
-            <div class="mb-3 font-bold text-3xl">
-                <span class="text-blue-600">{{ t('TEST Configuración') }}</span>
-            </div>
-        </div>
-        <div class="surface-section  text-center mb-5">
-            <BlockUI :blocked="blocked">
-                <div class="grid">
-                    <div class="col-12 md:col-12 mb-12 px-5">
-                        <div class="field">
-                            <label for="referer">{{ t('Referer') }}</label>
-                            <InputText id="referer" v-model="referer" class="w-full" />
+        <div class="grid grid-cols-12 p-1">
+            <div class="col-span-12">
+                <h4>{{ t('TEST Configuración') }}</h4>
+                <BlockUI :blocked="blocked">
+                    <div class="grid grid-cols-12 gap-4">
+                        <div class="col-span-12 md:col-span-12 mb-12 px-5">
+                            <FloatLabel variant="on">
+                                    <label for="referer">{{ t('Referer') }}</label>
+                                    <InputText id="referer" v-model="referer" class="w-full" />
+                            </FloatLabel>
+                        </div>
+                        <div class="col-span-12 md:col-span-12 mb-12 px-5">
+                            <FloatLabel variant="on">
+                                <label for="rango">{{ t('Rango') }}</label>
+                                <Textarea id="rango" v-model="rango" class="w-full" rows="5" />
+                            </FloatLabel>
+                        </div>
+                        <div class="col-span-12 flex justify-center">
+                            <Button :label="t('Test Configuración')" icon="pi pi-check" @click="testReferer" />
                         </div>
                     </div>
-                    <div class="col-12 md:col-12 mb-12 px-5">
-                        <div class="field">
-                            <label for="rango">{{ t('Rango') }}</label>
-                            <Textarea id="rango" v-model="rango" class="w-full" rows="5" />
-                        </div>
-                    </div>
-                    <div class="col-12 flex justify-content-center">
-                        <Button :label="t('Test Configuración')" icon="pi pi-check" @click="testReferer" />
-                    </div>
+                </BlockUI>
+                <div v-if="resultReferer" v-html="resultReferer"
+                    class="w-auto h-auto text-gray-900 bg-gray-800 text-left text-sm p-2">
                 </div>
-            </BlockUI>
-            <div v-if="resultReferer" v-html="resultReferer"
-                class="w-auto h-auto text-0 surface-800 text-left text-sm p-2    ">
-            </div>
+            </div> 
         </div>
     </div>
 </template>

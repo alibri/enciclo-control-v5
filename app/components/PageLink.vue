@@ -28,6 +28,6 @@ const openEditor = async () => {
     <a style="cursor: pointer;" class="font-bold border-none border-b border-dotted ml-1" @click="pageStore.loadPage(page.collection, page.title)">
       <strong>{{ page.title }}</strong>
     </a>
-    <a style="cursor: pointer;" @click="editOnFly(dialog, page)"><i class="pi pi-pencil bg-blue-500 text-white p-1 rounded-full ml-1" /></a>
+    <a style="cursor: pointer;" @click="editOnFly(dialog, page as { collection: string, title: string })"><i class="pi pi-pencil bg-blue-500 text-white p-1 rounded-full ml-1" /></a>
   </span>
 </template>

@@ -148,7 +148,7 @@ const config = {
             </div>
           </TabPanel>
           <TabPanel :header="t('Media')">
-            <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 mb-4">
+            <div class=" shadow-sm border border-gray-200 p-4 mb-4">
               <FileUpload
                 name="demo[]"
                 accept="image/*"

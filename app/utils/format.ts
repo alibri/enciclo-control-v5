@@ -64,7 +64,11 @@ export const formatIntNumber = (value: number) => {
   return value?.toLocaleString('de-DE', { minimumFractionDigits: 0 });
 };
 
-export const formatSegundosAHora = (segundos: number): string => {
+export const formatSegundosAHora = (segundos: number | null): string => {
+  const { t } = useI18n();
+  if (segundos === null || segundos === undefined) {
+    return t('(sin valor)');
+  }
   const horas = Math.floor(segundos / 3600);
   const minutos = Math.floor((segundos % 3600) / 60);
   const segundosRestantes = segundos % 60;
@@ -107,7 +111,7 @@ export const formatLike = (value: number) => {
   } else if (value === 1) {
     return '<i class="pi pi-thumbs-up-fill text-green-500"></i>';
   } else {
-    return '<i class="pi pi-equals text-300">=</i>';
+    return '';
   }
 };
 

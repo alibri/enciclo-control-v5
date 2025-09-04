@@ -1,4 +1,4 @@
-<script setup  lang="ts">
+<script setup lang="ts">
 import Editor from 'primevue/editor';
 import ImagenSelect from '~/components/ImagenSelect.vue';
 import PageService from '~/services/pageService';
@@ -77,29 +77,24 @@ const openDialog = async (data: any) => {
 };
 
 const saveData = () => {
-  //console.log('saveData', editData.value);
   dialogVisible.value = false;
   if (!editData.value.id) {
     const id = Math.floor(Math.random() * 1000) + 10000;
     editData.value.id = id;
     items.value = [{ id, ...editData.value }, ...items.value];
   } else {
-    //console.log('editData.value.id', editData.value.id);
     items.value = items.value.map((item) => {
       if (item.id === editData.value.id) {
         item = editData.value;
       }
       return item;
     });
-    // console.log('nuevo', nuevo);
   }
   dashboard.value.dashboard[grupo.value.code] = { ...items.value };
-  //console.log('dashboard', dashboard.value?.dashboard[grupo.value.code]);
   dirty.value = true;
 };
 
 const saveDashboard = async () => {
-  //console.log('saveDashboard');
   loading.value = true;
   const data = JSON.parse(JSON.stringify(dashboard.value.dashboard));
 
@@ -113,7 +108,6 @@ const saveDashboard = async () => {
 };
 
 const refreshData = () => {
-  //console.log('refreshData');
   if (dirty.value) {
     confirm.require({
       message: t('Hay cambios no guardados ¿Desea continuar?'),
@@ -137,7 +131,6 @@ const refreshData = () => {
 };
 
 const publishData = async () => {
-  //console.log('publishData');
   if (dirty.value) {
     confirm.require({
       message: t('Hay cambios no guardados ¿Desea continuar?'),
@@ -170,19 +163,15 @@ const publishData = async () => {
 };
 
 const previewData = () => {
-  //console.log('previewData');
   const url = getPageLink(collection.value.name, 'dashboardpreview');
   openPage(url);
 };
 
 const addNew = () => {
-  //console.log('addNew');
   openDialog({});
 };
 
 const deleteItem = (data: any) => {
-  //console.log('deleteItem', data.id);
-  //console.log('abriendo confirmación');
   confirm.require({
     message: t('¿Desea eliminar el registro?') + ' ' + data.friendly,
     header: t('Eliminar'),
@@ -232,14 +221,12 @@ const selectImage = (image: any) => {
 
 const cancel = ref(false);
 watch(collection, async (value, oldValue) => {
-  //console.log('collection', value, oldValue);
   if (cancel.value) {
     cancel.value = false;
     return;
   }
   if (value === null) {
     cancel.value = true;
-    //console.log('value === null');
     collection.value = oldValue;
   }
   if (value) {
@@ -275,7 +262,6 @@ watch(grupo, (value, oldValue) => {
   }
   if (value === null) {
     cancel.value = true;
-    //console.log('value === null');
     grupo.value = oldValue;
   }
   if (value) {
@@ -284,17 +270,13 @@ watch(grupo, (value, oldValue) => {
     let id = 1;
     if (items.value && items.value.length > 0) {
       items.value.forEach((item, index) => {
-      // add the fields of the object item to the fields array
         items.value[index].id = id++;
         fields.value.push(...Object.keys(item ?? []));
       });
       fields.value = Object.keys(items.value[0] ?? []);
     }
-    //console.log('fields', fields.value);
     if (fields.value?.length === 0) {
-      //console.log('fields.length === 0');
       fields.value = fieldsDefault[value.code as keyof typeof fieldsDefault] ?? [];
-      //console.log('fields', fields.value);
     }
   }
 });
@@ -321,124 +303,34 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="bg-white rounded-lg shadow-md p-6">
-    <ConfirmDialog />
-    <Dialog v-model:visible="dialogVisible" modal :header="t('Editar')" :style="{ width: '50rem' }">
-      <template #header>
-        <div class="inline-flex items-center justify-center gap-2">
-          <Avatar v-if="editData.imagen" :image="editData.imagen" shape="circle" />
-          <span v-if="!editData.id" class="text-red-600 font-bold">[{{ t('NUEVO') }}]</span>
-          <span class="font-bold whitespace-nowrap"><span class="text-blue-600">{{ grupo?.name }}</span> 🡢 {{ editData.titulo }} </span>
-        </div>
-      </template>
-
-      <div v-if="!fields.includes('text')" class="flex items-center gap-3 mb-3">
-        <label for="search" class="font-semibold w-24 text-green-700">{{ t('Búsqueda') }}</label>
-        <AutoComplete
-          id="search"
-          v-model="selectedItem"
-          option-label="title"
-          :suggestions="filteredEntradas"
-          class="flex-1 mi-input"
-          @complete="searchEntrada"
-        >
-          <template #option="slotProps">
-            <div class="flex items-center">
-              <img alt="" :src="slotProps.option.image" style="width: 18px" class="mr-2">
-              <div v-html="slotProps.option.title2" />
-            </div>
-          </template>
-        </AutoComplete>
-      </div>
-      <div v-if="fields.includes('imagen')" class="flex items-center gap-3 mb-3">
-        <label for="imagen" class="font-semibold w-24">{{ t('Imagen') }}</label>
-        <InputText id="imagen" v-model="editData.imagen" class="flex-1" />
-        <ImagenSelect @select="selectImage" :images="imagesItems" />
-      </div>
-      <div v-if="fields.includes('imagen')" class="flex items-center gap-3 mb-3 border border-gray-200 text-center">
-        <Image :src="editData.imagen" height="60px" />
-      </div>
-
-      <div v-if="fields.includes('collection')" class="flex items-center gap-3 mb-3">
-        <label for="collection" class="font-semibold w-24">{{ t('Colección') }}</label>
-        <InputText id="collection" v-model="editData.collection" class="flex-1" />
-      </div>
-      <div v-if="fields.includes('friendly')" class="flex items-center gap-3 mb-2">
-        <label for="friendly" class="font-semibold w-24">{{ t('Entrada') }}</label>
-        <InputText id="friendly" v-model="editData.friendly" class="flex-1" />
-      </div>
-      <div v-if="fields.includes('categoria')" class="flex items-center gap-3 mb-2">
-        <label for="categoria" class="font-semibold w-24">{{ t('Categoría') }}</label>
-        <InputText id="categoria" v-model="editData.categoria" class="flex-1" />
-      </div>
-      <div v-if="fields.includes('titulo')" class="flex items-center gap-3 mb-2">
-        <label for="titulo" class="font-semibold w-24">{{ t('Título') }}</label>
-        <InputText id="titulo" v-model="editData.titulo" class="flex-1" />
-      </div>
-      <div v-if="fields.includes('titular')" class="flex items-center gap-3 mb-2">
-        <label for="titular" class="font-semibold w-24">{{ t('Titular') }}</label>
-        <InputText id="titular" v-model="editData.titular" class="flex-1" />
-      </div>
-      <!--<div v-if="fields.includes('enlace')" class="flex items-center gap-3 mb-2">
-        <label for="enlace" class="font-semibold w-24">{{ t('Enlace') }}</label>
-        <InputText id="enlace" v-model="editData.enlace" class="flex-1" />
-      </div>-->
-      <div v-if="fields.includes('fecha')" class="flex items-center gap-3 mb-2">
-        <label for="fecha" class="font-semibold w-24">{{ t('Fecha') }}</label>
-        <InputText id="fecha" v-model="editData.fecha" class="flex-1" />
-      </div>
-      <div v-if="fields.includes('fecha2')" class="flex items-center gap-3 mb-2">
-        <label for="fecha2" class="font-semibold w-24">{{ t('Fecha 2') }}</label>
-        <InputText id="fecha2" v-model="editData.fecha2" class="flex-1" />
-      </div>
-      <div v-if="fields.includes('resumen')" class="flex items-center gap-3 mb-2">
-        <label for="resumen" class="font-semibold w-24">{{ t('Resumen') }}</label>
-        <Textarea id="resumen" v-model="editData.resumen" rows="5" class="flex-1" />
-      </div>
-      <div v-if="fields.includes('text')" class="flex items-center gap-3 mb-2">
-        <label for="text" class="font-semibold w-24">{{ t('Texto') }}</label>
-        <Textarea id="text" v-model="editData.text" rows="10" class="flex-1" />
-      </div>
-      <div v-if="fields.includes('text')" class="flex items-center gap-3 mb-2">
-        <label for="html" class="font-semibold w-24">{{ t('Texto') }}</label>
-        <Editor v-model="editData.text" editor-style="height: 200px" class="flex-1" />
-      </div>
-      <template #footer>
-        <Button :label="t('Cancelar')" text severity="danger" autofocus @click="dialogVisible = false" />
-        <Button :label="t('Guardar')" outlined severity="primary" autofocus @click="saveData()" />
-      </template>
-    </Dialog>
-
-    <h2 class="text-2xl font-bold text-gray-800 mb-6">{{ t('Portada') }} <span v-if="collection" class="text-gray-600"> 🡢 {{ collection.name }}</span> <span v-if="grupo" class="text-gray-400"> 🡢 {{ grupo.name }}</span></h2>
+  <ConfirmDialog />
+  <div class="card">
+    <h2>{{ t('Portada') }} <span v-if="collection" class="text-gray-600">
+        <span class="text-gray-400">&gt;&gt;</span> {{ collection.name }}</span> <span v-if="grupo" class="text-gray-400"> &gt;&gt; {{ grupo.name }}</span></h2>
     <BlockUI :blocked="loading">
-      <div class="grid grid-cols-12 gap-4 p-1">
+      <div class="grid grid-cols-12 gap-4 p-1-">
         <div class="col-span-6 lg:col-span-1 xl:col-span-1">
           <strong class="text-xl mb-3 block text-gray-800">{{ t('Colección') }}</strong>
-          <Listbox v-model="collection" :options="collections" option-label="name" invalid="true" class="w-full min-h-full" />
+          <Listbox v-model="collection" :options="collections" option-label="name"
+            class="w-full min-h-full-" />
         </div>
         <div class="col-span-6 lg:col-span-2 xl:col-span-2">
           <strong class="text-xl mb-3 block text-gray-800">{{ t('Grupos') }}</strong>
-          <Listbox v-model="grupo" :options="grupos" option-label="name" class="w-full min-h-full" />
+          <Listbox v-model="grupo" :options="grupos" option-label="name" class="w-full min-h-full-" />
         </div>
         <div class="col-span-12 lg:col-span-9 xl:col-span-9">
           <strong class="text-xl mb-3 block text-gray-800">{{ t('Elementos') }}</strong>
-          <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
-            <DataTable
-              v-model:editingRows="editingRows"
-              :value="items"
-              edit-mode="row"
-              data-key="id"
-              :pt="{
-                table: { style: 'min-width: 50rem' },
-                column: {
-                  bodycell: function(state: any) {
-                    return {
-                      style: state['d_editing']&&'padding-top: 0.6rem; padding-bottom: 0.6rem'
-                    };
-                  }
+          <div class=" shadow-sm- border border-gray-200 p-4">
+            <DataTable v-model:editingRows="editingRows" :value="items" edit-mode="row" data-key="id" :pt="{
+              table: { style: 'min-width: 50rem' },
+              column: {
+                bodycell: function (state: any) {
+                  return {
+                    style: state['d_editing'] && 'padding-top: 0.6rem; padding-bottom: 0.6rem'
+                  };
                 }
-              }"
-            >
+              }
+            }">
               <template #header>
                 <Toolbar>
                   <template #start>
@@ -523,14 +415,8 @@ onMounted(() => {
               <Column style="width: 10%; min-width: 8rem" body-style="text-align:center">
                 <template #body="slotProps">
                   <Button icon="pi pi-pencil" rounded raised text @click="openDialog(slotProps.data)" />
-                  <Button
-                    icon="pi pi-trash"
-                    severity="danger"
-                    rounded
-                    raised
-                    text
-                    @click="deleteItem(slotProps.data)"
-                  />
+                  <Button icon="pi pi-trash" severity="danger" rounded raised text
+                    @click="deleteItem(slotProps.data)" />
                 </template>
               </Column>
             </DataTable>
@@ -539,4 +425,85 @@ onMounted(() => {
       </div>
     </BlockUI>
   </div>
+  <Dialog v-model:visible="dialogVisible" modal :header="t('Editar')" :style="{ width: '50rem' }">
+    <template #header>
+      <div class="inline-flex items-center justify-center gap-2">
+        <Avatar v-if="editData.imagen" :image="editData.imagen" shape="circle" />
+        <span v-if="!editData.id" class="text-red-600 font-bold">[{{ t('NUEVO') }}]</span>
+        <span class="font-bold whitespace-nowrap"><span class="text-blue-600">{{ grupo?.name }}</span> 🡢 {{
+          editData.titulo }} </span>
+      </div>
+    </template>
+
+    <div v-if="!fields.includes('text')" class="flex items-center gap-3 mb-3">
+      <label for="search" class="font-semibold w-24 text-green-700">{{ t('Búsqueda') }}</label>
+      <AutoComplete id="search" v-model="selectedItem" option-label="title" :suggestions="filteredEntradas"
+        class="flex-1 mi-input" @complete="searchEntrada">
+        <template #option="slotProps">
+          <div class="flex items-center">
+            <img alt="" :src="slotProps.option.image" style="width: 18px" class="mr-2">
+            <div v-html="slotProps.option.title2" />
+          </div>
+        </template>
+      </AutoComplete>
+    </div>
+    <div v-if="fields.includes('imagen')" class="flex items-center gap-3 mb-3">
+      <label for="imagen" class="font-semibold w-24">{{ t('Imagen') }}</label>
+      <InputText id="imagen" v-model="editData.imagen" class="flex-1" />
+      <ImagenSelect @select="selectImage" :images="imagesItems" />
+    </div>
+    <div v-if="fields.includes('imagen')" class="flex items-center gap-3 mb-3 border border-gray-200 text-center">
+      <Image :src="editData.imagen" height="60px" />
+    </div>
+
+    <div v-if="fields.includes('collection')" class="flex items-center gap-3 mb-3">
+      <label for="collection" class="font-semibold w-24">{{ t('Colección') }}</label>
+      <InputText id="collection" v-model="editData.collection" class="flex-1" />
+    </div>
+    <div v-if="fields.includes('friendly')" class="flex items-center gap-3 mb-2">
+      <label for="friendly" class="font-semibold w-24">{{ t('Entrada') }}</label>
+      <InputText id="friendly" v-model="editData.friendly" class="flex-1" />
+    </div>
+    <div v-if="fields.includes('categoria')" class="flex items-center gap-3 mb-2">
+      <label for="categoria" class="font-semibold w-24">{{ t('Categoría') }}</label>
+      <InputText id="categoria" v-model="editData.categoria" class="flex-1" />
+    </div>
+    <div v-if="fields.includes('titulo')" class="flex items-center gap-3 mb-2">
+      <label for="titulo" class="font-semibold w-24">{{ t('Título') }}</label>
+      <InputText id="titulo" v-model="editData.titulo" class="flex-1" />
+    </div>
+    <div v-if="fields.includes('titular')" class="flex items-center gap-3 mb-2">
+      <label for="titular" class="font-semibold w-24">{{ t('Titular') }}</label>
+      <InputText id="titular" v-model="editData.titular" class="flex-1" />
+    </div>
+    <!--<div v-if="fields.includes('enlace')" class="flex items-center gap-3 mb-2">
+        <label for="enlace" class="font-semibold w-24">{{ t('Enlace') }}</label>
+        <InputText id="enlace" v-model="editData.enlace" class="flex-1" />
+      </div>-->
+    <div v-if="fields.includes('fecha')" class="flex items-center gap-3 mb-2">
+      <label for="fecha" class="font-semibold w-24">{{ t('Fecha') }}</label>
+      <InputText id="fecha" v-model="editData.fecha" class="flex-1" />
+    </div>
+    <div v-if="fields.includes('fecha2')" class="flex items-center gap-3 mb-2">
+      <label for="fecha2" class="font-semibold w-24">{{ t('Fecha 2') }}</label>
+      <InputText id="fecha2" v-model="editData.fecha2" class="flex-1" />
+    </div>
+    <div v-if="fields.includes('resumen')" class="flex items-center gap-3 mb-2">
+      <label for="resumen" class="font-semibold w-24">{{ t('Resumen') }}</label>
+      <Textarea id="resumen" v-model="editData.resumen" rows="5" class="flex-1" />
+    </div>
+    <div v-if="fields.includes('text')" class="flex items-center gap-3 mb-2">
+      <label for="text" class="font-semibold w-24">{{ t('Texto') }}</label>
+      <Textarea id="text" v-model="editData.text" rows="10" class="flex-1" />
+    </div>
+    <div v-if="fields.includes('text')" class="flex items-center gap-3 mb-2">
+      <label for="html" class="font-semibold w-24">{{ t('Texto') }}</label>
+      <Editor v-model="editData.text" editor-style="height: 200px" class="flex-1" />
+    </div>
+    <template #footer>
+      <Button :label="t('Cancelar')" text severity="danger" autofocus @click="dialogVisible = false" />
+      <Button :label="t('Guardar')" outlined severity="primary" autofocus @click="saveData()" />
+    </template>
+  </Dialog>
+
 </template>

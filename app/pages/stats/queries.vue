@@ -75,8 +75,8 @@ onMounted(() => {
 <template>
   <div class="card">
     <h2>{{ t('Consultas') }}</h2>
-    <div class="grid p-1">
-      <div class="col-12">
+    <div class="grid grid-cols-12 p-1">
+      <div class="col-span-12">
         <DataTable
           ref="dt"
           v-model:filters="filters"
@@ -137,8 +137,8 @@ onMounted(() => {
               </NuxtLink>
             </template>
           </Column>
-          <Column field="collections" :header="t('Colección')" :sortable="true" style="width: 15%" class="text-yellow-500" />
-          <Column field="date" :header="t('Fecha')" :sortable="true" style="width: 15%">
+          <Column field="collections" :header="t('Colección')" :sortable="true" class="text-yellow-500" />
+          <Column field="date" :header="t('Fecha')" :sortable="true">
             <template #body="slotProps">
               <span class="text-sm">{{ formatDateTime(slotProps.data.date) }}</span>
             </template>

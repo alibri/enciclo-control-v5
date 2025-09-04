@@ -19,6 +19,7 @@ const loadActiveSessions = async () => {
   }
 };
 const loadData = async () => {
+  console.log('cargando datos');
   const response2 = await statsService.getUserStats({
     from: Math.round(dates.value[0].getTime() / 1000),
     to: Math.round(dates.value[1].getTime() / 1000)
@@ -50,46 +51,48 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <div class="grid grid-cols-12 gap-8">
-    <div class="col-span-12 lg:col-span-6 xl:col-span-6">
-      <div class="bg-white rounded-lg shadow-md p-6 mb-0">
-        <div class="flex justify-between mb-3">
-          <div>
-            <span class="block text-gray-500 font-medium mb-3">{{ t('Sesiones Activas') }}</span>
-            <div class="text-gray-900 font-medium text-xl">
-              {{ sessions.length }}
+  <div class="card">
+    <div class="grid grid-cols-12 gap-8">
+      <div class="col-span-12 lg:col-span-6 xl:col-span-6">
+        <div class="border border-gray-200 rounded-lg p-6 mb-0">
+          <div class="flex justify-between mb-3">
+            <div>
+              <span class="block text-gray-500 font-medium mb-3">{{ t('Sesiones Activas') }}</span>
+              <div class="text-gray-900 font-medium text-xl">
+                {{ sessions.length }}
+              </div>
+            </div>
+            <div class="flex items-center justify-center bg-cyan-100 rounded-full"
+              style="width: 2.5rem; height: 2.5rem">
+              <i class="pi pi-star text-cyan-500 text-xl" />
             </div>
           </div>
-          <div class="flex items-center justify-center bg-cyan-100 rounded-full" style="width: 2.5rem; height: 2.5rem">
-            <i class="pi pi-star text-cyan-500 text-xl" />
-          </div>
         </div>
       </div>
-    </div>
 
-    <div class="col-span-12 lg:col-span-6 xl:col-span-6">
-      <div class="bg-white rounded-lg shadow-md p-6">
-        <h5>{{ t('Sesiones Activas') }}</h5>
-        <SimpleSessionsDataTable :value="sessions" :rows="5" :show-user="true" :show-end="true" />
+      <div class="col-span-12 lg:col-span-6 xl:col-span-6">
+        <div class="border border-gray-200 rounded-lg p-6">
+          <h5>{{ t('Sesiones Activas') }}</h5>
+          <SimpleSessionsDataTable :value="sessions" :rows="5" :show-user="true" :show-end="true" />
+        </div>
       </div>
     </div>
   </div>
 
-  <div class="grid grid-cols-12 gap-8 mt-1">
-    <div class="col-span-12">
-
-        <div class="bg-white rounded-lg shadow-md- p-6 flex justify-center">
-          <div class="flex-1">
-            <InputGroup>
-              <Calendar v-model="dates" selection-mode="range" :manual-input="true" :placeholder="t('Periodo')" />
-              <Button icon="pi pi-refresh" severity="success" @click="loadData()" />
-            </InputGroup>
-          </div>
+  <div class="card">
+    <div class="grid grid-cols-12 gap-4 p-4">
+      <div class="col-span-12 flex justify-center items-center print:hidden">
+        <div class="w-full max-w-md">
+          <InputGroup>
+            <DatePicker v-model="dates" selection-mode="range" :manual-input="true" :placeholder="t('Periodo')" />
+            <Button icon="pi pi-refresh" severity="success" @click="loadData()" />
+          </InputGroup>
         </div>
+      </div>
     </div>
-  </div>
 
-  <div class="grid grid-cols-12 gap-8 mt-1">
-    <UserStatsComplete :value="stats" :show-user="true" />
+    <div class="grid grid-cols-12 gap-8 mt-1">
+      <UserStatsComplete :value="stats" :show-user="true" />
+    </div>
   </div>
 </template>

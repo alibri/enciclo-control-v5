@@ -126,7 +126,7 @@ onMounted(() => {
       </div>
 
       <div class="grid p-1">
-        <div class="col-6 lg:col-3 xl:col-3">
+        <div class="col-span-6 lg:col-span-3 xl:col-span-3">
           <strong class="text-xl mb-3">{{ t('Mensajes') }}</strong>
           <Listbox v-model="message" :options="messages" option-label="description" invalid="true" class="w-full">
             <template #option="slotProps">
@@ -137,14 +137,14 @@ onMounted(() => {
             </template>
           </Listbox>
         </div>
-        <div class="col-12 lg:col-9 xl:col-9 ">
+        <div class="col-span-12 lg:col-span-9 xl:col-span-9 ">
           <div class="border-1 border-200 p-4">
             <div class="flex align-items-center gap-3 mb-3">
-              <label for="description" class="font-semibold w-6rem">{{ t('Título') }}</label>
+              <label for="description" class="font-semibold w-24">{{ t('Título') }}</label>
               <InputText id="description" v-model="editData.description" v-focustrap class="flex-auto" @change="dirty = true" />
             </div>
             <div class="flex align-items-center gap-3 mb-2">
-              <label for="type" class="font-semibold w-6rem">{{ t('Tipo') }}</label>
+              <label for="type" class="font-semibold w-24">{{ t('Tipo') }}</label>
               <InputText id="type" v-model="editData.type" class="flex-auto" @change="dirty = true" />
             </div>
             <div class="p-tiptap">

@@ -76,8 +76,8 @@ onMounted(() => {
 <template>
   <div class="card">
     <h2>{{ t('Páginas') }}</h2>
-    <div class="grid p-1">
-      <div class="col-12">
+    <div class="grid grid-cols-12 p-1">
+      <div class="col-span-12">
         <DataTable
           ref="dt"
           v-model:filters="filters"
@@ -138,18 +138,18 @@ onMounted(() => {
               </NuxtLink>
             </template>
           </Column>
-          <Column field="type" header="type" :sortable="true" style="width: 15%">
+          <Column field="type" header="type" :sortable="true">
             <template #body="slotProps">
               <Tag :severity="formatPageType(slotProps.data.type)" :value="slotProps.data.type" />
             </template>
           </Column>
-          <Column field="collection" :header="t('Colección')" :sortable="true" style="width: 15%" class="text-yellow-500" />
-          <Column field="title" header="Título" :sortable="true" style="width: 50%">
+          <Column field="collection" :header="t('Colección')" :sortable="true" class="text-yellow-500" />
+          <Column field="title" header="Título" :sortable="true">
             <template #body="slotProps">
               <PageLink :page="slotProps.data" />
             </template>
           </Column>
-          <Column field="date" :header="t('Fecha')" :sortable="true" style="width: 15%">
+          <Column field="date" :header="t('Fecha')" :sortable="true">
             <template #body="slotProps">
               <span class="text-sm">{{ formatDateTime(slotProps.data.date) }}</span>
             </template>

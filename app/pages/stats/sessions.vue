@@ -76,8 +76,8 @@ onMounted(() => {
 <template>
   <div class="card">
     <h2>{{ t('Sesiones') }}</h2>
-    <div class="grid p-1">
-      <div class="col-12">
+    <div class="grid grid-cols-12 p-1">
+      <div class="col-span-12">
         <DataTable
           ref="dt"
           v-model:filters="filters"
@@ -140,7 +140,7 @@ onMounted(() => {
               />
             </template>
             <template #body="slotProps">
-              <NuxtLink :to="'/users/'+slotProps.data.user" class="text-red-500 border-none border-bottom-1 border-dotted">
+              <NuxtLink :to="'/users/'+slotProps.data.user" class="text-red-500 border-none border-b border-dotted">
                 {{ slotProps.data.user }}
               </NuxtLink>
             </template>
@@ -155,7 +155,7 @@ onMounted(() => {
               <span class="text-sm">{{ formatSegundosAHora(slotProps.data.ts) }}</span>
             </template>
           </Column>
-          <Column field="pages" :header="t('Páginas')" :sortable="true" style="width: 35%">
+          <Column field="pages" :header="t('Páginas')" :sortable="true">
             <template #body="slotProps">
               <span class="text-sm">{{ slotProps.data.pages }}</span>
             </template>
@@ -165,24 +165,24 @@ onMounted(() => {
               <Tag :severity="formatLoginMode(slotProps.data.mode)" :value="slotProps.data.mode" />
             </template>
           </Column>
-          <Column field="browser" :header="t('Browser')" :sortable="true" class="text-500" />
-          <Column field="version" :header="t('Version')" :sortable="true" class="text-400" />
-          <Column field="platform" :header="t('SO')" :sortable="true" class="text-500" />
+          <Column field="browser" :header="t('Browser')" :sortable="true" class="text-gray-500" />
+          <Column field="version" :header="t('Version')" :sortable="true" class="text-gray-400" />
+          <Column field="platform" :header="t('SO')" :sortable="true" class="text-gray-500" />
           <Column field="mobile" :header="t('Mobile')" :sortable="true">
             <template #body="slotProps">
               <i
-                :class="'pi ' + (slotProps.data.mobile ? 'pi pi-check bg-green-500 text-xs text-white font-bold border-round m-2 p-2' : '')"
+                :class="'pi ' + (slotProps.data.mobile ? 'pi pi-check bg-green-500 text-xs text-white font-bold rounded m-2 p-2' : '')"
               />
             </template>
           </Column>
           <Column field="tablet" :header="t('Tablet')" :sortable="true">
             <template #body="slotProps">
               <i
-                :class="'pi ' + (slotProps.data.tablet ? 'pi pi-check bg-green-500 text-xs text-white font-bold border-round m-2 p-2' : '')"
+                :class="'pi ' + (slotProps.data.tablet ? 'pi pi-check bg-green-500 text-xs text-white font-bold rounded m-2 p-2' : '')"
               />
             </template>
           </Column>
-          <Column field="agent" :header="t('Agent')" :sortable="true" class="text-xs text-400" />
+          <Column field="agent" :header="t('Agent')" :sortable="true" class="text-xs text-gray-400" />
           <Column field="ip" :header="t('IP')" :sortable="true" class="text-yellow-500" />
           <Column field="glc_country_name" :header="t('Pais')" :sortable="true" class="text-xs text-green-500" />
           <Column field="glc_city" :header="t('Region')" :sortable="true" class="text-xs text-blue-300" />

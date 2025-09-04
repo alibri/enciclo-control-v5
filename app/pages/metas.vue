@@ -1,4 +1,4 @@
-<script setup  lang="ts">
+<script setup lang="ts">
 import Editor from 'primevue/editor';
 import ImagenSelect from '~/components/ImagenSelect.vue';
 import MetaService from '~/services/metaService';
@@ -106,27 +106,31 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="bg-white rounded-lg shadow-md p-6">
-    <ConfirmDialog />
+  <ConfirmDialog />
+  <div class="card">
 
-    <h2 class="text-2xl font-bold text-gray-800 mb-6">{{ t('Metas') }} <span v-if="collection" class="text-gray-600"> 🡢 {{ collection.name }}</span> <span v-if="grupo" class="text-gray-400"> 🡢 {{ grupo.name }}</span> <span v-if="dirty" class="text-red-600">*</span></h2>
+    <h2>{{ t('Metas') }} <span v-if="collection" class="text-gray-600"> <span class="text-gray-400">&gt;&gt;</span> {{
+      collection.name }}</span> <span v-if="grupo" class="text-gray-400"> &gt;&gt; {{ grupo.name }}</span> <span
+        v-if="dirty" class="text-red-600">*</span></h2>
     <BlockUI :blocked="loading">
       <div class="grid grid-cols-12 gap-4 p-1">
-        <div class="col-span-6 lg:col-span-1 xl:col-span-1">
+        <div class="col-span-12 lg:col-span-1 xl:col-span-1">
           <strong class="text-xl mb-3 block text-gray-800">{{ t('Colección') }}</strong>
-          <Listbox v-model="collection" :options="collections" option-label="name" invalid="true" class="w-full min-h-full" />
+          <Listbox v-model="collection" :options="collections" option-label="name"
+            class="w-full min-h-full-" />
         </div>
-        <div class="col-span-12 lg:col-span-9 xl:col-span-9">
+        <div class="col-span-12 lg:col-span-11 xl:col-span-11">
           <strong class="text-xl mb-3 block text-gray-800">{{ t('Configuración') }}</strong>
 
-          <div class="border border-gray-200 p-4 rounded-lg">
+          <div class="border border-gray-200 p-4">
             <div class="flex items-center gap-3 mb-3">
               <label for="metaTitle" class="font-semibold w-24 text-gray-700">{{ t('Título') }}</label>
               <InputText id="metaTitle" v-model="editData.metaTitle" class="flex-1" @change="dirty = true" />
             </div>
             <div class="flex items-center gap-3 mb-3">
               <label for="metaCollections" class="font-semibold w-24 text-gray-700">{{ t('Colecciones') }}</label>
-              <InputText id="metaCollections" v-model="editData.metaCollections" class="flex-1" @change="dirty = true" />
+              <InputText id="metaCollections" v-model="editData.metaCollections" class="flex-1"
+                @change="dirty = true" />
             </div>
             <div class="flex items-center gap-3 mb-3">
               <label for="metaAbout" class="font-semibold w-24 text-gray-700">{{ t('Acerca de') }}</label>
@@ -137,31 +141,18 @@ onMounted(() => {
               <InputText id="metaImage" v-model="editData.metaImage" class="flex-1" @change="dirty = true" />
               <ImagenSelect :images="imagesItems" @select="selectImage" />
             </div>
-            <div class="border border-gray-200 p-2 rounded">
+            <div class="border border-gray-200 p-2">
               <Image :src="editData.metaImage" width="200px" />
             </div>
           </div>
           <hr class="my-4 border-gray-200">
           <div class="flex justify-end flex-wrap gap-2">
-            <Button
-              :label="t('Cancelar')"
-              text
-              :disabled="!dirty"
-              severity="danger"
-              autofocus
-              @click="loadDashboard(collection.name)"
-            />
-            <Button
-              :label="t('Guardar')"
-              outlined
-              severity="primary"
-              autofocus
-              @click="saveData()"
-            />
+            <Button :label="t('Cancelar')" text :disabled="!dirty" severity="danger" autofocus
+              @click="loadDashboard(collection.name)" />
+            <Button :label="t('Guardar')" outlined severity="primary" autofocus @click="saveData()" />
           </div>
         </div>
       </div>
     </BlockUI>
   </div>
 </template>
-

@@ -104,7 +104,7 @@ onMounted(() => {
     <Dialog v-model:visible="showEnviarMensaje" modal :header="t('Enviar mensaje')" :style="{ width: '50rem' }">
       <span class="p-text-secondary block mb-5">{{ t('Selecciona el mensaje y el estado') }}</span>
       <div class="flex align-items-center gap-3 mb-3">
-        <label for="descripcion" class="font-semibold w-6rem">{{ t('Mensaje') }}</label>
+        <label for="descripcion" class="font-semibold w-24">{{ t('Mensaje') }}</label>
         <Dropdown
           v-model="selectedMensaje"
           :options="messages"
@@ -152,7 +152,7 @@ onMounted(() => {
 
     <h2>{{ t('Consultas') }}</h2>
     <div class="grid p-1">
-      <div class="col-12">
+      <div class="col-span-12">
         <DataTable
           ref="dt"
           v-model:filters="filters"
