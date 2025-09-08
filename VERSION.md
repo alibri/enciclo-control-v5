@@ -1,5 +1,9 @@
 # VERSIONES
 
+## 5.0.1
+
+- Arreglos de la llamada a la API y cache
+
 ## 5.0.0
 
 - Se migra a Nuxt 4 y PrimeVue 4
