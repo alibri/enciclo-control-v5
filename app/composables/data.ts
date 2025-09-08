@@ -24,7 +24,7 @@ export function useUtilsData () {
     localLazyParams = localLazyParams ?? lazyParams.value;
     let sort: string|null = null;
     if (localLazyParams?.multiSortMeta.length > 0) {
-      const s: SortField = localLazyParams.multiSortMeta[0] as SortField;
+      const s = localLazyParams.multiSortMeta[0] as unknown as SortField;
       sort = s.field;
       sort += ' ' + (s.order === 1 ? 'asc' : 'desc');
     }

@@ -37,10 +37,8 @@ const loadData = async () => {
     (data as any).keyword = searchTerm.value;
   }
 
-  // console.log('llamada a getUsers', data);
   const response = await userService.getUsers(data);
   if (checkLogged(response)) {
-    // console.log('response', response);
     users.value = response?.data?.value?.users || [];
     totalRecords.value = response?.data?.value?.total || 0;
   }

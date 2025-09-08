@@ -14,24 +14,27 @@ export function useApiClient () {
     if (data == null) {
       data = {};
     }
+
     if (!session_id.value) {
       const token = useCookie('token'); // get token from cookies
       session_id.value = token.value ?? null;
     }
 
-    data.session_id = session_id;
+    data.session_id = session_id.value;
 
-    return await useFetch(apiBaseUrl + '/' + method, {
-      method: 'post',
-      headers: { 
-        'Content-Type': 'application/json',
-        'Cache-Control': 'no-store, no-cache, must-revalidate, max-age=0',
-        'Pragma': 'no-cache',
-        'Expires': '0'
-      },
-      body: data,
-      cache: 'no-store' // Evita el caché del navegador
+    // Convertimos los datos a JSON antes de enviarlos
+    const dataString = JSON.stringify(data);
+    const response = await useFetch(apiBaseUrl + '/' + method, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: dataString,
+      key: `${method}-${Date.now()}-${Math.random()}`, // Clave única para cada llamada
+      //server: false, // Solo ejecutar en el cliente
+      //default: () => null, // Valor por defecto
+      //transform: (data: any) => data, // Transformación directa
+      //getCachedData: () => null // No usar datos cacheados
     });
+    return response as Record<string, any>;
   }
 
   return {
