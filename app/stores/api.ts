@@ -23,8 +23,14 @@ export function useApiClient () {
 
     return await useFetch(apiBaseUrl + '/' + method, {
       method: 'post',
-      headers: { 'Content-Type': 'application/json' },
-      body: data
+      headers: { 
+        'Content-Type': 'application/json',
+        'Cache-Control': 'no-store, no-cache, must-revalidate, max-age=0',
+        'Pragma': 'no-cache',
+        'Expires': '0'
+      },
+      body: data,
+      cache: 'no-store' // Evita el caché del navegador
     });
   }
 

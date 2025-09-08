@@ -189,5 +189,17 @@
     "(sin valor)": "(sin valor)",
     "Búsqueda por texto": "Búsqueda por texto",
     "Búsqueda por consulta predefinida": "Búsqueda por consulta predefinida",
-    "Selecciona una consulta o un texto de búsqueda": "Selecciona una consulta o un texto de búsqueda"
+    "Selecciona una consulta o un texto de búsqueda": "Selecciona una consulta o un texto de búsqueda",
+    "Sí": "Sí",
+    "No": "No",
+    "Aceptar": "Aceptar",
+    "Administrador": "Administrador",
+    "Información Básica": "Información Básica",
+    "Contraseña": "Contraseña",
+    "Configuración de Acceso": "Configuración de Acceso",
+    "Seleciona Colecciones": "Seleciona Colecciones",
+    "Restricciones": "Restricciones",
+    "Rango IP": "Rango IP",
+    "Permisos y Estado": "Permisos y Estado",
+    "Editando": "Editando"
 }
