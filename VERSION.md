@@ -2,8 +2,10 @@
 
 ## 5.0.3
 
-- Colores de los gráficos
+- Colores de los gráficos y totales en el dashboard
 - Añade el formato de números en el dashboard
+- Colores de los totales en el dashboard
+- Colores de los gráficos en el dashboard
 
 ## 5.0.2
 

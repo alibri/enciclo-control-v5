@@ -245,7 +245,7 @@ const chartOptions = computed(() => {
           <div>
             <span class="block text-gray-900 font-medium mb-3">{{ t('Total Consultas') }}</span>
             <div class="text-cyan-400 font-medium text-xl">
-              {{ querieslength }}
+              {{ formatIntNumber(querieslength) }}
             </div>
           </div>
           <div class="flex items-center justify-center bg-cyan-100 rounded-full" style="width: 2.5rem; height: 2.5rem">
@@ -264,7 +264,7 @@ const chartOptions = computed(() => {
           <div>
             <span class="block text-gray-900 font-medium mb-3">{{ t('Total Impresiones') }}</span>
             <div class="text-green-400 font-medium text-xl">
-              {{ printslength }}
+              {{ formatIntNumber(printslength) }}
             </div>
           </div>
           <div class="flex items-center justify-center bg-green-100 rounded-full" style="width: 2.5rem; height: 2.5rem">
