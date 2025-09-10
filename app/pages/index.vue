@@ -18,8 +18,10 @@ const loadActiveSessions = async () => {
     sessions.value = response.data?.value?.list;
   }
 };
+
+const blocked = ref(false);
 const loadData = async () => {
-  console.log('cargando datos');
+  blocked.value = true;
   const response2 = await statsService.getUserStats({
     from: Math.round(dates.value[0].getTime() / 1000),
     to: Math.round(dates.value[1].getTime() / 1000)
@@ -27,11 +29,10 @@ const loadData = async () => {
   if (checkLogged(response2)) {
     stats.value = response2?.data?.value;
   }
+  blocked.value = false;
 };
 const interval: Number = 10000; // runtimeConfig.public?.INTERVAL_REFRESH_ACTIVES as Number;
-const interval2: Number = 30000; // runtimeConfig.public?.INTERVAL_REFRESH_ACTIVES as Number;
 let timer: any = null;
-let timer2: any = null;
 
 onMounted(() => {
   loadData();
@@ -40,14 +41,10 @@ onMounted(() => {
     loadActiveSessions();
   }, interval as number);
 
-  timer2 = setInterval(() => {
-    loadData();
-  }, interval2 as number);
 });
 
 onUnmounted(() => {
   clearInterval(timer);
-  clearInterval(timer2);
 });
 </script>
 
@@ -80,20 +77,22 @@ onUnmounted(() => {
     </div>
   </div>
 
-  <div class="card">
-    <div class="grid grid-cols-12 gap-4 p-4">
-      <div class="col-span-12 flex justify-center items-center print:hidden">
-        <div class="w-full max-w-md">
-          <InputGroup>
-            <DatePicker v-model="dates" selection-mode="range" :manual-input="true" :placeholder="t('Periodo')" />
-            <Button icon="pi pi-refresh" severity="success" @click="loadData()" />
-          </InputGroup>
+  <BlockUI :blocked="blocked">
+    <div class="card">
+      <div class="grid grid-cols-12 gap-4 p-4">
+        <div class="col-span-12 flex justify-center items-center print:hidden">
+          <div class="w-full max-w-md">
+            <InputGroup>
+              <DatePicker v-model="dates" selection-mode="range" :manual-input="true" :placeholder="t('Periodo')" />
+              <Button icon="pi pi-refresh" severity="success" @click="loadData()" />
+            </InputGroup>
+          </div>
         </div>
       </div>
-    </div>
 
-    <div class="grid grid-cols-12 gap-8 mt-1">
-      <UserStatsComplete :value="stats" :show-user="true" />
+      <div class="grid grid-cols-12 gap-8 mt-1">
+        <UserStatsComplete :value="stats" :show-user="true" />
+      </div>
     </div>
-  </div>
+  </BlockUI>
 </template>

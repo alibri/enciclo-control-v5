@@ -6,6 +6,7 @@
 - Añade el formato de números en el dashboard
 - Colores de los totales en el dashboard
 - Colores de los gráficos en el dashboard
+- Bloqueo de la carga de datos en el dashboard
 
 ## 5.0.2
 
