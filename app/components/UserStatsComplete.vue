@@ -38,7 +38,7 @@ const chartLogins = computed(() => {
         label: t('Logins'),
         data: Object.values(props.value?.logins_days),
         fill: false,
-        borderColor: documentStyle.getPropertyValue('--blue-500'),
+        borderColor: documentStyle.getPropertyValue('--p-blue-500'),
         tension: 0.4
       }
     ]
@@ -58,7 +58,7 @@ const chartTime = computed(() => {
         label: t('Tiempo (minutos)'),
         data: Object.values(props.value?.time_days).map((item) => (item as number) / 60),
         fill: false,
-        borderColor: documentStyle.getPropertyValue('--red-500'),
+        borderColor: documentStyle.getPropertyValue('--p-red-500'),
         tension: 0.4
       }
     ]
@@ -78,7 +78,7 @@ const chartPages = computed(() => {
         label: t('Páginas vistas'),
         data: Object.values(props.value?.pages_days),
         fill: false,
-        borderColor: documentStyle.getPropertyValue('--green-500'),
+        borderColor: documentStyle.getPropertyValue('--p-green-500'),
         tension: 0.4
       }
     ]
@@ -98,7 +98,7 @@ const chartChats = computed(() => {
         label: t('Consultas Pregúntame'),
         data: Object.values(props.value?.chats_days),
         fill: false,
-        borderColor: documentStyle.getPropertyValue('--yellow-500'),
+        borderColor: documentStyle.getPropertyValue('--p-yellow-500'),
         tension: 0.4
       }
     ]
