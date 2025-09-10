@@ -243,8 +243,8 @@ const chartOptions = computed(() => {
       <div class="border border-gray-200 rounded-lg p-6 mb-2">
         <div class="flex justify-between mb-3">
           <div>
-            <span class="block text-gray-500 font-medium mb-3">{{ t('Total Consultas') }}</span>
-            <div class="text-gray-900 font-medium text-xl">
+            <span class="block text-gray-900 font-medium mb-3">{{ t('Total Consultas') }}</span>
+            <div class="text-cyan-400 font-medium text-xl">
               {{ querieslength }}
             </div>
           </div>
@@ -262,28 +262,8 @@ const chartOptions = computed(() => {
       <div class="border border-gray-200 rounded-lg p-6 mb-2">
         <div class="flex justify-between mb-3">
           <div>
-            <span class="block text-gray-500 font-medium mb-3">{{ t('Total Pregúntame') }}</span>
-            <div class="text-gray-900 font-medium text-xl">
-              {{ chatslength }}
-            </div>
-          </div>
-          <div class="flex items-center justify-center bg-yellow-100 rounded-full"
-            style="width: 2.5rem; height: 2.5rem">
-            <i class="pi pi-print text-yellow-500 text-xl" />
-          </div>
-        </div>
-      </div>
-      <div class="border border-gray-200 rounded-lg p-6">
-        <SimpleChatsDataTable :value="props.value.chats" :rows="10" :paginator="true" :show-user="showUser" />
-      </div>
-    </div>
-
-    <div class="col-span-12 lg:col-span-6 xl:col-span-6 print:hidden">
-      <div class="border border-gray-200 rounded-lg p-6 mb-2">
-        <div class="flex justify-between mb-3">
-          <div>
-            <span class="block text-gray-500 font-medium mb-3">{{ t('Total Impresiones') }}</span>
-            <div class="text-gray-900 font-medium text-xl">
+            <span class="block text-gray-900 font-medium mb-3">{{ t('Total Impresiones') }}</span>
+            <div class="text-green-400 font-medium text-xl">
               {{ printslength }}
             </div>
           </div>
