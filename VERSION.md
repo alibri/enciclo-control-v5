@@ -1,5 +1,9 @@
 # VERSIONES
 
+## 5.0.3
+
+- Colores de los gráficos
+
 ## 5.0.2
 
 - Añade el control de acceso a las estadísticas de los clientes
