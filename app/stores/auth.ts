@@ -22,6 +22,8 @@ export const useAuthStore = defineStore('auth', {
       const { data, pending }: any = await useFetch(apiBaseUrl + '/login', {
         method: 'post',
         headers: { 'Content-Type': 'application/json' },
+        key: `login-${Date.now()}-${Math.random()}`, // Clave única para cada llamada
+
         body: {
           username,
           secret
