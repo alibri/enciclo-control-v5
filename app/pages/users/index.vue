@@ -72,6 +72,7 @@ const emptyUser = {
   iseditor: false,
   istester: false,
   isenabled: true,
+  dashboard_access: false,
   email: '',
   grupo: '',
   meta: ''
@@ -108,6 +109,7 @@ const editUser = (user: any) => {
   user.isenabled = parseInt(user.isenabled) === 1;
   user.iseditor = parseInt(user.iseditor) === 1;
   user.istester = parseInt(user.istester) === 1;
+  user.dashboard_access = parseInt(user.dashboard_access) === 1;
   let parts = user.begin?.split('/');
   if (parts) {
     const begin = (new Date(parts[2], parts[1], parts[0]));// .toISOString();
@@ -458,6 +460,20 @@ const exportData = () => {
           <Column field="begin" :header="t('Inicio')" :sortable="true" class="text-xs" />
           <Column field="end" :header="t('Final')" :sortable="true" class="text-xs" />
           <Column field="email" :header="t('Email')" :sortable="true" class="text-xs" />
+          <Column field="isenabled" :header="t('Activo')" :sortable="true" class="text-center">
+            <template #body="slotProps">
+              <i
+                :class="'pi ' + (slotProps.data.isenabled ? 'pi-check bg-blue-500 text-white font-bold rounded-full m-2 p-2' : 'pi-times bg-pink-500 text-white font-bold rounded-full m-2 p-2')"
+              />
+            </template>
+          </Column>
+          <Column field="dashboard_access" :header="t('Dashboard')" :sortable="true" class="text-center"> 
+            <template #body="slotProps">
+              <i
+                :class="'pi ' + (slotProps.data.dashboard_access ? 'pi-check bg-blue-500 text-white font-bold rounded-full m-2 p-2' : 'pi-times bg-pink-500 text-white font-bold rounded-full m-2 p-2')"
+              />
+            </template>
+          </Column>
           <Column field="isadmin" :header="t('Admin')" :sortable="true" class="text-center">
             <template #body="slotProps">
               <i
@@ -476,13 +492,6 @@ const exportData = () => {
             <template #body="slotProps">
               <i
                 :class="'pi ' + (slotProps.data.istester ? 'pi pi-check bg-orange-500 text-white font-bold rounded-full m-2 p-2' : '')"
-              />
-            </template>
-          </Column>
-          <Column field="isenabled" :header="t('Activo')" :sortable="true" class="text-center">
-            <template #body="slotProps">
-              <i
-                :class="'pi ' + (slotProps.data.isenabled ? 'pi-check bg-blue-500 text-white font-bold rounded-full m-2 p-2' : 'pi-times bg-pink-500 text-white font-bold rounded-full m-2 p-2')"
               />
             </template>
           </Column>
@@ -540,6 +549,10 @@ const exportData = () => {
               <div class="flex items-center gap-2">
                 <ToggleButton v-model="newUser.isenabled" :on-label="t('Sí')" :off-label="t('No')" on-icon="pi pi-check" off-icon="pi pi-times" />
                 <span class="pi pi-check text-green-600" /> <label for="isenabled" class="text-gray-700 font-medium">{{ t('Activo') }}</label>
+              </div>
+              <div class="flex items-center gap-2">
+                <ToggleButton v-model="newUser.dashboard_access" :on-label="t('Sí')" :off-label="t('No')" on-icon="pi pi-check" off-icon="pi pi-times" />
+                <span class="pi pi-chart-bar text-yellow-600" /> <label for="dashboard_access" class="text-gray-700 font-medium">{{ t('Dashboard') }}</label>
               </div>
               <div class="flex items-center gap-2">
                 <ToggleButton v-model="newUser.isadmin" :on-label="t('Sí')" :off-label="t('No')" on-icon="pi pi-check" off-icon="pi pi-times" />
