@@ -1,5 +1,9 @@
 # VERSIONES
 
+## 5.0.2
+
+- Añade el control de acceso a las estadísticas de los clientes
+
 ## 5.0.1
 
 - Arreglos de la llamada a la API y cache
