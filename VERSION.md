@@ -3,6 +3,7 @@
 ## 5.0.3
 
 - Colores de los gráficos
+- Añade el formato de números en el dashboard
 
 ## 5.0.2
 

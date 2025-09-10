@@ -148,9 +148,9 @@ const chartOptions = computed(() => {
       <div class="border border-gray-200 rounded-lg p-6 mb-2">
         <div class="flex justify-between mb-3">
           <div>
-            <span class="block text-gray-500 font-medium mb-3">{{ t('Total Logins') }}</span>
-            <div class="text-gray-900 font-medium text-xl">
-              {{ loginlength }}
+            <span class="block text-gray-900 font-medium mb-3">{{ t('Total Logins') }}</span>
+            <div class="text-blue-400 font-medium text-xl">
+              {{ formatIntNumber(loginlength) }}
             </div>
           </div>
           <div class="flex items-center justify-center bg-blue-100 rounded-full print:hidden"
@@ -168,9 +168,9 @@ const chartOptions = computed(() => {
       <div class="border border-gray-200 rounded-lg p-6 mb-2">
         <div class="flex justify-between mb-3">
           <div>
-            <span class="block text-gray-500 font-medium mb-3">{{ t('Páginas Vistas') }}</span>
-            <div class="text-gray-900 font-medium text-xl">
-              {{ pageslength }}
+            <span class="block text-gray-900 font-medium mb-3">{{ t('Páginas Vistas') }}</span>
+            <div class="text-green-400 font-medium text-xl">
+              {{ formatIntNumber(pageslength) }}
             </div>
           </div>
           <div class="flex items-center justify-center bg-green-100 rounded-full print:hidden"
@@ -188,8 +188,8 @@ const chartOptions = computed(() => {
       <div class="border border-gray-200 rounded-lg p-6 mb-2">
         <div class="flex justify-between mb-3">
           <div>
-            <span class="block text-gray-500 font-medium mb-3">{{ t('Tiempo Total') }}</span>
-            <div class="text-gray-900 font-medium text-xl">
+            <span class="block text-gray-900 font-medium mb-3">{{ t('Tiempo Total') }}</span>
+            <div class="text-red-400 font-medium text-xl">
               {{ total_time }}
             </div>
           </div>
@@ -208,9 +208,9 @@ const chartOptions = computed(() => {
       <div class="border border-gray-200 rounded-lg p-6 mb-2">
         <div class="flex justify-between mb-3">
           <div>
-            <span class="block text-gray-500 font-medium mb-3">{{ t('Total Pregúntame') }}</span>
-            <div class="text-gray-900 font-medium text-xl">
-              {{ chatslength }}
+            <span class="block text-gray-900 font-medium mb-3">{{ t('Total Pregúntame') }}</span>
+            <div class="text-yellow-400 font-medium text-xl">
+              {{ formatIntNumber(chatslength) }}
             </div>
           </div>
           <div class="flex items-center justify-center bg-yellow-100 rounded-full print:hidden"
