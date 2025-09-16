@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { consola } from 'consola';
-// import { FilterMatchMode, FilterOperator } from 'primevue/api';
 import { useToast } from 'primevue/usetoast';
 import { useConfirm } from 'primevue/useconfirm';
 import UserService from '~/services/userService';
@@ -16,9 +15,7 @@ const userService = new UserService();
 
 filters.value = {
   global: { value: null, matchMode: FilterMatchMode.CONTAINS },
-  user: { value: null, matchMode: FilterMatchMode.CONTAINS } /* ,
-  code: { value: null, matchMode: FilterMatchMode.CONTAINS },
-  inventoryStatus: { value: null, matchMode: FilterMatchMode.STARTS_WITH } */
+  user: { value: null, matchMode: FilterMatchMode.CONTAINS }
 };
 
 const loading = ref(true);
@@ -52,7 +49,6 @@ onMounted(() => {
 });
 
 // New User
-const toast = useToast();
 const displayNewUser = ref(false);
 
 const emptyUser = {
@@ -68,6 +64,7 @@ const emptyUser = {
   period: [],
   begin: '',
   end: '',
+  stats_min: '',
   isadmin: false,
   iseditor: false,
   istester: false,
@@ -86,7 +83,6 @@ const loadColections = async () => {
   const response = await userService.getCollections();
   if (checkLogged(response)) {
     collections.value = response?.data?.value?.collections;
-    // totalRecords.value = response?.data?.value?.total;
   }
 };
 
@@ -116,7 +112,6 @@ const editUser = (user: any) => {
     parts = user.end.split('/');
     const end = (new Date(parts[2], parts[1], parts[0]));// .toISOString();
     user.period = [begin, end];
-    consola.log(begin, end, user.period);
   }
   // Limpiar el array de colecciones eliminando valores nulos o vacíos
   if (user.collections) {
@@ -172,6 +167,9 @@ const addUser = async () => {
       if (newUser.value?.end && newUser.value?.period?.[1]) {
         newUser.value.end = newUser.value.period[1];
       }
+      if (newUser.value?.stats_min) {
+        newUser.value.stats_min = newUser.value.stats_min;
+      }
       consola.log('ADD USER', response);
       showMessage('info', t('Usuarios'), t('Usuario {id} {status}').replace('{id}', response?.data?.value?.id).replace('{status}', (id !== null ? 'Actualizado' : 'Creado')));
       closeNewUser();
@@ -208,7 +206,7 @@ const importFromExcel = async (event: any) => {
     }
   };
 }
-
+/*
 const resetPassword = async (user: any) => {
   console.log('resetPassword', user);
   const response = await userService.resetPassword(user.id);
@@ -232,7 +230,7 @@ const sendAccessData = async (user: any) => {
     }
   }
 }
-
+*/
 const menu = ref();
 const menuData = ref();
 const items = ref([
@@ -459,6 +457,7 @@ const exportData = () => {
           </Column>
           <Column field="begin" :header="t('Inicio')" :sortable="true" class="text-xs" />
           <Column field="end" :header="t('Final')" :sortable="true" class="text-xs" />
+          <Column field="stats_min" :header="t('Inicio estadísticas')" :sortable="true" class="text-xs" />
           <Column field="email" :header="t('Email')" :sortable="true" class="text-xs" />
           <Column field="isenabled" :header="t('Activo')" :sortable="true" class="text-center">
             <template #body="slotProps">
@@ -536,124 +535,177 @@ const exportData = () => {
         </DataTable>
       </div>
 
-      <Dialog v-model:visible="displayNewUser" :modal="true">
+      <Dialog v-model:visible="displayNewUser" 
+      modal maximizable
+      :style="{ width: '50rem' }" :breakpoints="{ '1199px': '75vw', '575px': '90vw' }">
         <template #header>
           <h3 class="text-lg font-semibold text-gray-800"><i class="pi pi-user" /> {{ usuarioText }}</h3>
         </template>
 
         <div class="grid grid-cols-12 gap-6">
           <!-- Sección 1: Permisos y Estado -->
-          <div class="col-span-12">
-            <h4 class="text-md font-semibold text-gray-800 mb-3 border-b border-gray-200 pb-2">{{ t('Permisos y Estado') }}</h4>
-            <div class="space-y-3 mb-6">
-              <div class="flex items-center gap-2">
-                <ToggleButton v-model="newUser.isenabled" :on-label="t('Sí')" :off-label="t('No')" on-icon="pi pi-check" off-icon="pi pi-times" />
-                <span class="pi pi-check text-green-600" /> <label for="isenabled" class="text-gray-700 font-medium">{{ t('Activo') }}</label>
-              </div>
-              <div class="flex items-center gap-2">
-                <ToggleButton v-model="newUser.dashboard_access" :on-label="t('Sí')" :off-label="t('No')" on-icon="pi pi-check" off-icon="pi pi-times" />
-                <span class="pi pi-chart-bar text-yellow-600" /> <label for="dashboard_access" class="text-gray-700 font-medium">{{ t('Dashboard') }}</label>
-              </div>
-              <div class="flex items-center gap-2">
-                <ToggleButton v-model="newUser.isadmin" :on-label="t('Sí')" :off-label="t('No')" on-icon="pi pi-check" off-icon="pi pi-times" />
-                <span class="pi pi-user text-purple-600" /> <label for="isadmin" class="text-gray-700 font-medium">{{ t('Administrador') }}</label>
-              </div>
-              <div class="flex items-center gap-2">
-                <ToggleButton v-model="newUser.iseditor" :on-label="t('Sí')" :off-label="t('No')" on-icon="pi pi-check" off-icon="pi pi-times" />
-                <span class="pi pi-pencil text-blue-600" /> <label for="iseditor" class="text-gray-700 font-medium">{{ t('Editor') }}</label>
-              </div>
-              <div class="flex items-center gap-2">
-                <ToggleButton v-model="newUser.istester" :on-label="t('Sí')" :off-label="t('No')" on-icon="pi pi-check" off-icon="pi pi-times" />
-                <span class="pi pi-comment text-orange-600" /> <label for="istester" class="text-gray-700 font-medium">{{ t('Pregúntame') }}</label>
+          <Fieldset :legend="t('Estado del usuario')" class="col-span-12">
+            <div class="grid grid-cols-12">
+              <div class="col-span-12">
+                <div class="space-y-3">
+                  <div class="flex items-center gap-2">
+                    <ToggleSwitch v-model="newUser.isenabled" :on-label="t('Sí')" :off-label="t('No')" on-icon="pi pi-check" off-icon="pi pi-times" />
+                    <span class="pi pi-check text-green-600" /> <label for="isenabled" class="text-gray-700 font-medium">{{ t('Activo') }}</label>
+                  </div>
+                </div>
               </div>
             </div>
-          </div>
+          </Fieldset>
+          <Fieldset :legend="t('Permisos del usuario')" class="col-span-12">
+
+            <div class="grid grid-cols-12 gap-2">
+              <div class="col-span-3">
+                <div class="flex items-center gap-2">
+                  <ToggleSwitch v-model="newUser.isadmin" :on-label="t('Sí')" :off-label="t('No')" on-icon="pi pi-check" off-icon="pi pi-times" />
+                  <span class="pi pi-user text-purple-600" /> <label for="isadmin" class="text-gray-700 font-medium">{{ t('Admin') }}</label>
+                </div>
+              </div>
+              <div class="col-span-3">
+                <div class="flex items-center gap-2">
+                  <ToggleSwitch v-model="newUser.iseditor" :on-label="t('Sí')" :off-label="t('No')" on-icon="pi pi-check" off-icon="pi pi-times" />
+                  <span class="pi pi-pencil text-blue-600" /> <label for="iseditor" class="text-gray-700 font-medium">{{ t('Editor') }}</label>
+                </div>
+              </div>
+              <div class="col-span-3">
+                <div class="flex items-center gap-2 h-full" style="align-items: center;">
+                  <ToggleSwitch v-model="newUser.dashboard_access" :on-label="t('Sí')" :off-label="t('No')" on-icon="pi pi-check" off-icon="pi pi-times" />
+                  <span class="pi pi-chart-bar text-yellow-600" />
+                  <label for="dashboard_access" class="text-gray-700 font-medium">{{ t('Dashboard') }}</label>
+                </div>
+              </div>
+              <div class="col-span-3">
+                <div class="flex items-center gap-2">
+                  <ToggleSwitch v-model="newUser.istester" :on-label="t('Sí')" :off-label="t('No')" on-icon="pi pi-check" off-icon="pi pi-times" />
+                  <span class="pi pi-comment text-orange-600" /> <label for="istester" class="text-gray-700 font-medium">{{ t('Pregúntame') }}</label>
+                </div>
+              </div>            
+            </div>
+          </Fieldset>
 
           <!-- Sección 2: Información Básica -->
-          <div class="col-span-12">
-            <h4 class="text-md font-semibold text-gray-800 mb-3 border-b border-gray-200 pb-2">{{ t('Información Básica') }}</h4>
-            <div class="grid grid-cols-12 gap-4 mb-4">
-              <div class="col-span-6">
-                <label for="name1" class="block text-sm font-medium text-gray-700 mb-2">{{ t('Nombre') }}</label>
-                <InputText id="name1" v-model="newUser.name" type="text" />
+          <Fieldset :legend="t('Información Básica')" class="col-span-12">
+            <div class="grid grid-cols-12 gap-4">
+              <div class="col-span-6 mb-4">
+                <FloatLabel variant="in">
+                  <label for="name1" class="block text-sm font-medium text-gray-700 mb-2">{{ t('Nombre') }}</label>
+                  <InputText id="name1" v-model="newUser.name" type="text" class="w-full"/>
+                </FloatLabel>
               </div>
-              <div class="col-span-6">
-                <label for="email1" class="block text-sm font-medium text-gray-700 mb-2">{{ t('Email') }}</label>
-                <InputText id="email1" v-model="newUser.email" type="text" />
-              </div>
-            </div>
-            <div class="grid grid-cols-12 gap-4 mb-4">
-              <div class="col-span-6">
-                <label for="user" class="block text-sm font-medium text-gray-700 mb-2">{{ t('Usuario') }}</label>
-                <InputText id="user" v-model="newUser.user" type="text" />
-              </div>
-              <div class="col-span-6">
-                <label for="passwd" class="block text-sm font-medium text-gray-700 mb-2">{{ t('Contraseña') }}</label>
-                <Password id="passwd" v-model="newUser.passwd" type="text" toggle-mask />
+              <div class="col-span-6 mb-4">
+                <FloatLabel variant="in">
+                  <label for="email1" class="block text-sm font-medium text-gray-700 mb-2">{{ t('Email') }}</label>
+                  <InputText id="email1" v-model="newUser.email" type="text" class="w-full"/>
+                </FloatLabel>
               </div>
             </div>
-            <div class="grid grid-cols-12 gap-4 mb-4">
-              <div class="col-span-4">
-                <label for="grupo" class="block text-sm font-medium text-gray-700 mb-2">{{ t('Grupo') }}</label>
-                <InputText id="grupo" v-model="newUser.grupo" type="text" />
+            <div class="grid grid-cols-12 gap-4">
+              <div class="col-span-6 mb-4">
+                <FloatLabel variant="in"  class="w-full">
+                  <label for="user" class="block text-sm font-medium text-gray-700 mb-2">{{ t('Usuario') }}</label>
+                  <InputText id="user" v-model="newUser.user" type="text"/>
+                </FloatLabel>
               </div>
-              <div class="col-span-4">
-                <label for="meta" class="block text-sm font-medium text-gray-700 mb-2">{{ t('Meta') }}</label>
-                <InputText id="meta" v-model="newUser.meta" type="text" />
-              </div>
-              <div class="col-span-4">
-                <label for="licencias" class="block text-sm font-medium text-gray-700 mb-2">{{ t('Licencias') }}</label>
-                <InputNumber id="licencias" v-model="newUser.licenses" mode="decimal" />
+              <div class="col-span-6 mb-4">
+                <FloatLabel variant="in">
+                  <label for="passwd" class="block text-sm font-medium text-gray-700 mb-2">{{ t('Contraseña') }}</label>
+                  <InputText id="passwd" v-model="newUser.passwd" type="text"  class="w-full" toggle-mask/>
+                </FloatLabel>
               </div>
             </div>
-          </div>
+            <div class="grid grid-cols-12 gap-4">
+              <div class="col-span-6 mb-4">
+                <FloatLabel variant="in">
+                  <label for="grupo" class="block text-sm font-medium text-gray-700 mb-2">{{ t('Grupo') }}</label>
+                  <InputText id="grupo" v-model="newUser.grupo" type="text" class="w-full"/>
+                </FloatLabel>
+              </div>
+              <div class="col-span-6 mb-4">
+                <FloatLabel variant="in">
+                  <label for="meta" class="block text-sm font-medium text-gray-700 mb-2">{{ t('Meta Por Defecto') }}</label>
+                  <InputText id="meta" v-model="newUser.meta" type="text" class="w-full"/>
+                </FloatLabel>
+              </div>
+            </div>
+          </Fieldset>
 
           <!-- Sección 3: Configuración de Acceso -->
-          <div class="col-span-12">
-            <h4 class="text-md font-semibold text-gray-800 mb-3 border-b border-gray-200 pb-2">{{ t('Configuración de Acceso') }}</h4>
-            <div class="grid grid-cols-12 gap-4 mb-4">
-              <div class="col-span-6">
+          <Fieldset :legend="t('Configuración de Acceso')" class="col-span-12">
+            <div class="grid grid-cols-12 gap-4">
+              <div class="col-span-4">
+                <FloatLabel variant="in">
+                  <label for="licencias" class="block text-sm font-medium text-gray-700 mb-2">{{ t('Licencias') }}</label>
+                  <InputNumber id="licencias" v-model="newUser.licenses" mode="decimal" />
+                </FloatLabel>
+              </div>
+              <div class="col-span-4">
+                <FloatLabel variant="in">
                 <label for="begin" class="block text-sm font-medium text-gray-700 mb-2">{{ t('Desde') }}</label>
                 <InputMask v-model="newUser.begin" mask="99/99/9999" placeholder="99/99/9999" slot-char="dd/mm/yyyy" />
+                </FloatLabel>
               </div>
-              <div class="col-span-6">
+              <div class="col-span-4">
+                <FloatLabel variant="in">
                 <label for="end" class="block text-sm font-medium text-gray-700 mb-2">{{ t('Hasta') }}</label>
                 <InputMask v-model="newUser.end" mask="99/99/9999" placeholder="99/99/9999" slot-char="dd/mm/yyyy" />
+                </FloatLabel>
               </div>
             </div>
-            <div class="col-span-12 mb-4">
-              <label for="collections" class="block text-sm font-medium text-gray-700 mb-2">{{ t('Colecciones') }}</label>
-              <MultiSelect
-                v-model="newUser.collections"
-                :options="collections"
-                option-label="name"
-                option-value="code"
-                display="chip"
-                :placeholder="t('Seleciona Colecciones')"
-              />
+            <hr/>
+            <div class="grid grid-cols-12 gap-4">
+              <div class="col-span-12">
+                <FloatLabel variant="in">
+                  <label for="stats_min" class="block text-sm font-medium text-gray-700 mb-2">{{ t('Inicio estadísticas') }}</label>
+                <InputMask v-model="newUser.stats_min" mask="99/99/9999" placeholder="99/99/9999" slot-char="dd/mm/yyyy" />
+                </FloatLabel>
+              </div>
             </div>
-          </div>
+            <hr/>
+            <div class="col-span-12 gap-4">
+              <FloatLabel variant="in">
+                <label for="collections" class="block text-sm font-medium text-gray-700 mb-2">{{ t('Colecciones') }}</label>
+                <MultiSelect
+                  v-model="newUser.collections"
+                  :options="collections"
+                  option-label="name"
+                  option-value="code"
+                  display="chip"
+                  :fluid="true"
+                  :maxSelectedLabels="3"
+                  :selectedItemsLabel="newUser.collections.length + ' ' + t('Colecciones seleccionadas')"
+                  :placeholder="t('Seleciona Colecciones')"
+                />
+              </FloatLabel>
+            </div>
+          </Fieldset>
 
           <!-- Sección 4: Restricciones -->
-          <div class="col-span-12">
-            <h4 class="text-md font-semibold text-gray-800 mb-3 border-b border-gray-200 pb-2">{{ t('Restricciones') }}</h4>
-            <div class="grid grid-cols-12 gap-4 mb-4">
+          <Fieldset :legend="t('Restricciones')" class="col-span-12">
+            <div class="grid grid-cols-12 gap-4">
               <div class="col-span-12">
-                <label for="iprange" class="block text-sm font-medium text-gray-700 mb-2">{{ t('Rango IP') }}</label>
-                <Textarea id="iprange" v-model="newUser.iprange" :auto-resize="true" rows="3" cols="30" placeholder="Ej: 192.168.1.0/24, 10.0.0.0/8" />
+                <FloatLabel variant="in">
+                  <label for="iprange" class="block text-sm font-medium text-gray-700 mb-2">{{ t('Rango IP') }}</label>
+                  <Textarea id="iprange" v-model="newUser.iprange" :auto-resize="true" rows="3" :placeholder="t('Ej: 192.168.1.0/24, 10.0.0.0/8')" class="w-full" />
+              </FloatLabel>
               </div>
-            </div>
-            <div class="grid grid-cols-12 gap-4 mb-4">
               <div class="col-span-6">
+                <FloatLabel variant="in">
                 <label for="geoip" class="block text-sm font-medium text-gray-700 mb-2">{{ t('GeoIP') }}</label>
-                <Textarea id="geoip" v-model="newUser.geoip" :auto-resize="true" rows="3" cols="30" placeholder="Ej: ES, FR, DE" />
+                <Textarea id="geoip" v-model="newUser.geoip" :auto-resize="true" rows="3" cols="30" :placeholder="t('Ej: ES, FR, DE')" class="w-full" />
+              </FloatLabel>
               </div>
               <div class="col-span-6">
+                <FloatLabel variant="in">
                 <label for="referer" class="block text-sm font-medium text-gray-700 mb-2">{{ t('Referer') }}</label>
-                <Textarea id="referer" v-model="newUser.referer" :auto-resize="true" rows="3" cols="30" placeholder="Ej: *.example.com" />
+                <Textarea id="referer" v-model="newUser.referer" :auto-resize="true" rows="3" cols="30" :placeholder="t('Ej: *.example.com')" class="w-full" />
+              </FloatLabel>
               </div>
             </div>
-          </div>
+          </Fieldset>
 
           <!-- Mensaje de error -->
           <Message v-show="showError" severity="error" class="col-span-12">
@@ -669,3 +721,16 @@ const exportData = () => {
     </div>
   </div>
 </template>
+
+<style scoped>
+@layer primevue {
+  .p-floatlabel:has(input.p-filled) label, .p-floatlabel:has(textarea.p-filled) label, .p-floatlabel:has(.p-inputwrapper-filled) label {
+    z-index: 999;
+  }
+}
+@layer primevue {
+  .p-floatlabel label {
+    z-index: 999;
+  }
+}
+</style>

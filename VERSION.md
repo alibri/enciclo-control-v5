@@ -1,5 +1,10 @@
 # VERSIONES
 
+## 5.0.4
+
+- Añade fecha de inicio de estadísticas
+- Mejora el formulario de usuarios
+
 ## 5.0.3
 
 - Colores de los gráficos y totales en el dashboard

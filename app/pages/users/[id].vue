@@ -10,7 +10,6 @@ const user = ref(route.params.id);
 const dates = ref();
 const desde = new Date();
 desde.setMonth(desde.getMonth() - 1);
-// desde.setFullYear(desde.getFullYear() - 10);
 dates.value = [desde, new Date()];
 const isGroup = ref(String(route.params.id || '').startsWith('g__'));
 const description = ref(String(route.params.id || '').replace('g__', ''));
