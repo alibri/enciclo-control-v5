@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import { consola } from 'consola';
-import { useToast } from 'primevue/usetoast';
 import { useConfirm } from 'primevue/useconfirm';
 import UserService from '~/services/userService';
 const { showMessage, removeGroup } = useMessages();
 
 import IconField from 'primevue/iconfield';
 import InputIcon from 'primevue/inputicon';
+import UserDialog from '~/components/UserDialog.vue';
+import UserStatsDialog from '~/components/UserStatsDialog.vue';
 
 const { filters } = usePrimeDataTable();
 const { t } = useI18n();
@@ -86,8 +86,6 @@ const loadColections = async () => {
   }
 };
 
-const showError = ref(false);
-const errorMessage = ref('');
 const usuarioText = ref('');
 
 const openNewUser = () => {
@@ -96,9 +94,6 @@ const openNewUser = () => {
   displayNewUser.value = true;
 };
 
-const closeNewUser = () => {
-  displayNewUser.value = false;
-};
 
 const editUser = (user: any) => {
   user.isadmin = parseInt(user.isadmin) === 1;
@@ -128,6 +123,7 @@ const deleteUser = (user: any) => {
   const msg = t('¿Quieres eliminar el usuario [{user}] {name}?').replace('{user}', user.id).replace('{name}', user.name);
   confirm.require({
     message: msg,
+    header: t('Confirmar eliminación'),
     icon: 'pi pi-info-circle',
     acceptClass: 'p-button-danger',
     acceptLabel: t('Sí'),
@@ -145,37 +141,8 @@ const deleteUser = (user: any) => {
   });
 };
 
-const addUser = async () => {
-  consola.log('addNewUser', newUser);
-  errorMessage.value = '';
-  showError.value = false;
-
-  const id: number | null = (newUser.value.id > 0) ? newUser.value.id : null;
-  const userdata = JSON.parse(JSON.stringify(newUser.value)); // Object.values(newUser.value);
-  consola.log('userdata', userdata);
-
-  const response = await userService.add(id, userdata);
-  if (checkLogged(response)) {
-    if (response?.data?.value?.success !== true) {
-      errorMessage.value = response?.data?.value?.message;
-      showError.value = true;
-      showMessage('error', t('Error'), response?.data?.value?.message);
-    } else {
-      if (newUser.value?.begin && newUser.value?.period?.[0]) {
-        newUser.value.begin = newUser.value.period[0];
-      }
-      if (newUser.value?.end && newUser.value?.period?.[1]) {
-        newUser.value.end = newUser.value.period[1];
-      }
-      if (newUser.value?.stats_min) {
-        newUser.value.stats_min = newUser.value.stats_min;
-      }
-      consola.log('ADD USER', response);
-      showMessage('info', t('Usuarios'), t('Usuario {id} {status}').replace('{id}', response?.data?.value?.id).replace('{status}', (id !== null ? 'Actualizado' : 'Creado')));
-      closeNewUser();
-      loadData();
-    }
-  }
+const onUserSaved = () => {
+  loadData();
 };
 
 const importFromExcel = async (event: any) => {
@@ -254,17 +221,17 @@ const items = ref([
                   deleteUser(menuData.value);
                 },
                 class: 'text-red-500'
-            }/*,
+            },
             {
-                label: t('Resetear contraseña'),
-                icon: 'pi pi-key',
+                label: t('Gestió de estadísticas'),
+                icon: 'pi pi-chart-bar',
                 command: () => {
-                  console.log('resetPassword', menuData.value);
-                  resetPassword(menuData.value);
+                  console.log('gestionEstadisticas', menuData.value);
+                  gestionEstadisticas(menuData.value);
                 },
                 class: 'text-blue-500'
             },
-            {
+            /*{
               label: t('Enviar datos de acceso'),
               icon: 'pi pi-envelope',
               command: () => {
@@ -305,6 +272,34 @@ const onFilter = (event: any) => {
 const exportData = () => {
   exportDataGeneric(dt.value, 'usuarios' as any);
 };
+
+// Gestión de estadísticas
+const displayStats = ref(false);
+const selectedUser = ref<any>(null);
+
+const gestionEstadisticas = (user: any) => {
+  selectedUser.value = user;
+  displayStats.value = true;
+};
+
+const onRowDoubleClick = (event: any) => {
+  // Al hacer doble clic en la fila, abrir el diálogo de edición de usuario
+  editUser(event.data);
+
+};
+
+const onRowClick = (event: any) => {
+  // Evitar que se abra el diálogo cuando se hace clic en el botón de opciones
+  if (event.originalEvent.target.closest('.p-button') || 
+      event.originalEvent.target.closest('.p-menu') ||
+      event.originalEvent.target.closest('a')) {
+    return;
+  }
+  
+  // Abrir el diálogo de estadísticas con el usuario de la fila clickeada
+  gestionEstadisticas(event.data);
+};
+
 
 </script>
 
@@ -361,6 +356,8 @@ const exportData = () => {
           @page="onPage($event)"
           @sort="onSort($event)"
           @filter="onFilter($event)"
+          @row-click="onRowClick"
+          @row-dblclick="onRowDoubleClick"
           >
           <template #header>
             <div class="flex justify-between items-center">
@@ -535,202 +532,36 @@ const exportData = () => {
         </DataTable>
       </div>
 
-      <Dialog v-model:visible="displayNewUser" 
-      modal maximizable
-      :style="{ width: '50rem' }" :breakpoints="{ '1199px': '75vw', '575px': '90vw' }">
-        <template #header>
-          <h3 class="text-lg font-semibold text-gray-800"><i class="pi pi-user" /> {{ usuarioText }}</h3>
-        </template>
+      <UserDialog
+        v-model:visible="displayNewUser"
+        :user="newUser"
+        :collections="collections"
+        :title="usuarioText"
+        @user-saved="onUserSaved"
+      />
 
-        <div class="grid grid-cols-12 gap-6">
-          <!-- Sección 1: Permisos y Estado -->
-          <Fieldset :legend="t('Estado del usuario')" class="col-span-12">
-            <div class="grid grid-cols-12">
-              <div class="col-span-12">
-                <div class="space-y-3">
-                  <div class="flex items-center gap-2">
-                    <ToggleSwitch v-model="newUser.isenabled" :on-label="t('Sí')" :off-label="t('No')" on-icon="pi pi-check" off-icon="pi pi-times" />
-                    <span class="pi pi-check text-green-600" /> <label for="isenabled" class="text-gray-700 font-medium">{{ t('Activo') }}</label>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </Fieldset>
-          <Fieldset :legend="t('Permisos del usuario')" class="col-span-12">
-
-            <div class="grid grid-cols-12 gap-2">
-              <div class="col-span-3">
-                <div class="flex items-center gap-2">
-                  <ToggleSwitch v-model="newUser.isadmin" :on-label="t('Sí')" :off-label="t('No')" on-icon="pi pi-check" off-icon="pi pi-times" />
-                  <span class="pi pi-user text-purple-600" /> <label for="isadmin" class="text-gray-700 font-medium">{{ t('Admin') }}</label>
-                </div>
-              </div>
-              <div class="col-span-3">
-                <div class="flex items-center gap-2">
-                  <ToggleSwitch v-model="newUser.iseditor" :on-label="t('Sí')" :off-label="t('No')" on-icon="pi pi-check" off-icon="pi pi-times" />
-                  <span class="pi pi-pencil text-blue-600" /> <label for="iseditor" class="text-gray-700 font-medium">{{ t('Editor') }}</label>
-                </div>
-              </div>
-              <div class="col-span-3">
-                <div class="flex items-center gap-2 h-full" style="align-items: center;">
-                  <ToggleSwitch v-model="newUser.dashboard_access" :on-label="t('Sí')" :off-label="t('No')" on-icon="pi pi-check" off-icon="pi pi-times" />
-                  <span class="pi pi-chart-bar text-yellow-600" />
-                  <label for="dashboard_access" class="text-gray-700 font-medium">{{ t('Dashboard') }}</label>
-                </div>
-              </div>
-              <div class="col-span-3">
-                <div class="flex items-center gap-2">
-                  <ToggleSwitch v-model="newUser.istester" :on-label="t('Sí')" :off-label="t('No')" on-icon="pi pi-check" off-icon="pi pi-times" />
-                  <span class="pi pi-comment text-orange-600" /> <label for="istester" class="text-gray-700 font-medium">{{ t('Pregúntame') }}</label>
-                </div>
-              </div>            
-            </div>
-          </Fieldset>
-
-          <!-- Sección 2: Información Básica -->
-          <Fieldset :legend="t('Información Básica')" class="col-span-12">
-            <div class="grid grid-cols-12 gap-4">
-              <div class="col-span-6 mb-4">
-                <FloatLabel variant="in">
-                  <label for="name1" class="block text-sm font-medium text-gray-700 mb-2">{{ t('Nombre') }}</label>
-                  <InputText id="name1" v-model="newUser.name" type="text" class="w-full"/>
-                </FloatLabel>
-              </div>
-              <div class="col-span-6 mb-4">
-                <FloatLabel variant="in">
-                  <label for="email1" class="block text-sm font-medium text-gray-700 mb-2">{{ t('Email') }}</label>
-                  <InputText id="email1" v-model="newUser.email" type="text" class="w-full"/>
-                </FloatLabel>
-              </div>
-            </div>
-            <div class="grid grid-cols-12 gap-4">
-              <div class="col-span-6 mb-4">
-                <FloatLabel variant="in"  class="w-full">
-                  <label for="user" class="block text-sm font-medium text-gray-700 mb-2">{{ t('Usuario') }}</label>
-                  <InputText id="user" v-model="newUser.user" type="text"/>
-                </FloatLabel>
-              </div>
-              <div class="col-span-6 mb-4">
-                <FloatLabel variant="in">
-                  <label for="passwd" class="block text-sm font-medium text-gray-700 mb-2">{{ t('Contraseña') }}</label>
-                  <InputText id="passwd" v-model="newUser.passwd" type="text"  class="w-full" toggle-mask/>
-                </FloatLabel>
-              </div>
-            </div>
-            <div class="grid grid-cols-12 gap-4">
-              <div class="col-span-6 mb-4">
-                <FloatLabel variant="in">
-                  <label for="grupo" class="block text-sm font-medium text-gray-700 mb-2">{{ t('Grupo') }}</label>
-                  <InputText id="grupo" v-model="newUser.grupo" type="text" class="w-full"/>
-                </FloatLabel>
-              </div>
-              <div class="col-span-6 mb-4">
-                <FloatLabel variant="in">
-                  <label for="meta" class="block text-sm font-medium text-gray-700 mb-2">{{ t('Meta Por Defecto') }}</label>
-                  <InputText id="meta" v-model="newUser.meta" type="text" class="w-full"/>
-                </FloatLabel>
-              </div>
-            </div>
-          </Fieldset>
-
-          <!-- Sección 3: Configuración de Acceso -->
-          <Fieldset :legend="t('Configuración de Acceso')" class="col-span-12">
-            <div class="grid grid-cols-12 gap-4">
-              <div class="col-span-4">
-                <FloatLabel variant="in">
-                  <label for="licencias" class="block text-sm font-medium text-gray-700 mb-2">{{ t('Licencias') }}</label>
-                  <InputNumber id="licencias" v-model="newUser.licenses" mode="decimal" />
-                </FloatLabel>
-              </div>
-              <div class="col-span-4">
-                <FloatLabel variant="in">
-                <label for="begin" class="block text-sm font-medium text-gray-700 mb-2">{{ t('Desde') }}</label>
-                <InputMask v-model="newUser.begin" mask="99/99/9999" placeholder="99/99/9999" slot-char="dd/mm/yyyy" />
-                </FloatLabel>
-              </div>
-              <div class="col-span-4">
-                <FloatLabel variant="in">
-                <label for="end" class="block text-sm font-medium text-gray-700 mb-2">{{ t('Hasta') }}</label>
-                <InputMask v-model="newUser.end" mask="99/99/9999" placeholder="99/99/9999" slot-char="dd/mm/yyyy" />
-                </FloatLabel>
-              </div>
-            </div>
-            <hr/>
-            <div class="grid grid-cols-12 gap-4">
-              <div class="col-span-12">
-                <FloatLabel variant="in">
-                  <label for="stats_min" class="block text-sm font-medium text-gray-700 mb-2">{{ t('Inicio estadísticas') }}</label>
-                <InputMask v-model="newUser.stats_min" mask="99/99/9999" placeholder="99/99/9999" slot-char="dd/mm/yyyy" />
-                </FloatLabel>
-              </div>
-            </div>
-            <hr/>
-            <div class="col-span-12 gap-4">
-              <FloatLabel variant="in">
-                <label for="collections" class="block text-sm font-medium text-gray-700 mb-2">{{ t('Colecciones') }}</label>
-                <MultiSelect
-                  v-model="newUser.collections"
-                  :options="collections"
-                  option-label="name"
-                  option-value="code"
-                  display="chip"
-                  :fluid="true"
-                  :maxSelectedLabels="3"
-                  :selectedItemsLabel="newUser.collections.length + ' ' + t('Colecciones seleccionadas')"
-                  :placeholder="t('Seleciona Colecciones')"
-                />
-              </FloatLabel>
-            </div>
-          </Fieldset>
-
-          <!-- Sección 4: Restricciones -->
-          <Fieldset :legend="t('Restricciones')" class="col-span-12">
-            <div class="grid grid-cols-12 gap-4">
-              <div class="col-span-12">
-                <FloatLabel variant="in">
-                  <label for="iprange" class="block text-sm font-medium text-gray-700 mb-2">{{ t('Rango IP') }}</label>
-                  <Textarea id="iprange" v-model="newUser.iprange" :auto-resize="true" rows="3" :placeholder="t('Ej: 192.168.1.0/24, 10.0.0.0/8')" class="w-full" />
-              </FloatLabel>
-              </div>
-              <div class="col-span-6">
-                <FloatLabel variant="in">
-                <label for="geoip" class="block text-sm font-medium text-gray-700 mb-2">{{ t('GeoIP') }}</label>
-                <Textarea id="geoip" v-model="newUser.geoip" :auto-resize="true" rows="3" cols="30" :placeholder="t('Ej: ES, FR, DE')" class="w-full" />
-              </FloatLabel>
-              </div>
-              <div class="col-span-6">
-                <FloatLabel variant="in">
-                <label for="referer" class="block text-sm font-medium text-gray-700 mb-2">{{ t('Referer') }}</label>
-                <Textarea id="referer" v-model="newUser.referer" :auto-resize="true" rows="3" cols="30" :placeholder="t('Ej: *.example.com')" class="w-full" />
-              </FloatLabel>
-              </div>
-            </div>
-          </Fieldset>
-
-          <!-- Mensaje de error -->
-          <Message v-show="showError" severity="error" class="col-span-12">
-            {{ errorMessage }}
-          </Message>
-        </div>
-
-        <template #footer>
-          <Button :label="t('Cancelar')" icon="pi pi-times" class="p-button-danger" @click="closeNewUser" />
-          <Button :label="t('Aceptar')" icon="pi pi-check" autofocus @click="addUser" />
-        </template>
-      </Dialog>
+      <UserStatsDialog
+        v-model:visible="displayStats"
+        :user="selectedUser"
+      />
     </div>
   </div>
 </template>
 
 <style scoped>
-@layer primevue {
-  .p-floatlabel:has(input.p-filled) label, .p-floatlabel:has(textarea.p-filled) label, .p-floatlabel:has(.p-inputwrapper-filled) label {
-    z-index: 999;
-  }
+/* Hacer que las filas del DataTable sean clickeables */
+:deep(.p-datatable-tbody > tr) {
+  cursor: pointer;
+  transition: background-color 0.2s ease;
 }
-@layer primevue {
-  .p-floatlabel label {
-    z-index: 999;
-  }
+
+:deep(.p-datatable-tbody > tr:hover) {
+  background-color: #f8f9fa !important;
+}
+
+/* Evitar que los botones y enlaces cambien el cursor */
+:deep(.p-datatable-tbody > tr .p-button),
+:deep(.p-datatable-tbody > tr a) {
+  cursor: pointer;
 }
 </style>

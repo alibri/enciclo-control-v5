@@ -28,6 +28,7 @@ const confirmAction = async (event: any, action: any, title: any) => {
   confirm.require({
     target: event.currentTarget,
     message: t('¿Estás seguro de que deseas realizar esta acción?'),
+    header: t('Confirmar acción'),
     icon: 'pi pi-exclamation-triangle',
     rejectClass: 'p-button-secondary p-button-outlined p-button-sm',
     acceptClass: 'p-button-sm',

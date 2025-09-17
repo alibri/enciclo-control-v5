@@ -1,5 +1,9 @@
 # VERSIONES
 
+## 5.0.5
+
+- Añade la gestión de estadísticas falsas
+
 ## 5.0.4
 
 - Añade fecha de inicio de estadísticas

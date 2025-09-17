@@ -165,3 +165,14 @@ export const formatFileIcon = (type: string) => {
   };
   return types[type] ?? 'pi pi-file';
 };
+
+export const formatMonthNumber = (month: number) => {
+  // Añade un 0 a la izquierda si el mes es menor de 10
+  const mes = Number(month);
+  return mes < 10 ? `0${mes}` : `${mes}`;
+};
+
+export const formatMonthName = (month: number) => {
+  return new Date(0, month - 1).toLocaleString('es-ES', { month: 'long' });
+};
+

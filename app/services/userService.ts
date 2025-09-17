@@ -34,4 +34,25 @@ export default class UserService {
   async sendAccessData(id: number) {
     return await this.api.get('sendinfologin', { id });
   }
+
+  async getFakeStats(user: string) {
+    return await this.api.get('fake_stats', { user });
+  }
+
+  async createFakeStats(data: any) {
+    return await this.api.get('create_fake_stats', { data });
+  }
+
+  async deleteFakeStats(id: number) {
+    return await this.api.get('delete_fake_stats', { id });
+  }
+
+  async importFakeStats(user: string, file: File) {
+    // Leer el contenido del archivo
+    let fileContent = await file.text();
+    // Codificamos el contenido del archivo a base64 antes de enviarlo
+    fileContent = btoa(fileContent);
+    
+    return await this.api.get('import_fake_news', { file: fileContent, user, name: file.name });
+  }
 };
