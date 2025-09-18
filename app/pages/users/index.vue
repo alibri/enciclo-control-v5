@@ -193,7 +193,16 @@ const resetPassword = async (user: any) => {
         if (response?.data?.value?.success !== true) {
           showMessage('error', t('Error'), response?.data?.value?.message, -1, 'c');
         } else {
-          showMessage('info', t('Usuarios'), response?.data?.value?.message, -1, 'c');
+          // Extraer el mensaje de la respuesta según el nuevo formato
+          let mensaje = '';
+          if (response?.data?.value?.result) {
+            // Tomar el primer objeto del result y su mensaje
+            const resultObj = Object.values(response.data.value.result)[0] as any;
+            mensaje = resultObj?.message || '';
+          } else {
+            mensaje = response?.data?.value?.message || '';
+          }
+          showMessage('info', t('Usuarios'), mensaje, -1, 'c');
         }
       }
     }
