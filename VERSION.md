@@ -4,6 +4,8 @@
 
 - Añade el dashboard del usuario
 - Añade el nombre del usuario en el nombre del archivo de exportación
+- Añade la visualización del detalle de la pregunta al hacer doble clic en la tabla de estadísticas
+- Reseteo de contraseña de usuarios
 
 ## 5.0.5
 

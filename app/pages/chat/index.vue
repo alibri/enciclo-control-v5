@@ -2,6 +2,7 @@
 // import { FilterMatchMode, FilterOperator } from 'primevue/api';
 import ChatLink from '@/components/ChatLink.vue';
 import StatsService from '@/services/statsService';
+import { showChat } from '@/utils/page';
 
 import IconField from 'primevue/iconfield';
 import InputIcon from 'primevue/inputicon';
@@ -85,6 +86,10 @@ const onFilter = (event: any) => {
   loadData();
 };
 
+const onRowDoubleClick = (event: any) => {
+  showChat(dialog, event.data.id);
+};
+
 onMounted(() => {
   resetLazyParams(dt.value.rows, filters.value);
   loadData();
@@ -119,6 +124,7 @@ onMounted(() => {
           @page="onPage($event)"
           @sort="onSort($event)"
           @filter="onFilter($event)"
+          @row-dblclick="onRowDoubleClick($event)"
         >
           <template #header>
             <div class="flex justify-between items-center">
@@ -180,8 +186,9 @@ onMounted(() => {
           <Column field="collection" :header="t('Colección')" :sortable="true" class="text-yellow-500" />
           <Column field="query" :header="t('Pregunta')" :sortable="true" style="width: 50%">
             <template #body="slotProps">
+              
               <a style="cursor: pointer;" class="font-bold border-none border-b border-dotted ml-1" @click="showChat(dialog, slotProps.data.id)">
-                {{ slotProps.data.query }}
+                <i class="pi pi-eye text-blue-500" v-tooltip.top="t('Ver detalle')" style="cursor:pointer;"></i>  {{ slotProps.data.query }}
               </a>
             </template>
           </Column>
