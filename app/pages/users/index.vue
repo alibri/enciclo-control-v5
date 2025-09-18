@@ -152,7 +152,6 @@ const importFromExcel = async (event: any) => {
   reader.readAsDataURL(file);
   reader.onload = async () => {
     const base64 = reader.result?.toString();
-    console.log('base64', base64);
     showMessage('info', t('Usuarios'), t('Procesando archivo...'), -1, 'bc');
     const response = await userService.createFromExcel(base64 || '');
     removeGroup('bc');
@@ -176,24 +175,33 @@ const importFromExcel = async (event: any) => {
 }
 
 const verDashboard = (user: any) => {
-  console.log('verDashboard', user);
   dashboardUser.value = user;
   displayDashboard.value = true;
 };
 
-/*
 const resetPassword = async (user: any) => {
-  console.log('resetPassword', user);
-  const response = await userService.resetPassword(user.id);
-  if (checkLogged(response)) {
-    if (response?.data?.value?.success !== true) {
-      showMessage('error', t('Error'), response?.data?.value?.message, -1);
-    } else {
-      showMessage('info', t('Usuarios'), t('Contraseña reseteada correctamente'));
+  const msg = t('¿Quieres resetear la contraseña del usuario [{user}] {name}?').replace('%user%', user.user).replace('%name%', user.name);
+  confirm.require({
+    message: msg,
+    header: t('Confirmar reseteo de contraseña'),
+    icon: 'pi pi-info-circle',
+    acceptClass: 'p-button-danger',
+    acceptLabel: t('Sí'),
+    accept: async () => {
+      const response = await userService.resetPassword(user.id);
+      if (checkLogged(response)) {
+        if (response?.data?.value?.success !== true) {
+          showMessage('error', t('Error'), response?.data?.value?.message, -1, 'c');
+        } else {
+          showMessage('info', t('Usuarios'), t('Contraseña reseteada correctamente'), -1, 'c');
+        }
+      }
     }
-  }
+  });
+
 }
 
+/*
 const sendAccessData = async (user: any) => {
   console.log('sendAccessData', user);
   const response = await userService.sendAccessData(user.id);
@@ -216,7 +224,6 @@ const items = ref([
         label: t('Editar'),
         icon: 'pi pi-pencil',
         command: () => {
-          console.log('editUser', menuData.value);
           editUser(menuData.value);
         },
         class: 'text-green-500'
@@ -225,7 +232,6 @@ const items = ref([
         label: t('Eliminar'),
         icon: 'pi pi-trash',
         command: () => {
-          console.log('deleteUser', menuData.value);
           deleteUser(menuData.value);
         },
         class: 'text-red-500'
@@ -237,7 +243,6 @@ const items = ref([
         label: t('Gestió de estadísticas'),
         icon: 'pi pi-chart-bar',
         command: () => {
-          console.log('gestionEstadisticas', menuData.value);
           gestionEstadisticas(menuData.value);
         },
         class: 'text-blue-500'
@@ -250,26 +255,25 @@ const items = ref([
         },
         class: 'text-blue-500'
       },
-      /*{
-        label: t('Enviar datos de acceso'),
-        icon: 'pi pi-envelope',
+      {
+        separator: true
+      },
+      {
+        label: t('Resetear contraseña'),
+        icon: 'pi pi-key',
         command: () => {
-          console.log('sendAccessData', menuData.value);
-          sendAccessData(menuData.value);
+          resetPassword(menuData.value);
         },
         class: 'text-yellow-500'
-      }*/
+      }
     ]
   }
 ]);
 
 const toggle = (event: Event, data: any) => {
   menu.value.toggle(event);
-  // Almacenar los datos del usuario para usarlos en los comandos
-  console.log('toggle', event, data);
   items.value[0]?.items?.forEach((item: any) => {
     menuData.value = data;
-    // item.command = () => item.command(menuData.value);
   });
 };
 

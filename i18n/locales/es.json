@@ -252,5 +252,15 @@
     "Totales": "Totales",
     "Páginas/Accesos": "Páginas/Accesos",
     "Ver Dashboard": "Ver Dashboard",
-    "Dashboard del Usuario": "Dashboard del Usuario"
+    "Dashboard del Usuario": "Dashboard del Usuario",
+    "Meta Por Defecto": "Meta Por Defecto",
+    "Colecciones seleccionadas": "Colecciones seleccionadas",
+    "Ej: 192.168.1.0/24, 10.0.0.0/8": "Ej: 192.168.1.0/24, 10.0.0.0/8",
+    "Ej: ES, FR, DE": "Ej: ES, FR, DE",
+    "Ej: *.example.com": "Ej: *.example.com",
+    "Contraseña reseteada correctamente": "Contraseña reseteada correctamente",
+    "¿Quieres resetear la contraseña del usuario [{user}] {name}?": "¿Quieres resetear la contraseña del usuario [%user%] %name%?",
+    "Confirmar reseteo de contraseña": "Confirmar reseteo de contraseña",
+    "Estado del usuario": "Estado del usuario",
+    "Permisos del usuario": "Permisos del usuario"
 }

@@ -13,6 +13,10 @@ export function useMessages () {
 
     const toastService = usePVToastService();
 
+    if (severity === 'error' && !group) {
+      group = 'c';
+    }
+
     if (group) {
       toastService.add({
         severity,

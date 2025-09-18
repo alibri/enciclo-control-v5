@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { consola } from 'consola';
 import UserService from '~/services/userService';
 
 const { showMessage, removeGroup } = useMessages();
@@ -25,13 +24,11 @@ const showError = ref(false);
 const errorMessage = ref('');
 
 const addUser = async () => {
-  consola.log('addNewUser', props.user);
   errorMessage.value = '';
   showError.value = false;
 
   const id: number | null = (props.user.id > 0) ? props.user.id : null;
   const userdata = JSON.parse(JSON.stringify(props.user));
-  consola.log('userdata', userdata);
 
   const response = await userService.add(id, userdata);
   if (checkLogged(response)) {
@@ -49,7 +46,6 @@ const addUser = async () => {
       if (props.user?.stats_min) {
         props.user.stats_min = props.user.stats_min;
       }
-      consola.log('ADD USER', response);
       showMessage('info', t('Usuarios'), t('Usuario {id} {status}').replace('{id}', response?.data?.value?.id).replace('{status}', (id !== null ? 'Actualizado' : 'Creado')));
       closeDialog();
       emit('user-saved');
@@ -84,7 +80,7 @@ const closeDialog = () => {
           <div class="col-span-12">
             <div class="space-y-3">
               <div class="flex items-center gap-2">
-                <ToggleSwitch v-model="user.isenabled" :on-label="t('Sí')" :off-label="t('No')" on-icon="pi pi-check" off-icon="pi pi-times" />
+                <ToggleSwitch v-model="user.isenabled" />
                 <span class="pi pi-check text-green-600" /> 
                 <label for="isenabled" class="text-gray-700 font-medium">{{ t('Activo') }}</label>
               </div>
@@ -97,28 +93,28 @@ const closeDialog = () => {
         <div class="grid grid-cols-12 gap-2">
           <div class="col-span-3">
             <div class="flex items-center gap-2">
-              <ToggleSwitch v-model="user.isadmin" :on-label="t('Sí')" :off-label="t('No')" on-icon="pi pi-check" off-icon="pi pi-times" />
+              <ToggleSwitch v-model="user.isadmin" />
               <span class="pi pi-user text-purple-600" /> 
               <label for="isadmin" class="text-gray-700 font-medium">{{ t('Admin') }}</label>
             </div>
           </div>
           <div class="col-span-3">
             <div class="flex items-center gap-2">
-              <ToggleSwitch v-model="user.iseditor" :on-label="t('Sí')" :off-label="t('No')" on-icon="pi pi-check" off-icon="pi pi-times" />
+              <ToggleSwitch v-model="user.iseditor" />
               <span class="pi pi-pencil text-blue-600" /> 
               <label for="iseditor" class="text-gray-700 font-medium">{{ t('Editor') }}</label>
             </div>
           </div>
           <div class="col-span-3">
             <div class="flex items-center gap-2 h-full" style="align-items: center;">
-              <ToggleSwitch v-model="user.dashboard_access" :on-label="t('Sí')" :off-label="t('No')" on-icon="pi pi-check" off-icon="pi pi-times" />
+              <ToggleSwitch v-model="user.dashboard_access" />
               <span class="pi pi-chart-bar text-yellow-600" />
               <label for="dashboard_access" class="text-gray-700 font-medium">{{ t('Dashboard') }}</label>
             </div>
           </div>
           <div class="col-span-3">
             <div class="flex items-center gap-2">
-              <ToggleSwitch v-model="user.istester" :on-label="t('Sí')" :off-label="t('No')" on-icon="pi pi-check" off-icon="pi pi-times" />
+              <ToggleSwitch v-model="user.istester" />
               <span class="pi pi-comment text-orange-600" /> 
               <label for="istester" class="text-gray-700 font-medium">{{ t('Pregúntame') }}</label>
             </div>

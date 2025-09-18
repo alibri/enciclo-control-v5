@@ -20,6 +20,7 @@ const iconClass = computed(() => {
   <Toast position="bottom-left" group="bl" />
   <Toast position="bottom-center" group="bc" />
   <Toast position="bottom-right" group="br" />
+  <Toast position="center" group="c" />
   <ConfirmDialog />
   <DynamicDialog />
 </template>

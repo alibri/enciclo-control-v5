@@ -49,7 +49,6 @@ const loadData = async () => {
 };
 
 const onTabChange = (event: any) => {
-    console.log(event);
     collectionSelected.value = event || null;
     loadUserPageStats();
 };
@@ -68,7 +67,6 @@ const loadUserPageStats = async () => {
 watch(() => props.visible, (nuevo, anterior) => {
   // Aquí puedes poner la lógica que necesites cuando cambie props.user
   // Por ejemplo, recargar estadísticas del usuario
-  console.log('watch', nuevo, anterior);
   loadData();
 });
 </script>
