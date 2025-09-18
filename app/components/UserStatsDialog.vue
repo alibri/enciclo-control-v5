@@ -14,9 +14,6 @@ interface Emits {
 
 const props = defineProps<Props>();
 watch(() => props.visible, (nuevo, anterior) => {
-  // Aquí puedes poner la lógica que necesites cuando cambie props.user
-  // Por ejemplo, recargar estadísticas del usuario
-  console.log('watch', nuevo, anterior);
   getFakeStats();
 });
 const emit = defineEmits<Emits>();
@@ -47,9 +44,7 @@ const closeDialog = () => {
 };
 
 const getFakeStats = async () => {
-  console.log('getFakeStats', props.user);
   if (!props.user?.user) return;
-  console.log('getFakeStats', props.user.user);
   const response = await userService.getFakeStats(props.user.user);
   if (checkLogged(response)) {
     const data = await response.data.value.list;
@@ -91,7 +86,6 @@ const createFakeStat = async () => {
       showMessage('success', t('Éxito'), response?.data?.value?.message || t('Estadística falsa creada correctamente'));
     }
   } catch (error) {
-    console.error('Error creating fake stat:', error);
     showMessage('error', t('Error'), error as string || t('Error al crear la estadística falsa'));
   } finally {
     loading.value = false;
@@ -208,7 +202,6 @@ const uploadFile = async () => {
       }
     }
   } catch (error) {
-    console.error('Error uploading file:', error);
     showMessage('error', t('Error'), t('Error al importar el archivo'));
   } finally {
     fileUploadLoading.value = false;

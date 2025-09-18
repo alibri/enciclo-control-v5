@@ -49,10 +49,15 @@ export default class UserService {
 
   async importFakeStats(user: string, file: File) {
     // Leer el contenido del archivo
-    let fileContent = await file.text();
-    // Codificamos el contenido del archivo a base64 antes de enviarlo
-    fileContent = btoa(fileContent);
+    const fileContent = await file.arrayBuffer();
+    console.log('fileContent', fileContent);
     
-    return await this.api.get('import_fake_news', { file: fileContent, user, name: file.name });
+    // Convertir ArrayBuffer a base64
+    // Funciona tanto para archivos binarios (XLSX) como texto (CSV)
+    const uint8Array = new Uint8Array(fileContent);
+    const binaryString = Array.from(uint8Array, byte => String.fromCharCode(byte)).join('');
+    const base64Content = btoa(binaryString);
+    
+    return await this.api.get('import_fake_news', { file: base64Content, user, name: file.name });
   }
 };
