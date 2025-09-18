@@ -193,7 +193,7 @@ const resetPassword = async (user: any) => {
         if (response?.data?.value?.success !== true) {
           showMessage('error', t('Error'), response?.data?.value?.message, -1, 'c');
         } else {
-          showMessage('info', t('Usuarios'), t('Contraseña reseteada correctamente'), -1, 'c');
+          showMessage('info', t('Usuarios'), response?.data?.value?.message, -1, 'c');
         }
       }
     }
