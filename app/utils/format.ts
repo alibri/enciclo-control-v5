@@ -172,7 +172,6 @@ export const formatMonthNumber = (month: number) => {
   return mes < 10 ? `0${mes}` : `${mes}`;
 };
 
-export const formatMonthName = (month: number) => {
+export const formatMonthName2 = (month: number) => {
   return new Date(0, month - 1).toLocaleString('es-ES', { month: 'long' });
 };
-

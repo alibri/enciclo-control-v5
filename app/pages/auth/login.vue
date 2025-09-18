@@ -44,7 +44,7 @@ onMounted(() => {
   // Verificar tema guardado o preferencia del sistema
   const savedTheme = localStorage.getItem('theme');
   const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-  
+
   isDark.value = savedTheme ? savedTheme === 'dark' : prefersDark;
   updateTheme();
 });
@@ -59,39 +59,31 @@ const login = async () => {
 </script>
 
 <template>
-  <div class="login-container">
-    <!-- Botón de cambio de tema -->
-    <button @click="toggleTheme" class="theme-toggle">
-      <i :class="isDark ? 'pi pi-sun' : 'pi pi-moon'" />
-    </button>
-    
-    <div class="login-card">
-      <!-- Header con logo y título -->
-      <div class="login-header">
-        <div class="app-logo" style="display: flex; justify-content: center;">
-          <img src="/Grupo-Enciclo.svg" alt="Logo Enciclo" style="height: 3rem; margin-bottom: 0.5rem;" />
+  <form @submit.prevent="login">
+    <div class="min-h-screen bg-surface-50 dark:bg-surface-950 flex items-center justify-center px-6 py-8">
+      <div
+        class="bg-surface-0 dark:bg-surface-900 p-8 md:p-12 shadow-sm rounded-2xl w-full max-w-sm flex flex-col gap-8">
+        <div class="flex flex-col items-center gap-4">
+          <div class="flex items-center gap-4">
+            <img src="/Grupo-Enciclo.svg" alt="Logo Enciclo" style="height: 3rem; margin-bottom: 0.5rem;" />
+          </div>
+          <div class="flex flex-col items-center gap-2 w-full">
+            <div class="text-surface-900 dark:text-surface-0 text-2xl font-semibold leading-tight text-center w-full">{{
+              runtimeConfig.public.APP_TITLE }}</div>
+            <div class="text-center w-full">
+              <span class="text-surface-700 dark:text-surface-200 leading-normal">{{ runtimeConfig.public.APP_VERSION
+              }}</span>
+            </div>
+          </div>
         </div>
-        <h1 class="app-title">{{ runtimeConfig.public.APP_TITLE }}</h1>
-        <p class="app-version">{{ runtimeConfig.public.APP_VERSION }}</p>
-      </div>
+        <div class="flex flex-col gap-6 w-full">
 
-      <!-- Formulario -->
-      <div class="login-form">
-        <h2 class="form-title">{{ t('Login') }}</h2>
-        <p class="form-subtitle">Ingresa tus credenciales para acceder</p>
-        
-        <form @submit.prevent="login">
           <div class="input-container">
             <InputGroup class="custom-input-group">
               <InputGroupAddon class="input-addon">
                 <i class="pi pi-user" />
               </InputGroupAddon>
-              <InputText 
-                v-model="user.username" 
-                :placeholder="t('Username')" 
-                required 
-                class="custom-input"
-              />
+              <InputText v-model="user.username" :placeholder="t('Username')" required class="custom-input" />
             </InputGroup>
           </div>
 
@@ -100,377 +92,144 @@ const login = async () => {
               <InputGroupAddon class="input-addon">
                 <i class="pi pi-lock" />
               </InputGroupAddon>
-              <Password 
-                v-model="user.secret" 
-                :placeholder="t('Password')" 
-                required 
-                toggle-mask 
-                :feedback="false"
-                class="custom-password"
-                inputClass="custom-input"
-              />
+              <Password v-model="user.secret" :placeholder="t('Password')" required toggle-mask :feedback="false"
+                class="custom-password" inputClass="custom-input" />
             </InputGroup>
           </div>
+        </div>
+        <Button type="submit" :label="t('Login')" icon="pi pi-user" @click.prevent="login" :loading="false"
+          class="w-full py-2 rounded-lg flex justify-center items-center gap-2">
+          <template #icon>
+            <i class="pi pi-user text-base! leading-normal!" />
+          </template>
+        </Button>
 
-          <Button 
-            type="submit" 
-            :label="t('Login')" 
-            class="login-button" 
-            @click.prevent="login"
-            :loading="false"
-          />
-          
-          <InlineMessage v-if="auth_error" severity="error" class="error-message">
-            {{ auth_error }}
-          </InlineMessage>
-        </form>
+        <InlineMessage v-if="auth_error" severity="error" class="error-message">
+          {{ auth_error }}
+        </InlineMessage>
       </div>
     </div>
-  </div>
+  </form>
 </template>
 
-<style scoped>
-.login-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 100vh;
-  background: #f8fafc;
-  padding: 20px;
-  position: relative;
-  transition: background-color 0.3s ease;
-}
+  <style scoped>
 
-/* Modo oscuro */
-:global(.dark) .login-container {
-  background: #0f172a;
-}
-
-.theme-toggle {
-  position: absolute;
-  top: 20px;
-  right: 20px;
-  background: white;
-  border: 1px solid #e2e8f0;
-  border-radius: 50%;
-  width: 50px;
-  height: 50px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  font-size: 1.2rem;
-  color: #64748b;
-  z-index: 10;
-}
-
-.theme-toggle:hover {
-  background: #f8fafc;
-  border-color: #cbd5e1;
-  transform: scale(1.05);
-}
-
-:global(.dark) .theme-toggle {
-  background: #1e293b;
-  border-color: #334155;
-  color: #94a3b8;
-}
-
-:global(.dark) .theme-toggle:hover {
-  background: #334155;
-  border-color: #475569;
-}
-
-.login-card {
-  background: white;
-  border-radius: 20px;
-  border: 1px solid #e2e8f0;
-  overflow: hidden;
-  width: 100%;
-  max-width: 420px;
-  animation: slideUp 0.6s ease-out;
-  transition: all 0.3s ease;
-}
-
-/* Modo oscuro */
-:global(.dark) .login-card {
-  background: #1e293b;
-  border-color: #334155;
-}
-
-@keyframes slideUp {
-  from {
-    opacity: 0;
-    transform: translateY(30px);
+  /* Modo oscuro */
+  :global(.dark) .login-container {
+    background: #0f172a;
   }
-  to {
-    opacity: 1;
-    transform: translateY(0);
+  .custom-input-group {
+    position: relative;
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid #e2e8f0;
+    transition: all 0.3s ease;
   }
-}
 
-.login-header {
-  background: var(--primary-color, #3b82f6);
-  color: white;
-  padding: 40px 30px;
-  text-align: center;
-  transition: background-color 0.3s ease;
-}
-
-/* Modo oscuro */
-:global(.dark) .login-header {
-  background: #1e40af;
-}
-
-.app-logo {
-  margin-bottom: 15px;
-}
-
-.app-title {
-  font-size: 1.8rem;
-  font-weight: 700;
-  margin: 0 0 8px 0;
-  letter-spacing: -0.5px;
-}
-
-.app-version {
-  font-size: 0.9rem;
-  opacity: 0.9;
-  margin: 0;
-  font-weight: 300;
-}
-
-.login-form {
-  padding: 40px 30px;
-  transition: background-color 0.3s ease;
-}
-
-/* Modo oscuro */
-:global(.dark) .login-form {
-  background: #1e293b;
-}
-
-.form-title {
-  font-size: 1.5rem;
-  font-weight: 600;
-  color: #2d3748;
-  margin: 0 0 8px 0;
-  text-align: center;
-  transition: color 0.3s ease;
-}
-
-/* Modo oscuro */
-:global(.dark) .form-title {
-  color: #f1f5f9;
-}
-
-.form-subtitle {
-  color: #718096;
-  font-size: 0.9rem;
-  text-align: center;
-  margin: 0 0 30px 0;
-  transition: color 0.3s ease;
-}
-
-/* Modo oscuro */
-:global(.dark) .form-subtitle {
-  color: #94a3b8;
-}
-
-form {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-}
-
-.input-container {
-  position: relative;
-}
-
-.custom-input-group {
-  position: relative;
-  border-radius: 12px;
-  overflow: hidden;
-  border: 1px solid #e2e8f0;
-  transition: all 0.3s ease;
-}
-
-.custom-input-group:hover {
-  border-color: #cbd5e1;
-}
-
-.custom-input-group:focus-within {
-  border-color: var(--primary-color, #3b82f6);
-}
-
-/* Modo oscuro */
-:global(.dark) .custom-input-group {
-  border-color: #475569;
-  background: #334155;
-}
-
-:global(.dark) .custom-input-group:hover {
-  border-color: #64748b;
-}
-
-:global(.dark) .custom-input-group:focus-within {
-  border-color: #60a5fa;
-}
-
-.input-addon {
-  background: #f7fafc;
-  border: none;
-  padding: 0 15px;
-  color: #718096;
-  font-size: 1.1rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 50px;
-  transition: all 0.3s ease;
-}
-
-/* Modo oscuro */
-:global(.dark) .input-addon {
-  background: #475569;
-  color: #94a3b8;
-}
-
-.custom-input {
-  border: none !important;
-  padding: 15px 20px !important;
-  font-size: 1rem !important;
-  background: white !important;
-  color: #2d3748 !important;
-  box-shadow: none !important;
-  outline: none !important;
-  transition: all 0.3s ease !important;
-}
-
-.custom-input:focus {
-  box-shadow: none !important;
-  border: none !important;
-}
-
-/* Modo oscuro */
-:global(.dark) .custom-input {
-  background: #334155 !important;
-  color: #f1f5f9 !important;
-}
-
-:global(.dark) .custom-input::placeholder {
-  color: #94a3b8 !important;
-}
-
-.custom-password :deep(.p-password-input) {
-  border: none !important;
-  padding: 15px 20px !important;
-  font-size: 1rem !important;
-  background: white !important;
-  color: #2d3748 !important;
-  box-shadow: none !important;
-  outline: none !important;
-  transition: all 0.3s ease !important;
-}
-
-.custom-password :deep(.p-password-input):focus {
-  box-shadow: none !important;
-  border: none !important;
-}
-
-/* Modo oscuro */
-:global(.dark) .custom-password :deep(.p-password-input) {
-  background: #334155 !important;
-  color: #f1f5f9 !important;
-}
-
-:global(.dark) .custom-password :deep(.p-password-input)::placeholder {
-  color: #94a3b8 !important;
-}
-
-.custom-password :deep(.p-password-toggle) {
-  background: #f7fafc !important;
-  border: none !important;
-  color: #718096 !important;
-  padding: 0 15px !important;
-  transition: all 0.3s ease !important;
-}
-
-/* Modo oscuro */
-:global(.dark) .custom-password :deep(.p-password-toggle) {
-  background: #475569 !important;
-  color: #94a3b8 !important;
-}
-
-.login-button {
-  background: var(--primary-color, #3b82f6) !important;
-  border: none !important;
-  border-radius: 12px !important;
-  padding: 15px 30px !important;
-  font-size: 1rem !important;
-  font-weight: 600 !important;
-  color: white !important;
-  transition: all 0.3s ease !important;
-  margin-top: 10px !important;
-}
-
-.login-button:hover {
-  background: #2563eb !important;
-}
-
-.login-button:active {
-  background: #1d4ed8 !important;
-}
-
-/* Modo oscuro */
-:global(.dark) .login-button {
-  background: #60a5fa !important;
-}
-
-:global(.dark) .login-button:hover {
-  background: #3b82f6 !important;
-}
-
-:global(.dark) .login-button:active {
-  background: #2563eb !important;
-}
-
-.error-message {
-  margin-top: 15px !important;
-  border-radius: 8px !important;
-  padding: 12px 16px !important;
-  font-size: 0.9rem !important;
-  transition: all 0.3s ease !important;
-}
-
-/* Modo oscuro */
-:global(.dark) .error-message {
-  background: #dc2626 !important;
-  color: white !important;
-  border: 1px solid #ef4444 !important;
-}
-
-/* Responsive */
-@media (max-width: 480px) {
-  .login-container {
-    padding: 10px;
+  .custom-input-group:hover {
+    border-color: #cbd5e1;
   }
-  
-  .login-card {
-    border-radius: 15px;
+
+  .custom-input-group:focus-within {
+    border-color: var(--primary-color, #3b82f6);
   }
-  
-  .login-header {
-    padding: 30px 20px;
+
+  /* Modo oscuro */
+  :global(.dark) .custom-input-group {
+    border-color: #475569;
+    background: #334155;
   }
-  
-  .login-form {
-    padding: 30px 20px;
+
+  :global(.dark) .custom-input-group:hover {
+    border-color: #64748b;
   }
-  
-  .app-title {
-    font-size: 1.5rem;
+
+  :global(.dark) .custom-input-group:focus-within {
+    border-color: #60a5fa;
   }
-}
+
+  .input-addon {
+    background: #f7fafc;
+    border: none;
+    padding: 0 15px;
+    color: #718096;
+    font-size: 1.1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 50px;
+    transition: all 0.3s ease;
+  }
+
+  /* Modo oscuro */
+  :global(.dark) .input-addon {
+    background: #475569;
+    color: #94a3b8;
+  }
+
+  .custom-input {
+    border: none !important;
+    padding: 15px 20px !important;
+    font-size: 1rem !important;
+    background: white !important;
+    color: #2d3748 !important;
+    box-shadow: none !important;
+    outline: none !important;
+    transition: all 0.3s ease !important;
+  }
+
+  .custom-input:focus {
+    box-shadow: none !important;
+    border: none !important;
+  }
+
+  /* Modo oscuro */
+  :global(.dark) .custom-input {
+    background: #334155 !important;
+    color: #f1f5f9 !important;
+  }
+
+  :global(.dark) .custom-input::placeholder {
+    color: #94a3b8 !important;
+  }
+
+  .custom-password :deep(.p-password-input) {
+    border: none !important;
+    padding: 15px 20px !important;
+    font-size: 1rem !important;
+    background: white !important;
+    color: #2d3748 !important;
+    box-shadow: none !important;
+    outline: none !important;
+    transition: all 0.3s ease !important;
+  }
+
+  .custom-password :deep(.p-password-input):focus {
+    box-shadow: none !important;
+    border: none !important;
+  }
+
+  /* Modo oscuro */
+  :global(.dark) .custom-password :deep(.p-password-input) {
+    background: #334155 !important;
+    color: #f1f5f9 !important;
+  }
+
+  :global(.dark) .custom-password :deep(.p-password-input)::placeholder {
+    color: #94a3b8 !important;
+  }
+
+  .custom-password :deep(.p-password-toggle) {
+    background: #f7fafc !important;
+    border: none !important;
+    color: #718096 !important;
+    padding: 0 15px !important;
+    transition: all 0.3s ease !important;
+  }
+
+  /* Modo oscuro */
+  :global(.dark) .custom-password :deep(.p-password-toggle) {
+    background: #475569 !important;
+    color: #94a3b8 !important;
+  }
 </style>

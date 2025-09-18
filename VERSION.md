@@ -1,5 +1,10 @@
 # VERSIONES
 
+## 5.0.6
+
+- Añade el dashboard del usuario
+- Añade el nombre del usuario en el nombre del archivo de exportación
+
 ## 5.0.5
 
 - Añade la gestión de estadísticas falsas

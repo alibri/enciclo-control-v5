@@ -66,4 +66,8 @@ export default class StatsService {
   async getSessionStats (id: string|null = null) {
     return await this.api.get('sessionstats', { id });
   }
+
+  async getUserPageStats (user: number, collection: string) {
+    return await this.api.get('userpagestats', { user, collection });
+  }  
 };

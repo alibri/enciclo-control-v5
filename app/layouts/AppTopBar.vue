@@ -101,14 +101,14 @@ const logout = () => {
           {{ t('Login') }}
         </nuxt-link>
       </button>
-
-      <button v-if="authenticated" class="p-link">
+      
+      <button v-if="authenticated"
+        class="p-link border border-transparent bg-red-500 hover:bg-red-600 text-white font-semibold rounded px-3 py-1 shadow transition-colors duration-200 flex items-center">
         <i class="pi pi-sign-out" />&nbsp;
-        <nuxt-link @click="logout">
+        <nuxt-link @click="logout" style="color: inherit; text-decoration: none;">
           {{ t('Logout') }}
         </nuxt-link>
       </button>
-
     </div>
   </div>
 </template>

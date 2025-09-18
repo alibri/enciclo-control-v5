@@ -3,7 +3,7 @@ import type { ToastMessageOptions } from 'primevue/toast';
 import { consola } from 'consola';
 
 export function useMessages () {
-  function showMessage (severity: ToastMessageOptions['severity'], summary: string, detail: string, life?: number, group?: string) {
+  function showMessage (severity: ToastMessageOptions['severity'], summary: string, detail: string, life?: number | null, group?: string) {
     if (!life) {
       life = 3000;
     }
@@ -18,7 +18,7 @@ export function useMessages () {
         severity,
         summary,
         detail,
-        life,
+        life: life || undefined,
         group
       });
     } else {
@@ -26,7 +26,7 @@ export function useMessages () {
         severity,
         summary,
         detail,
-        life
+        life: life || undefined
       });
     }
   }
