@@ -7,10 +7,18 @@ defineProps({
     default: null
   }
 });
+const displayDashboard = ref(false);
+const dashboardUser = ref<any>(null);
+
+const verDashboard = (user: any) => {
+  dashboardUser.value = user;
+  displayDashboard.value = true;
+};
 
 </script>
 
 <template>
+  <UserDashboardDialog v-model:visible="displayDashboard" :user="dashboardUser" />
   <div class="grid grid-cols-12 gap-8">
     <div class="col-span-12 lg:col-span-6 xl:col-span-6">
       <div class="border border-gray-200 rounded-lg p-6">
@@ -20,7 +28,7 @@ defineProps({
               {{ t('Usuario') }}
             </div>
             <div class="text-gray-900 w-full md:w-64 md:order-0 order-1 text-red-500">
-              {{ user?.user }}
+              {{ user?.user }} <a @click="verDashboard(user)" class="text-blue-500 cursor-pointer"><i class="pi pi-chart-line"></i></a>
             </div>
           </li>
           <li class="flex items-center py-3 px-2 border-t border-gray-200 flex-wrap">

@@ -30,17 +30,6 @@ const userPageStats = ref(null);
 const loadData = async () => {
     loading.value = true;
 
-    /*const data = getParamsData(lazyParams.value);
-
-    const response = await statsService.getCollections(data);
-    if (checkLogged(response)) {
-        collections.value = response?.data?.value?.collections;
-        const firstCollectionKey = Object.keys(collections.value)[0];
-        collectionSelected.value = firstCollectionKey ? (collections.value as any)[firstCollectionKey] || null : null;
-        loadUserPageStats();
-    }*/
-
-
     collections.value = props.user.collections || [];
     collectionSelected.value = collections.value[0] || null;
     loadUserPageStats();
@@ -65,8 +54,6 @@ const loadUserPageStats = async () => {
 };
 
 watch(() => props.visible, (nuevo, anterior) => {
-  // Aquí puedes poner la lógica que necesites cuando cambie props.user
-  // Por ejemplo, recargar estadísticas del usuario
   loadData();
 });
 </script>

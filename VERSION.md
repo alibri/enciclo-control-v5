@@ -1,5 +1,9 @@
 # VERSIONES
 
+## 5.0.7
+
+- Añade el dashboard del usuario en la vista de estadísticas de los usuarios
+
 ## 5.0.6
 
 - Añade el dashboard del usuario
