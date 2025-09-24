@@ -169,7 +169,7 @@ const login = async () => {
 
   .custom-input {
     border: none !important;
-    padding: 15px 20px !important;
+    /*padding: 15px 20px !important;*/
     font-size: 1rem !important;
     background: white !important;
     color: #2d3748 !important;
@@ -195,7 +195,7 @@ const login = async () => {
 
   .custom-password :deep(.p-password-input) {
     border: none !important;
-    padding: 15px 20px !important;
+    /*padding: 15px 20px !important;*/
     font-size: 1rem !important;
     background: white !important;
     color: #2d3748 !important;

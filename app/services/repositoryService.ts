@@ -26,4 +26,12 @@ export default class RepositoryService {
   async uploadFile (data: any) {
     return await this.api.get('repository/upload',  data );
   }
+
+  async getFileUploadUrl (data: any) {
+    return await this.api.get('repository/fileuploadurl',  data );
+  }
+
+  async getFileUrl (data: any) {
+    return await this.api.get('repository/fileurl',  data );
+  }
 };

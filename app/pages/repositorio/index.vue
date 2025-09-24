@@ -5,6 +5,7 @@ import IconField from 'primevue/iconfield';
 import InputIcon from 'primevue/inputicon';
 import RepositoryService from '@/services/repositoryService';
 import { formatSize } from '@/utils/format';
+import DocumentUploader from '@/components/DocumentUploader.vue';
 
 const { filters } = usePrimeDataTable();
 const { t } = useI18n();
@@ -110,140 +111,200 @@ const regenerateFile = async (data: any) => {
   loadData();
 };
 
+const viewOriginal = async (data: any) => {
+  const response = await repositoryService.getFileUrl(data);
+  if (response.data.value.success) {
+    // Abrir el archivo en una nueva pestaña
+    window.open(response.data.value.url, '_blank');
+  } else {
+    showMessage('error', t('Error'), response.data.value.message);
+  }
+};
+
 const menu = ref();
 const menuData = ref();
-const items = ref([
+const items = ref<any[]>([]);
+
+// Función para generar los items del menú basándose en el estado del item
+const generateMenuItems = (data: any) => {
+  const menuItems = [
     {
-        label: t('Opciones'),
-        items: [
-            /*{
-                label: t('Editar'),
-                icon: 'pi pi-pencil',
-                command: () => {
-                  console.log('editUser', menuData.value);
-                  editUser(menuData.value);
-                },
-                class: 'text-green-500'
-            },*/
-            {
-                label: t('Eliminar'),
-                icon: 'pi pi-trash',
-                command: () => {
-                  deleteFile(menuData.value);
-                },
-                class: 'text-red-500'
-            }, {
-                label: t('Volver a generar'),
-                icon: 'pi pi-refresh',
-                command: () => {
-                  regenerateFile(menuData.value);
-                },
-                class: 'text-blue-500'
-            }/*,
-            {
-              label: t('Enviar datos de acceso'),
-              icon: 'pi pi-envelope',
-              command: () => {
-                console.log('sendAccessData', menuData.value);
-                sendAccessData(menuData.value);
-              },
-              class: 'text-yellow-500'
-            }*/
-        ]
+      label: t('Ver original'),
+      icon: 'pi pi-eye',
+      command: () => {
+        viewOriginal(data);
+      },
+      class: 'text-green-500'
+    },
+    {
+      label: t('Eliminar'),
+      icon: 'pi pi-trash',
+      command: () => {
+        deleteFile(data);
+      },
+      class: 'text-red-500'
     }
-]);
+  ];
+
+  // Solo agregar "Volver a generar" si el estado es 'imported'
+  if (data?.status === 'imported') {
+    menuItems.push({
+      label: t('Volver a generar'),
+      icon: 'pi pi-refresh',
+      command: () => {
+        regenerateFile(data);
+      },
+      class: 'text-blue-500'
+    });
+  }
+
+  return [
+    {
+      label: t('Opciones'),
+      items: menuItems
+    }
+  ];
+};
 
 const toggle = (event: Event, data: any) => {
+    menuData.value = data;
+    // Generar los items del menú basándose en el estado del item
+    items.value = generateMenuItems(data);
     menu.value.toggle(event);
-    // Almacenar los datos del usuario para usarlos en los comandos
-    items.value[0]?.items?.forEach((item: any) => {
-        menuData.value = data;
-        // item.command = () => item.command(menuData.value);
-    });
 };
 
 
-const totalSize = ref(0);
-const totalSizePercent = ref(0);
-const files = ref([]);
-
-const onRemoveTemplatingFile = (file: any, removeFileCallback: any, index: number) => {
-    removeFileCallback(index);
-    totalSize.value -= file.size; // Use file.size directly (in bytes)
-    // Recalculate percentage
-    const maxSize = 100 * 1024 * 1024; // 100MB in bytes
-    totalSizePercent.value = Math.min((totalSize.value / maxSize) * 100, 100);
+// Funciones para manejar eventos del componente DocumentUploader
+const onUploadSuccess = () => {
+  loadData();
 };
 
-const onSelectedFiles = (event: any) => {
-    files.value = event.files;
-    totalSize.value = 0; // Reset total size
-    files.value.forEach((file: any) => {
-        totalSize.value += file.size; // Use file.size directly (in bytes)
-    });
-    // Recalculate percentage
-    const maxSize = 100 * 1024 * 1024; // 100MB in bytes
-    totalSizePercent.value = Math.min((totalSize.value / maxSize) * 100, 100);
-};
-
-const uploadEvent = (callback: any) => {
-    // Calculate percentage based on a reasonable max size (e.g., 100MB)
-    const maxSize = 100 * 1024 * 1024; // 100MB in bytes
-    totalSizePercent.value = Math.min((totalSize.value / maxSize) * 100, 100);
-    callback();
-};
-
-const uploading = ref(false);
-const onTemplatedUpload = async (event: any) => {
-  uploading.value = true;
-  try {
-    let uploadedSize = 0;
-    let totalUploaded = 0;
-    for (let i = 0; i < event.files.length; i++) {
-      totalUploaded += event.files[i].size;
-    }
-    totalSize.value = totalUploaded;
-    totalSizePercent.value = 0;
-
-    for (let i = 0; i < event.files.length; i++) {
-      const file = event.files[i];
-      const reader = new FileReader();
-      await new Promise<void>((resolve) => {
-        reader.onload = async () => {
-          const fileData = {
-            name: file.name,
-            type: file.type,
-            size: file.size,
-            content: reader.result?.toString().split(',')[1] ?? '' // Get base64 without data:image prefix
-          };
-
-          uploadedSize += file.size;
-          const response = await repositoryService.uploadFile({ file: fileData });
-          if (checkLogged(response)) {
-            showMessage('success', t('Success'), `${file.name} - ${t('Fichero subido correctamente')}`);
-            loadData();
-          }
-          totalSizePercent.value = (uploadedSize / totalUploaded) * 100;
-          resolve();
-        };
-        reader.readAsDataURL(file);
-      });
-    }
-  } catch (e: any) {
-    showMessage('error', t('Error'), e.message);
-  } finally {
-    loading.value = false;
-    uploading.value = false;
-  }
+const onUploadError = (error: string) => {
+  console.error('Error en la subida:', error);
 };
 </script>
 
 <template>
-  <div class="card">
-    <h2>{{ t('Repositorio de Documentos') }}</h2> 
-    <div class="grid grid-cols-12 gap-4 p-1">
+  <div class=" shadow-md p-6">
+    <h2 class="text-2xl font-bold text-gray-800 mb-6">{{ t('Repositorio de Documentos') }}</h2>
+
+    <div class="grid grid-cols-12 gap-8 mt-1">
       <div class="col-span-12">
-        <Message severity="info" class="flex justify-center">POR COMPLETAR</Message>
+        <DocumentUploader 
+          :maxFileSize="100000000"
+          accept=".pdf,.doc,.docx,.txt"
+          :multiple="true"
+          @upload-success="onUploadSuccess"
+          @upload-error="onUploadError"
+        />
+      </div>
+    </div>
+    <div class="grid grid-cols-12 gap-8 mt-1">
+      <div class="col-span-12">
+        <DataTable
+          ref="dt"
+          v-model:filters="filters"
+          :value="stats"
+          :paginator="true"
+          :rows="25"
+          :lazy="true"
+          :total-records="totalRecords"
+          filter-display="menu"
+          paginator-template="CurrentPageReport FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink RowsPerPageDropdown"
+          paginator-position="both"
+          :rows-per-page-options="[25, 50, 100]"
+          responsive-layout="scroll"
+          data-key="id"
+          striped-rows
+          sort-mode="multiple"
+          show-gridlines
+          :loading="loading"
+          :global-filter-fields="['user']"
+          :current-page-report-template="t('show-per-page')"
+          @page="onPage($event)"
+          @sort="onSort($event)"
+          @filter="onFilter($event)"
+        >
+          <template #header>
+            <div class="flex justify-between">
+              <div class="left-0">
+                <Button
+                  icon="pi pi-refresh"
+                  :label="t('Refrescar')"
+                  class="p-button-secondary"
+                  @click="loadData()"
+                />
+                <Button icon="pi pi-file-excel" class="p-button-success ml-2" @click="exportData()" />
+              </div>
+              <div class="flex items-center gap-2">
+                <Button
+                  type="button"
+                  icon="pi pi-filter-slash"
+                  class="p-button-outlined"
+                  @click="searchTerm = ''; loadData()"
+                />
+                <IconField iconPosition="left">
+                  <InputIcon class="pi pi-search"> </InputIcon>
+                  <InputText v-model="searchTerm" :placeholder="t('Búsqueda')" @keydown.enter="onFilter" />
+                </IconField>
+              </div>
+            </div>
+          </template>
+          <template #empty>
+            <div class="text-center text-gray-500 py-8">{{ t('No se han encontrado datos.') }}</div>
+          </template>
+          <template #loading>
+            <div class="text-center text-gray-600 py-8">{{ t('Cargando datos..') }} <i class="pi pi-spin pi-spinner" style="font-size: 2rem" /></div>
+          </template>
+          <Column header="#">
+            <template #body="slotProps">              
+                <Button type="button" icon="pi pi-ellipsis-v" @click="(e: Event) => toggle(e, slotProps.data)" aria-haspopup="true" aria-controls="overlay_menu" />
+                <Menu ref="menu" id="overlay_menu" :model="items" :popup="true" />
+            </template>
+          </Column>
+          <Column field="id" :header="t('ID')" :sortable="true">
+            <template #body="slotProps">
+              <span class="text-center text-xs text-gray-800 font-bold">{{ slotProps.data.id }}</span>
+            </template>
+          </Column>
+          <Column field="created_at" :header="t('Creado')" :sortable="true">
+            <template #body="slotProps">
+              <span class="text-sm text-gray-700">{{ formatDateTime(slotProps.data.created_at) }}</span>
+            </template>
+          </Column>
+          <Column field="filename" :header="t('Nombre')" :sortable="true" class="text-blue-800">
+            <template #body="slotProps">
+              <span v-tooltip="slotProps.data.filename" class="text-blue-800">{{ slotProps.data.filename.substring(0,10) }}...</span>
+            </template>
+          </Column>
+          <Column field="original_filename" :header="t('Fichero')" :sortable="true" class="text-blue-400" />
+          <Column field="status" :header="t('Estado')" :sortable="true" class="text-center">
+            <template #body="slotProps">
+              <Tag :severity="formatStatusRepository(slotProps.data.status)" class="text-sm" :value="slotProps.data.status" />
+            </template>
+          </Column>
+          <Column field="mime_type" :header="t('Tipo')" :sortable="true" class="text-center">
+            <template #body="slotProps">
+              <span class="text-gray-500">{{ slotProps.data.mime_type }}</span>
+            </template>
+          </Column>
+
+          <Column field="file_size" :header="t('Tamaño')" :sortable="true" class="text-right">
+            <template #body="slotProps">
+              <span class="text-yellow-600">{{ formatSize(slotProps.data.file_size) }}</span>
+            </template>
+          </Column>
+          <Column field="path" :header="t('Ruta')" :sortable="true">
+            <template #body="slotProps">
+              <span v-tooltip="slotProps.data.path" class="text-gray-700">{{ slotProps.data.path.substring(0,10) }}...</span>
+            </template>
+          </Column>
+          <Column field="updated_at" :header="t('Actualizado')" :sortable="true" class="text-center">
+            <template #body="slotProps">
+              <span class="text-sm text-gray-700">{{ formatDateTime(slotProps.data.updated_at) }}</span>
+            </template>
+          </Column>
+        </DataTable>
       </div>
     </div>
   </div>
