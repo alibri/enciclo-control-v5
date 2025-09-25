@@ -71,6 +71,7 @@ const emptyUser = {
   istester: false,
   isenabled: true,
   dashboard_access: false,
+  manual_stats: false,
   email: '',
   grupo: '',
   meta: ''
@@ -102,6 +103,7 @@ const editUser = (user: any) => {
   user.iseditor = parseInt(user.iseditor) === 1;
   user.istester = parseInt(user.istester) === 1;
   user.dashboard_access = parseInt(user.dashboard_access) === 1;
+  user.manual_stats = parseInt(user.manual_stats) === 1;
   let parts = user.begin?.split('/');
   if (parts) {
     const begin = (new Date(parts[2], parts[1], parts[0]));// .toISOString();
@@ -227,63 +229,56 @@ const menu = ref();
 const menuData = ref();
 const items = ref([
   {
-    label: t('Opciones'),
-    items: [
-      {
-        label: t('Editar'),
-        icon: 'pi pi-pencil',
-        command: () => {
-          editUser(menuData.value);
-        },
-        class: 'text-green-500'
-      },
-      {
-        label: t('Eliminar'),
-        icon: 'pi pi-trash',
-        command: () => {
-          deleteUser(menuData.value);
-        },
-        class: 'text-red-500'
-      },
-      {
-        separator: true
-      },
-      {
-        label: t('Gestió de estadísticas'),
-        icon: 'pi pi-chart-bar',
-        command: () => {
-          gestionEstadisticas(menuData.value);
-        },
-        class: 'text-blue-500'
-      },
-      {
-        label: t('Ver Dashboard'),
-        icon: 'pi pi-chart-line',
-        command: () => {
-          verDashboard(menuData.value);
-        },
-        class: 'text-blue-500'
-      },
-      {
-        separator: true
-      },
-      {
-        label: t('Resetear contraseña'),
-        icon: 'pi pi-key',
-        command: () => {
-          resetPassword(menuData.value);
-        },
-        class: 'text-yellow-500'
-      }
-    ]
+    label: t('Editar'),
+    icon: 'pi pi-pencil',
+    command: () => {
+      editUser(menuData.value);
+    },
+    class: 'text-green-500'
+  },
+  {
+    label: t('Eliminar'),
+    icon: 'pi pi-trash',
+    command: () => {
+      deleteUser(menuData.value);
+    },
+    class: 'text-red-500'
+  },
+  {
+    separator: true
+  },
+  {
+    label: t('Gestió de estadísticas'),
+    icon: 'pi pi-chart-bar',
+    command: () => {
+      gestionEstadisticas(menuData.value);
+    },
+    class: 'text-blue-500'
+  },
+  {
+    label: t('Ver Dashboard'),
+    icon: 'pi pi-chart-line',
+    command: () => {
+      verDashboard(menuData.value);
+    },
+    class: 'text-blue-500'
+  },
+  {
+    separator: true
+  },
+  {
+    label: t('Resetear contraseña'),
+    icon: 'pi pi-key',
+    command: () => {
+      resetPassword(menuData.value);
+    },
+    class: 'text-yellow-500'
   }
 ]);
 
 const toggle = (event: Event, data: any) => {
   menu.value.toggle(event);
-  items.value[0]?.items?.forEach((item: any) => {
-    menuData.value = data;
-  });
+  menuData.value = data;
 };
 
 const onPage = (event: any) => {
@@ -361,149 +356,229 @@ const onRowClick = (event: any) => {
         </Toolbar>
       </div>
       <div class="col-span-12">
-        <DataTable ref="dt" v-model:filters="filters" :value="users" :paginator="true" :rows="25" :lazy="true"
-          :total-records="totalRecords"
-          paginator-template="CurrentPageReport FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink RowsPerPageDropdown"
-          paginator-position="both" :rows-per-page-options="[25, 50, 100]" responsive-layout="scroll" data-key="id"
-          striped-rows sort-mode="multiple" show-gridlines filter-display="menu" :loading="loading"
-          :global-filter-fields="['name', 'user', 'collections', 'iprange', 'grupo']"
-          :current-page-report-template="t('show-per-page')" @page="onPage($event)" @sort="onSort($event)"
-          @filter="onFilter($event)" @row-click="onRowClick" @row-dblclick="onRowDoubleClick">
-          <template #header>
-            <div class="flex justify-between items-center">
-              <div class="left-0">
-                <Button icon="pi pi-refresh" :label="t('Refrescar')" class="p-button-secondary" @click="loadData()" />
-                <Button icon="pi pi-file-excel" class="p-button-success ml-2" @click="exportData()" />
+        <div class="table-container">
+          <DataTable ref="dt" v-model:filters="filters" :value="users" :paginator="true" :rows="25" :lazy="true"
+            :total-records="totalRecords"
+            paginator-template="CurrentPageReport FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink RowsPerPageDropdown"
+            paginator-position="both" :rows-per-page-options="[25, 50, 100]" responsive-layout="scroll" data-key="id"
+            striped-rows sort-mode="multiple" show-gridlines filter-display="menu" :loading="loading"
+            :global-filter-fields="['name', 'user', 'collections', 'iprange', 'grupo']"
+            :current-page-report-template="t('show-per-page')" @page="onPage($event)" @sort="onSort($event)"
+            @filter="onFilter($event)" @row-click="onRowClick" @row-dblclick="onRowDoubleClick" class="users-table">
+            <template #header>
+              <div class="flex justify-between items-center">
+                <div class="left-0">
+                  <Button icon="pi pi-refresh" :label="t('Refrescar')" class="p-button-secondary" @click="loadData()" />
+                  <Button icon="pi pi-file-excel" class="p-button-success ml-2" @click="exportData()" />
+                </div>
+                <div class="flex items-center gap-2">
+                  <Button type="button" icon="pi pi-filter-slash" class="p-button-outlined"
+                    @click="searchTerm = ''; loadData()" />
+                  <IconField iconPosition="left">
+                    <InputIcon class="pi pi-search"> </InputIcon>
+                    <InputText v-model="searchTerm" :placeholder="t('Búsqueda')" @keydown.enter="onFilter" />
+                  </IconField>
+                </div>
               </div>
-              <div class="flex items-center gap-2">
-                <Button type="button" icon="pi pi-filter-slash" class="p-button-outlined"
-                  @click="searchTerm = ''; loadData()" />
-                <IconField iconPosition="left">
-                  <InputIcon class="pi pi-search"> </InputIcon>
-                  <InputText v-model="searchTerm" :placeholder="t('Búsqueda')" @keydown.enter="onFilter" />
-                </IconField>
-              </div>
-            </div>
-          </template>
-          <template #empty>
-            <div class="text-center text-gray-500 py-8">{{ t('No se han encontrado datos.') }}</div>
-          </template>
-          <template #loading>
-            <div class="text-center text-gray-600 py-8">{{ t('Cargando datos..') }} <i class="pi pi-spin pi-spinner"
-                style="font-size: 2rem" /></div>
-          </template>
-          <Column header="#">
-            <template #body="slotProps">
-              <Button type="button" icon="pi pi-ellipsis-v" @click="(e: Event) => toggle(e, slotProps.data)"
-                aria-haspopup="true" aria-controls="overlay_menu" />
-              <Menu ref="menu" id="overlay_menu" :model="items" :popup="true" />
             </template>
-          </Column>
-          <Column field="id" :header="t('Id')" :sortable="true" class="text-xs" />
-          <Column field="name" :header="t('Nombre')" :sortable="true" class="font-bold">
-            <template #filter="{ filterModel, filterCallback }">
-              <InputText v-model="filterModel.value" v-tooltip.top.focus="t('Pulsa ENTER para aplicar')" type="text"
-                class="p-column-filter" :placeholder="t('busqueda-nombre')" @keydown.enter="filterCallback()" />
+            <template #empty>
+              <div class="text-center text-gray-500 py-8">{{ t('No se han encontrado datos.') }}</div>
             </template>
-          </Column>
-          <Column field="user" :header="t('Usuario')" :sortable="true" class="font-bold">
-            <template #filter="{ filterModel, filterCallback }">
-              <InputText v-model="filterModel.value" v-tooltip.top.focus="t('Pulsa ENTER para aplicar')" type="text"
-                class="p-column-filter" :placeholder="t('busqueda-nombre')" @keydown.enter="filterCallback()" />
+            <template #loading>
+              <div class="text-center text-gray-600 py-8">{{ t('Cargando datos..') }} <i class="pi pi-spin pi-spinner"
+                  style="font-size: 2rem" /></div>
             </template>
-            <template #body="slotProps">
-              <NuxtLink :to="'/users/' + slotProps.data.user">
-                <i class="pi pi-chart-bar text-red-500" /> {{ slotProps.data.user }}
-              </NuxtLink>
-            </template>
-          </Column>
-          <Column field="grupo" :header="t('Grupo')" :sortable="true" class="font-bold">
-            <template #body="slotProps">
-              <NuxtLink :to="'/users/g__' + slotProps.data.grupo">
-                <span class="font-bold border-b border-dotted border-gray-300">{{ slotProps.data.grupo }}</span>
-              </NuxtLink>
-            </template>
-          </Column>
-          <Column field="collections" :header="t('Colecciones')" :sortable="true">
-            <template #body="slotProps">
-              <span v-if="slotProps.data.collections">
-                <span v-for="item in slotProps.data.collections" :key="item">
-                  <Tag v-if="item" :value="item" rounded />
+            <Column header="#" :style="{ width: '60px' }" class="text-center">
+              <template #body="slotProps">
+                <Button type="button" icon="pi pi-ellipsis-v" @click="(e: Event) => toggle(e, slotProps.data)"
+                  aria-haspopup="true" aria-controls="overlay_menu" class="p-button-sm p-button-text" />
+                <Menu ref="menu" id="overlay_menu" :model="items" :popup="true">
+                  <template #item="{ item, props }">
+                    <a v-ripple class="flex items-center" v-bind="props.action">
+                      <span :class="item.icon + ' ' + item.class" />
+                      <span>{{ item.label }}</span>
+                    </a>
+                  </template>
+                </Menu>
+              </template>
+            </Column>
+            <Column field="id" :header="t('ID')" :sortable="true" :style="{ width: '80px' }" class="text-center">
+              <template #body="slotProps">
+                <span class="text-sm font-mono bg-gray-100 px-2 py-1 rounded">{{ slotProps.data.id }}</span>
+              </template>
+            </Column>
+            <Column field="name" :header="t('Nombre')" :sortable="true" class="font-semibold">
+              <template #filter="{ filterModel, filterCallback }">
+                <InputText v-model="filterModel.value" v-tooltip.top.focus="t('Pulsa ENTER para aplicar')" type="text"
+                  class="p-column-filter" :placeholder="t('busqueda-nombre')" @keydown.enter="filterCallback()" />
+              </template>
+              <template #body="slotProps">
+                <div class="flex items-center gap-2">
+                  <i class="pi pi-user text-blue-500"></i>
+                  <span class="font-medium">{{ slotProps.data.name }}</span>
+                </div>
+              </template>
+            </Column>
+            <Column field="user" :header="t('Usuario')" :sortable="true" class="font-semibold">
+              <template #filter="{ filterModel, filterCallback }">
+                <InputText v-model="filterModel.value" v-tooltip.top.focus="t('Pulsa ENTER para aplicar')" type="text"
+                  class="p-column-filter" :placeholder="t('busqueda-nombre')" @keydown.enter="filterCallback()" />
+              </template>
+              <template #body="slotProps">
+                <NuxtLink :to="'/users/' + slotProps.data.user"
+                  class="flex items-center gap-2 text-blue-600 hover:text-blue-800 transition-colors">
+                  <i class="pi pi-chart-bar text-red-500" />
+                  <span class="font-medium">{{ slotProps.data.user }}</span>
+                </NuxtLink>
+              </template>
+            </Column>
+            <Column field="grupo" :header="t('Grupo')" :sortable="true" :style="{ width: '120px' }">
+              <template #body="slotProps">
+                <NuxtLink :to="'/users/g__' + slotProps.data.grupo" class="inline-block">
+                  <span v-if="slotProps.data.grupo"
+                    class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 hover:bg-blue-200 transition-colors">
+                    <i class="pi pi-users mr-1"></i>
+                    {{ slotProps.data.grupo }}
+                  </span>
+                  <span v-else class="text-gray-400 text-sm">-</span>
+                </NuxtLink>
+              </template>
+            </Column>
+            <Column field="collections" :header="t('Colecciones')" :sortable="true" :style="{ width: '200px' }">
+              <template #body="slotProps">
+                <div v-if="slotProps.data.collections && slotProps.data.collections.length > 0"
+                  class="flex flex-wrap gap-1">
+                  <Tag v-for="item in slotProps.data.collections.slice(0, 2)" :key="item" :value="item" severity="info"
+                    class="text-xs" />
+                  <Tag v-if="slotProps.data.collections.length > 2" :value="`+${slotProps.data.collections.length - 2}`"
+                    severity="secondary" class="text-xs" />
+                </div>
+                <span v-else class="text-gray-400 text-sm">-</span>
+              </template>
+              <template #filter="{ filterModel, filterCallback }">
+                <InputText v-model="filterModel.value" v-tooltip.top.focus="t('Pulsa ENTER para aplicar')" type="text"
+                  class="p-column-filter" :placeholder="t('Búsqueda por colección')"
+                  @keydown.enter="filterCallback()" />
+              </template>
+            </Column>
+            <Column field="begin" :header="t('Inicio')" :sortable="true" :style="{ width: '100px' }"
+              class="text-center">
+              <template #body="slotProps">
+                <span class="text-xs text-gray-600">{{ slotProps.data.begin || '-' }}</span>
+              </template>
+            </Column>
+            <Column field="end" :header="t('Final')" :sortable="true" :style="{ width: '100px' }" class="text-center">
+              <template #body="slotProps">
+                <span class="text-xs text-gray-600">{{ slotProps.data.end || '-' }}</span>
+              </template>
+            </Column>
+            <Column field="dashboard_access" :header="t('Dash.')" :sortable="true" :style="{ width: '100px' }"
+              class="text-center">
+              <template #body="slotProps">
+                <span :class="slotProps.data.dashboard_access
+                  ? 'inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-blue-100 text-blue-800'
+                  : 'inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-500'">
+                  <i :class="slotProps.data.dashboard_access ? 'pi pi-chart-line mr-1' : 'pi pi-times mr-1'"></i>
+                  {{ slotProps.data.dashboard_access ? t('Dashboard') : '-' }}
                 </span>
-              </span>
-            </template>
-            <template #filter="{ filterModel, filterCallback }">
-              <InputText v-model="filterModel.value" v-tooltip.top.focus="'Pulsa ENTER para aplicar'" type="text"
-                class="p-column-filter" :placeholder="`Búsqueda por colección - `" @keydown.enter="filterCallback()" />
-            </template>
-          </Column>
-          <Column field="begin" :header="t('Inicio')" :sortable="true" class="text-xs" />
-          <Column field="end" :header="t('Final')" :sortable="true" class="text-xs" />
-          <Column field="stats_min" :header="t('Inicio estadísticas')" :sortable="true" class="text-xs" />
-          <Column field="email" :header="t('Email')" :sortable="true" class="text-xs" />
-          <Column field="isenabled" :header="t('Activo')" :sortable="true" class="text-center">
-            <template #body="slotProps">
-              <i
-                :class="'pi ' + (slotProps.data.isenabled ? 'pi-check bg-blue-500 text-white font-bold rounded-full m-2 p-2' : 'pi-times bg-pink-500 text-white font-bold rounded-full m-2 p-2')" />
-            </template>
-          </Column>
-          <Column field="dashboard_access" :header="t('Dashboard')" :sortable="true" class="text-center">
-            <template #body="slotProps">
-              <i
-                :class="'pi ' + (slotProps.data.dashboard_access ? 'pi-check bg-blue-500 text-white font-bold rounded-full m-2 p-2' : 'pi-times bg-pink-500 text-white font-bold rounded-full m-2 p-2')" />
-            </template>
-          </Column>
-          <Column field="isadmin" :header="t('Admin')" :sortable="true" class="text-center">
-            <template #body="slotProps">
-              <i
-                :class="'pi ' + (slotProps.data.isadmin ? 'pi pi-check bg-purple-500 text-white font-bold rounded-full m-2 p-2' : '')" />
-            </template>
-          </Column>
-          <Column field="iseditor" :header="t('Editor')" :sortable="true" class="text-center">
-            <template #body="slotProps">
-              <i
-                :class="'pi ' + (slotProps.data.iseditor ? 'pi pi-check bg-green-500 text-white font-bold rounded-full m-2 p-2' : '')" />
-            </template>
-          </Column>
-          <Column field="istester" :header="t('Tester')" :sortable="true" class="text-center">
-            <template #body="slotProps">
-              <i
-                :class="'pi ' + (slotProps.data.istester ? 'pi pi-check bg-orange-500 text-white font-bold rounded-full m-2 p-2' : '')" />
-            </template>
-          </Column>
-          <Column field="iprange" :header="t('IP')" :sortable="true">
-            <template #filter="{ filterModel, filterCallback }">
-              <InputText v-model="filterModel.value" v-tooltip.top.focus="'Pulsa ENTER para aplicar'" type="text"
-                class="p-column-filter" :placeholder="`Búsqueda por IP - `" @keydown.enter="filterCallback()" />
-            </template>
-          </Column>
-          <Column field="geoip" :header="t('GeoIP')" class="text-yellow-600" :sortable="true" />
-          <Column field="referer" :header="t('Referer')" class="text-xs text-green-600" :sortable="true" />
-          <Column field="email" :header="t('Email')" :sortable="true" class="text-xs text-blue-600" />
-          <Column field="meta" :header="t('Meta')" :sortable="true" class="text-xs" />
-          <Column field="created_at" :header="t('Creado')" :sortable="true" class="text-xs">
-            <template #body="slotProps">
-              <span class="text-gray-700">{{ new Date(slotProps.data.created_at).toLocaleString('es-ES', {
-                day: '2-digit',
-                month: '2-digit',
-                year: 'numeric',
-                hour: '2-digit',
-                minute: '2-digit'
-              }) }}</span>
-            </template>
-          </Column>
-          <Column field="updated_at" :header="t('Actualizado')" :sortable="true" class="text-xs">
-            <template #body="slotProps">
-              <span class="text-gray-700">{{ new Date(slotProps.data.updated_at).toLocaleString('es-ES', {
-                day: '2-digit',
-                month: '2-digit',
-                year: 'numeric',
-                hour: '2-digit',
-                minute: '2-digit'
-              }) }}</span>
-            </template>
-          </Column>
-        </DataTable>
+              </template>
+            </Column>
+            <Column field="stats_min" :header="t('I.Est.')" :sortable="true" :style="{ width: '120px' }"
+              class="text-center">
+              <template #body="slotProps">
+                <span class="text-xs text-gray-600">{{ slotProps.data.stats_min || '-' }}</span>
+              </template>
+            </Column>
+            <Column field="email" :header="t('Email')" :sortable="true" :style="{ width: '200px' }">
+              <template #body="slotProps">
+                <div v-if="slotProps.data.email" class="flex items-center gap-2">
+                  <i class="pi pi-envelope text-gray-400 text-sm"></i>
+                  <span class="text-sm text-gray-600 truncate">{{ slotProps.data.email }}</span>
+                </div>
+                <span v-else class="text-gray-400 text-sm">-</span>
+              </template>
+            </Column>
+            <Column field="isenabled" :header="t('Estado')" :sortable="true" :style="{ width: '100px' }"
+              class="text-center">
+              <template #body="slotProps">
+                <span :class="slotProps.data.isenabled
+                  ? 'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800'
+                  : 'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800'">
+                  <i :class="slotProps.data.isenabled ? 'pi pi-check mr-1' : 'pi pi-times mr-1'"></i>
+                  {{ slotProps.data.isenabled ? t('Activo') : t('Inactivo') }}
+                </span>
+              </template>
+            </Column>
+            <Column field="roles" :header="t('Roles')" :sortable="false" :style="{ width: '150px' }">
+              <template #body="slotProps">
+                <div class="flex flex-wrap gap-1">
+                  <span v-if="slotProps.data.isadmin"
+                    class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-purple-100 text-purple-800">
+                    <i class="pi pi-shield mr-1"></i>{{ t('Admin') }}
+                  </span>
+                  <span v-if="slotProps.data.iseditor"
+                    class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-green-100 text-green-800">
+                    <i class="pi pi-pencil mr-1"></i>{{ t('Editor') }}
+                  </span>
+                  <span v-if="slotProps.data.istester"
+                    class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-orange-100 text-orange-800">
+                    <i class="pi pi-comment mr-1"></i>{{ t('Tester') }}
+                  </span>
+                  <span v-if="slotProps.data.dashboard_access"
+                    class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-blue-100 text-blue-800">
+                    <i class="pi pi-chart-line mr-1"></i>{{ t('Dashboard') }}
+                  </span>
+                  <span v-if="slotProps.data.manual_stats"
+                    class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-yellow-100 text-yellow-800">
+                    <i class="pi pi-chart-bar mr-1"></i>{{ t('Stats') }}
+                  </span>
+                </div>
+              </template>
+            </Column>
+            <Column field="iprange" :header="t('IP')" :sortable="true" :style="{ width: '120px' }">
+              <template #filter="{ filterModel, filterCallback }">
+                <InputText v-model="filterModel.value" v-tooltip.top.focus="t('Pulsa ENTER para aplicar')" type="text"
+                  class="p-column-filter" :placeholder="t('Búsqueda por IP')" @keydown.enter="filterCallback()" />
+              </template>
+              <template #body="slotProps">
+                <span v-if="slotProps.data.iprange" class="text-xs font-mono bg-gray-100 px-2 py-1 rounded">
+                  {{ slotProps.data.iprange }}
+                </span>
+                <span v-else class="text-gray-400 text-sm">-</span>
+              </template>
+            </Column>
+            <Column field="geoip" :header="t('Ubicación')" :sortable="true" :style="{ width: '100px' }">
+              <template #body="slotProps">
+                <span v-if="slotProps.data.geoip" class="text-xs text-blue-600">
+                  <i class="pi pi-map-marker mr-1"></i>{{ slotProps.data.geoip }}
+                </span>
+                <span v-else class="text-gray-400 text-sm">-</span>
+              </template>
+            </Column>
+            <Column field="created_at" :header="t('Creado')" :sortable="true" :style="{ width: '140px' }">
+              <template #body="slotProps">
+                <div class="text-xs text-gray-600">
+                  <div class="font-medium">{{ new Date(slotProps.data.created_at).toLocaleDateString('es-ES') }}</div>
+                  <div class="text-gray-400">{{ new Date(slotProps.data.created_at).toLocaleTimeString('es-ES', {
+                    hour: '2-digit',
+                    minute: '2-digit'
+                  }) }}</div>
+                </div>
+              </template>
+            </Column>
+            <Column field="updated_at" :header="t('Act.')" :sortable="true" :style="{ width: '140px' }">
+              <template #body="slotProps">
+                <div class="text-xs text-gray-600">
+                  <div class="font-medium">{{ new Date(slotProps.data.updated_at).toLocaleDateString('es-ES') }}</div>
+                  <div class="text-gray-400">{{ new Date(slotProps.data.updated_at).toLocaleTimeString('es-ES', {
+                    hour: '2-digit',
+                    minute: '2-digit'
+                  }) }}</div>
+                </div>
+              </template>
+            </Column>
+          </DataTable>
+        </div>
       </div>
 
       <UserDialog v-model:visible="displayNewUser" :user="newUser" :collections="collections" :title="usuarioText"
@@ -515,19 +590,144 @@ const onRowClick = (event: any) => {
 </template>
 
 <style scoped>
+/* Contenedor de la tabla con scroll horizontal */
+.table-container {
+  position: relative;
+  overflow-x: auto;
+  overflow-y: visible;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+/* Estilos mejorados para la tabla de usuarios */
+.users-table {
+  min-width: 100%;
+  border-radius: 12px;
+  overflow: visible;
+}
+
 /* Hacer que las filas del DataTable sean clickeables */
 :deep(.p-datatable-tbody > tr) {
   cursor: pointer;
-  transition: background-color 0.2s ease;
+  transition: all 0.2s ease;
+  border-bottom: 1px solid #f1f5f9;
 }
 
 :deep(.p-datatable-tbody > tr:hover) {
-  background-color: #f8f9fa !important;
+  background-color: #f8fafc !important;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+:deep(.p-datatable-tbody > tr:last-child) {
+  border-bottom: none;
+}
+
+/* Mejorar el header de la tabla */
+:deep(.p-datatable-thead > tr > th) {
+  background-color: #f8fafc;
+  border-bottom: 2px solid #e2e8f0;
+  font-weight: 600;
+  color: #475569;
+  padding: 1rem 0.75rem;
+}
+
+/* Mejorar las celdas */
+:deep(.p-datatable-tbody > tr > td) {
+  padding: 0.875rem 0.75rem;
+  vertical-align: middle;
 }
 
 /* Evitar que los botones y enlaces cambien el cursor */
 :deep(.p-datatable-tbody > tr .p-button),
 :deep(.p-datatable-tbody > tr a) {
   cursor: pointer;
+}
+
+/* Mejorar el paginador */
+:deep(.p-paginator) {
+  background-color: #f8fafc;
+  border-top: 1px solid #e2e8f0;
+  padding: 1rem;
+}
+
+/* Mejorar los filtros */
+:deep(.p-column-filter) {
+  border-radius: 6px;
+  border: 1px solid #d1d5db;
+  padding: 0.5rem;
+  font-size: 0.875rem;
+}
+
+:deep(.p-column-filter:focus) {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+/* Mejorar los tags */
+:deep(.p-tag) {
+  font-size: 0.75rem;
+  padding: 0.25rem 0.5rem;
+  border-radius: 6px;
+}
+
+/* Mejorar los botones de acción */
+:deep(.p-button-sm) {
+  padding: 0.375rem 0.75rem;
+  font-size: 0.875rem;
+}
+
+/* Animaciones suaves */
+:deep(.p-datatable-tbody > tr) {
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Mejorar el estado de carga */
+:deep(.p-datatable-loading-overlay) {
+  background-color: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(2px);
+}
+
+/* Estilos para la barra de scroll horizontal */
+.table-container::-webkit-scrollbar {
+  height: 8px;
+}
+
+.table-container::-webkit-scrollbar-track {
+  background: #f1f5f9;
+  border-radius: 4px;
+}
+
+.table-container::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 4px;
+  transition: background 0.2s ease;
+}
+
+.table-container::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+/* Firefox scrollbar */
+.table-container {
+  scrollbar-width: thin;
+  scrollbar-color: #cbd5e1 #f1f5f9;
+}
+
+/* Responsive mejoras */
+@media (max-width: 768px) {
+  :deep(.p-datatable-tbody > tr > td) {
+    padding: 0.5rem 0.25rem;
+  }
+
+  :deep(.p-datatable-thead > tr > th) {
+    padding: 0.75rem 0.25rem;
+    font-size: 0.875rem;
+  }
+
+  .table-container {
+    margin: 0 -1rem;
+    border-radius: 0;
+  }
 }
 </style>

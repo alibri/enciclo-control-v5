@@ -25,7 +25,7 @@ const saveWiki = async () => {
     </template>
   </Toolbar>
   <div class="flex items-center gap-3 mb-2">
-    <Textarea v-model="wiki" rows="20" class="flex-1" />
+    <Textarea v-model="wiki" rows="20" class="flex-1 p-inputtextarea" />
   </div>
 </template>
 

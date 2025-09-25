@@ -22,12 +22,50 @@ const openEditor = async () => {
 </script>
 
 <template>
-  <span>
-    <a style="cursor: pointer;" @click="openPage(getPageLink(page.collection, page.title))"><i class="pi pi-external-link bg-green-500 text-white p-1 rounded-full" /></a>
-    <a style="cursor: pointer;" class="ml-1" @click="openEditor()"><i class="pi pi-file-edit bg-red-500 text-white p-1 rounded-full" /></a>
-    <a style="cursor: pointer;" class="font-bold border-none border-b border-dotted ml-1" @click="pageStore.loadPage(page.collection, page.title)">
-      <strong>{{ page.title }}</strong>
-    </a>
-    <a style="cursor: pointer;" @click="editOnFly(dialog, page as { collection: string, title: string })"><i class="pi pi-pencil bg-blue-500 text-white p-1 rounded-full ml-1" /></a>
-  </span>
+  <div class="flex items-center gap-2 p-2 border border-gray-200 dark:border-gray-700 hover:shadow-md transition-all duration-200">
+    <!-- Botón para abrir página externa -->
+    <Button
+      icon="pi pi-external-link"
+      severity="success"
+      size="small"
+      text
+      rounded
+      :aria-label="`Abrir ${page.title} en nueva ventana`"
+      v-tooltip.top="'Abrir en nueva ventana'"
+      @click="openPage(getPageLink(page.collection, page.title))"
+    />
+    
+    <!-- Botón para editar página -->
+    <Button
+      icon="pi pi-file-edit"
+      severity="danger"
+      size="small"
+      text
+      rounded
+      :aria-label="`Editar ${page.title}`"
+      v-tooltip.top="'Editar página'"
+      @click="openEditor()"
+    />
+    
+    <!-- Título de la página como enlace principal -->
+    <button
+      class="flex-1 text-left font-semibold text-gray-800 dark:text-gray-200 hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-200 border-b border-dotted border-gray-300 dark:border-gray-600 hover:border-blue-500 dark:hover:border-blue-400 pb-1"
+      @click="pageStore.loadPage(page.collection, page.title)"
+      :aria-label="`Cargar página ${page.title}`"
+    >
+      {{ page.title }}
+    </button>
+    
+    <!-- Botón para edición rápida -->
+    <Button
+      icon="pi pi-pencil"
+      severity="primary"
+      size="small"
+      text
+      rounded
+      :aria-label="`Edición rápida de ${page.title}`"
+      v-tooltip.top="'Edición rápida'"
+      @click="editOnFly(dialog, page as { collection: string, title: string })"
+    />
+  </div>
 </template>

@@ -15,14 +15,37 @@ const layoutState = reactive({
 })
 
 export function useLayout() {
+  // Inicializar el tema desde localStorage o usar el valor por defecto
+  const initializeTheme = () => {
+    if (process.client) {
+      const savedTheme = localStorage.getItem('darkTheme')
+      const isDark = savedTheme ? JSON.parse(savedTheme) : false
+      layoutConfig.darkTheme = isDark
+      
+      // Aplicar la clase al documento
+      if (isDark) {
+        document.documentElement.classList.add('p-dark')
+      } else {
+        document.documentElement.classList.remove('p-dark')
+      }
+    }
+  }
+
+  // Inicializar el tema al cargar
+  if (process.client) {
+    initializeTheme()
+  }
+
   const changeThemeSettings = (theme: string, darkTheme: boolean) => {
     layoutConfig.darkTheme = darkTheme
+    if (process.client) {
+      localStorage.setItem('darkTheme', JSON.stringify(darkTheme))
+    }
   }
 
   const toggleDarkMode = () => {
     if (!document.startViewTransition) {
       executeDarkModeToggle()
-
       return
     }
 
@@ -31,7 +54,18 @@ export function useLayout() {
 
   const executeDarkModeToggle = () => {
     layoutConfig.darkTheme = !layoutConfig.darkTheme
-    document.documentElement.classList.toggle('p-dark')
+    
+    // Guardar en localStorage
+    if (process.client) {
+      localStorage.setItem('darkTheme', JSON.stringify(layoutConfig.darkTheme))
+    }
+    
+    // Aplicar/remover la clase del documento
+    if (layoutConfig.darkTheme) {
+      document.documentElement.classList.add('p-dark')
+    } else {
+      document.documentElement.classList.remove('p-dark')
+    }
   }
 
   const setActiveMenuItem = (item: any) => {

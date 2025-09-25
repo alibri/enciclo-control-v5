@@ -59,14 +59,8 @@ const closeDialog = () => {
 </script>
 
 <template>
-  <Dialog 
-    :visible="visible" 
-    @update:visible="(value) => emit('update:visible', value)"
-    modal 
-    maximizable
-    :style="{ width: '50rem' }" 
-    :breakpoints="{ '1199px': '75vw', '575px': '90vw' }"
-  >
+  <Dialog :visible="visible" @update:visible="(value) => emit('update:visible', value)" modal maximizable
+    :style="{ width: '50rem' }" :breakpoints="{ '1199px': '75vw', '575px': '90vw' }">
     <template #header>
       <h3 class="text-lg font-semibold text-gray-800">
         <i class="pi pi-user" /> {{ title }}
@@ -81,27 +75,27 @@ const closeDialog = () => {
             <div class="space-y-3">
               <div class="flex items-center gap-2">
                 <ToggleSwitch v-model="user.isenabled" />
-                <span class="pi pi-check text-green-600" /> 
+                <span class="pi pi-check text-green-600" />
                 <label for="isenabled" class="text-gray-700 font-medium">{{ t('Activo') }}</label>
               </div>
             </div>
           </div>
         </div>
       </Fieldset>
-      
+
       <Fieldset :legend="t('Permisos del usuario')" class="col-span-12">
         <div class="grid grid-cols-12 gap-2">
           <div class="col-span-3">
             <div class="flex items-center gap-2">
               <ToggleSwitch v-model="user.isadmin" />
-              <span class="pi pi-user text-purple-600" /> 
+              <span class="pi pi-user text-purple-600" />
               <label for="isadmin" class="text-gray-700 font-medium">{{ t('Admin') }}</label>
             </div>
           </div>
           <div class="col-span-3">
             <div class="flex items-center gap-2">
               <ToggleSwitch v-model="user.iseditor" />
-              <span class="pi pi-pencil text-blue-600" /> 
+              <span class="pi pi-pencil text-blue-600" />
               <label for="iseditor" class="text-gray-700 font-medium">{{ t('Editor') }}</label>
             </div>
           </div>
@@ -115,10 +109,10 @@ const closeDialog = () => {
           <div class="col-span-3">
             <div class="flex items-center gap-2">
               <ToggleSwitch v-model="user.istester" />
-              <span class="pi pi-comment text-orange-600" /> 
+              <span class="pi pi-comment text-orange-600" />
               <label for="istester" class="text-gray-700 font-medium">{{ t('Pregúntame') }}</label>
             </div>
-          </div>            
+          </div>
         </div>
       </Fieldset>
 
@@ -128,13 +122,13 @@ const closeDialog = () => {
           <div class="col-span-6 mb-4">
             <FloatLabel variant="in">
               <label for="name1" class="block text-sm font-medium text-gray-700 mb-2">{{ t('Nombre') }}</label>
-              <InputText id="name1" v-model="user.name" type="text" class="w-full"/>
+              <InputText id="name1" v-model="user.name" type="text" class="w-full" />
             </FloatLabel>
           </div>
           <div class="col-span-6 mb-4">
             <FloatLabel variant="in">
               <label for="email1" class="block text-sm font-medium text-gray-700 mb-2">{{ t('Email') }}</label>
-              <InputText id="email1" v-model="user.email" type="text" class="w-full"/>
+              <InputText id="email1" v-model="user.email" type="text" class="w-full" />
             </FloatLabel>
           </div>
         </div>
@@ -142,13 +136,13 @@ const closeDialog = () => {
           <div class="col-span-6 mb-4">
             <FloatLabel variant="in" class="w-full">
               <label for="user" class="block text-sm font-medium text-gray-700 mb-2">{{ t('Usuario') }}</label>
-              <InputText id="user" v-model="user.user" type="text"/>
+              <InputText id="user" v-model="user.user" type="text" />
             </FloatLabel>
           </div>
           <div class="col-span-6 mb-4">
             <FloatLabel variant="in">
               <label for="passwd" class="block text-sm font-medium text-gray-700 mb-2">{{ t('Contraseña') }}</label>
-              <InputText id="passwd" v-model="user.passwd" type="text" class="w-full" toggle-mask/>
+              <InputText id="passwd" v-model="user.passwd" type="text" class="w-full" toggle-mask />
             </FloatLabel>
           </div>
         </div>
@@ -156,13 +150,13 @@ const closeDialog = () => {
           <div class="col-span-6 mb-4">
             <FloatLabel variant="in">
               <label for="grupo" class="block text-sm font-medium text-gray-700 mb-2">{{ t('Grupo') }}</label>
-              <InputText id="grupo" v-model="user.grupo" type="text" class="w-full"/>
+              <InputText id="grupo" v-model="user.grupo" type="text" class="w-full" />
             </FloatLabel>
           </div>
           <div class="col-span-6 mb-4">
             <FloatLabel variant="in">
               <label for="meta" class="block text-sm font-medium text-gray-700 mb-2">{{ t('Meta Por Defecto') }}</label>
-              <InputText id="meta" v-model="user.meta" type="text" class="w-full"/>
+              <InputText id="meta" v-model="user.meta" type="text" class="w-full" />
             </FloatLabel>
           </div>
         </div>
@@ -190,30 +184,28 @@ const closeDialog = () => {
             </FloatLabel>
           </div>
         </div>
-        <hr/>
+        <hr />
         <div class="grid grid-cols-12 gap-4">
-          <div class="col-span-12">
+          <div class="col-span-6">
             <FloatLabel variant="in">
-              <label for="stats_min" class="block text-sm font-medium text-gray-700 mb-2">{{ t('Inicio estadísticas') }}</label>
+              <label for="stats_min" class="block text-sm font-medium text-gray-700 mb-2">{{ t('Inicio estadísticas')
+                }}</label>
               <InputMask v-model="user.stats_min" mask="99/99/9999" placeholder="99/99/9999" slot-char="dd/mm/yyyy" />
             </FloatLabel>
           </div>
+          <div class="col-span-6 flex items-center">
+            <ToggleSwitch v-model="user.manual_stats" id="manual_stats" />
+            <label for="manual_stats" class="font-medium text-gray-700 ml-2">{{ t('Estadísticas manuales') }}</label>
+          </div>
         </div>
-        <hr/>
+        <hr />
         <div class="col-span-12 gap-4">
           <FloatLabel variant="on">
             <label for="collections" class="block text-sm font-medium text-gray-700 mb-2">{{ t('Colecciones') }}</label>
-            <MultiSelect
-              v-model="user.collections"
-              :options="collections"
-              option-label="name"
-              option-value="code"
-              display="chip"
-              :fluid="true"
-              :maxSelectedLabels="3"
+            <MultiSelect v-model="user.collections" :options="collections" option-label="name" option-value="code"
+              display="chip" :fluid="true" :maxSelectedLabels="3"
               :selectedItemsLabel="user.collections.length + ' ' + t('Colecciones seleccionadas')"
-              :placeholder="t('Seleciona Colecciones')"
-            />
+              :placeholder="t('Seleciona Colecciones')" />
           </FloatLabel>
         </div>
       </Fieldset>
@@ -224,19 +216,22 @@ const closeDialog = () => {
           <div class="col-span-12">
             <FloatLabel variant="in">
               <label for="iprange" class="block text-sm font-medium text-gray-700 mb-2">{{ t('Rango IP') }}</label>
-              <Textarea id="iprange" v-model="user.iprange" :auto-resize="true" rows="3" :placeholder="t('Ej: 192.168.1.0/24, 10.0.0.0/8')" class="w-full" />
+              <Textarea id="iprange" v-model="user.iprange" :auto-resize="true" rows="3"
+                :placeholder="t('Ej: 192.168.1.0/24, 10.0.0.0/8')" class="w-full" />
             </FloatLabel>
           </div>
           <div class="col-span-6">
             <FloatLabel variant="in">
               <label for="geoip" class="block text-sm font-medium text-gray-700 mb-2">{{ t('GeoIP') }}</label>
-              <Textarea id="geoip" v-model="user.geoip" :auto-resize="true" rows="3" cols="30" :placeholder="t('Ej: ES, FR, DE')" class="w-full" />
+              <Textarea id="geoip" v-model="user.geoip" :auto-resize="true" rows="3" cols="30"
+                :placeholder="t('Ej: ES, FR, DE')" class="w-full" />
             </FloatLabel>
           </div>
           <div class="col-span-6">
             <FloatLabel variant="in">
               <label for="referer" class="block text-sm font-medium text-gray-700 mb-2">{{ t('Referer') }}</label>
-              <Textarea id="referer" v-model="user.referer" :auto-resize="true" rows="3" cols="30" :placeholder="t('Ej: *.example.com')" class="w-full" />
+              <Textarea id="referer" v-model="user.referer" :auto-resize="true" rows="3" cols="30"
+                :placeholder="t('Ej: *.example.com')" class="w-full" />
             </FloatLabel>
           </div>
         </div>
@@ -257,10 +252,14 @@ const closeDialog = () => {
 
 <style scoped>
 @layer primevue {
-  .p-floatlabel:has(input.p-filled) label, .p-floatlabel:has(textarea.p-filled) label, .p-floatlabel:has(.p-inputwrapper-filled) label {
+
+  .p-floatlabel:has(input.p-filled) label,
+  .p-floatlabel:has(textarea.p-filled) label,
+  .p-floatlabel:has(.p-inputwrapper-filled) label {
     z-index: 999;
   }
 }
+
 @layer primevue {
   .p-floatlabel label {
     z-index: 999;

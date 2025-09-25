@@ -1,8 +1,8 @@
-<script setup  lang="ts">
-// import { FilterMatchMode, FilterOperator } from 'primevue/api';
+<script setup lang="ts">
+import { FilterMatchMode, FilterOperator } from '~/utils/primevue';
 import StatsService from '~/services/statsService';
 
-const { filters } = usePrimeDataTable();
+const { filters } = usePrimeDataTable() as { filters: any };
 const { t } = useI18n();
 const { getParamsData, lazyParams, exportDataGeneric, resetLazyParams } = useUtilsData();
 
@@ -75,94 +75,176 @@ onMounted(() => {
 
 <template>
   <div class="card">
-    <h2>{{ t('Páginas') }}</h2>
-    <div class="grid grid-cols-12 p-1">
+    <!-- Header mejorado con estadísticas -->
+    <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between mb-6">
+      <div class="mb-4 lg:mb-0">
+        <h2 class="text-2xl font-bold text-gray-800 dark:text-gray-200 mb-2">
+          <i class="pi pi-chart-bar mr-2 text-blue-500"></i>
+          {{ t('Páginas') }}
+        </h2>
+        <p class="text-sm text-gray-600 dark:text-gray-400">
+          {{ t('Estadísticas de visualización de páginas') }}
+        </p>
+      </div>
+
+      <!-- Contador de registros -->
+      <div class="bg-blue-50 dark:bg-blue-900/20 px-4 py-2 rounded-lg border border-blue-200 dark:border-blue-800">
+        <div class="flex items-center gap-2">
+          <i class="pi pi-database text-blue-500"></i>
+          <span class="text-sm font-medium text-blue-700 dark:text-blue-300">
+            {{ totalRecords }} {{ t('registros') }}
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-12">
       <div class="col-span-12">
-        <DataTable
-          ref="dt"
-          v-model:filters="filters"
-          :value="stats"
-          :paginator="true"
-          :rows="25"
-          :lazy="true"
-          :total-records="totalRecords"
-          filter-display="menu"
+        <DataTable ref="dt" v-model:filters="filters" :value="stats" :paginator="true" :rows="25" :lazy="true"
+          :total-records="totalRecords" filter-display="menu"
           paginator-template="CurrentPageReport FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink RowsPerPageDropdown"
-          paginatorPosition="both"
-          :rows-per-page-options="[25, 50, 100]"
-          responsive-layout="scroll"
-          data-key="id"
-          striped-rows
-          sort-mode="multiple"
-          show-gridlines
-          :loading="loading"
-          :global-filter-fields="['user']"
-          :current-page-report-template="t('show-per-page')"
-          @page="onPage($event)"
-          @sort="onSort($event)"
-          @filter="onFilter($event)"
-        >
+          paginatorPosition="both" :rows-per-page-options="[25, 50, 100]" responsive-layout="scroll" data-key="id"
+          striped-rows sort-mode="multiple" show-gridlines :loading="loading"
+          :global-filter-fields="['user', 'title', 'collection']" :current-page-report-template="t('show-per-page')"
+          class="p-datatable-sm" @page="onPage($event)" @sort="onSort($event)" @filter="onFilter($event)">
+          <!-- Header con acciones mejoradas -->
           <template #header>
-            <div class="flex flex-wrap gap-1">
-              <div class="left-0">
-                <Button
-                  icon="pi pi-refresh"
-                  :label="t('Refrescar')"
-                  class="p-button-secondary"
-                  @click="loadData()"
-                />
-                <Button icon="pi pi-file-excel" class="p-button-success ml-2" @click="exportData()" />
+            <div class="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
+              <div class="flex flex-wrap gap-2">
+                <Button icon="pi pi-refresh" :label="t('Refrescar')" severity="secondary" size="small" outlined
+                  @click="loadData()" />
+                <Button icon="pi pi-file-excel" :label="t('Exportar')" severity="success" size="small" outlined
+                  @click="exportData()" />
+                <Button icon="pi pi-filter-slash" :label="t('Limpiar filtros')" severity="help" size="small" outlined
+                  @click="clearFilter()" />
+              </div>
+
+              <!-- Búsqueda global mejorada -->
+              <div class="flex items-center gap-2">
+                <i class="pi pi-search text-gray-500"></i>
+                <InputText v-model="filters.global.value" :placeholder="t('Buscar en todas las columnas...')"
+                  class="w-64" />
               </div>
             </div>
           </template>
+
+          <!-- Estados de carga y vacío mejorados -->
           <template #empty>
-            {{ t('No se han encontrado datos.') }}
+            <div class="text-center py-8">
+              <i class="pi pi-inbox text-4xl text-gray-400 mb-4"></i>
+              <p class="text-gray-600 dark:text-gray-400">{{ t('No se han encontrado datos.') }}</p>
+            </div>
           </template>
+
           <template #loading>
-            {{ t('Cargando datos..') }} <i class="pi pi-spin pi-spinner" style="font-size: 2rem" />
+            <div class="text-center py-8">
+              <i class="pi pi-spin pi-spinner text-4xl text-blue-500 mb-4"></i>
+              <p class="text-gray-600 dark:text-gray-400">{{ t('Cargando datos...') }}</p>
+            </div>
           </template>
-          <Column field="user" :header="t('Usuario')" :sortable="true">
+
+          <!-- Columna Usuario mejorada -->
+          <Column field="user" :header="t('Usuario')" :sortable="true" :style="{ minWidth: '120px' }">
             <template #filter="{ filterModel, filterCallback }">
-              <InputText
-                v-model="filterModel.value"
-                v-tooltip.top.focus="t('Pulsa ENTER para aplicar')"
-                type="text"
-                class="p-column-filter"
-                :placeholder="t('busqueda-nombre')"
-                @keydown.enter="filterCallback()"
-              />
+              <InputText v-model="filterModel.value" v-tooltip.top.focus="t('Pulsa ENTER para aplicar')" type="text"
+                class="p-column-filter" :placeholder="t('busqueda-nombre')" @keydown.enter="filterCallback()" />
             </template>
             <template #body="slotProps">
-              <NuxtLink :to="'/users/'+slotProps.data.user" class="text-red-500  border-none border-bottom-1 border-dotted">
-                {{ slotProps.data.user }}
-              </NuxtLink>
+              <div class="flex items-center gap-2">
+                <Avatar :label="slotProps.data.user?.charAt(0)?.toUpperCase()" size="small"
+                  class="bg-blue-500 text-white" />
+                <NuxtLink :to="'/users/' + slotProps.data.user"
+                  class="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 font-medium transition-colors duration-200">
+                  {{ slotProps.data.user }}
+                </NuxtLink>
+              </div>
             </template>
           </Column>
-          <Column field="type" header="type" :sortable="true">
+
+          <!-- Columna Tipo mejorada -->
+          <Column field="type" :header="t('Tipo')" :sortable="true" :style="{ minWidth: '100px' }">
             <template #body="slotProps">
-              <Tag :severity="formatPageType(slotProps.data.type)" :value="slotProps.data.type" />
+              <Tag :severity="formatPageType(slotProps.data.type)" :value="slotProps.data.type" class="font-medium" />
             </template>
           </Column>
-          <Column field="collection" :header="t('Colección')" :sortable="true" class="text-yellow-500" />
-          <Column field="title" header="Título" :sortable="true">
+
+          <!-- Columna Colección mejorada -->
+          <Column field="collection" :header="t('Colección')" :sortable="true" :style="{ minWidth: '120px' }">
             <template #body="slotProps">
-              <PageLink :page="slotProps.data" />
+              <div class="flex items-center gap-2">
+                <i class="pi pi-folder text-yellow-500"></i>
+                <span class="text-yellow-700 dark:text-yellow-400 font-medium">
+                  {{ slotProps.data.collection }}
+                </span>
+              </div>
             </template>
           </Column>
-          <Column field="date" :header="t('Fecha')" :sortable="true">
+
+          <!-- Columna Título mejorada -->
+          <Column field="title" :header="t('Título')" :sortable="true" :style="{ minWidth: '200px' }">
             <template #body="slotProps">
-              <span class="text-sm">{{ formatDateTime(slotProps.data.date) }}</span>
+              <div class="max-w-xs">
+                <PageLink :page="slotProps.data" />
+              </div>
             </template>
           </Column>
-          <Column field="cached" :header="t('Cache')" :sortable="true" class="text-center">
+
+          <!-- Columna Fecha mejorada -->
+          <Column field="date" :header="t('Fecha')" :sortable="true" :style="{ minWidth: '140px' }">
             <template #body="slotProps">
-              <i
-                :class="'pi ' + (slotProps.data.cached ? 'pi pi-check bg-green-500 text-xs text-white font-bold border-round m-2 p-2' : '')"
-              />
+              <div class="flex items-center gap-2">
+                <i class="pi pi-calendar text-gray-500"></i>
+                <span class="text-sm text-gray-700 dark:text-gray-300">
+                  {{ formatDateTime(slotProps.data.date) }}
+                </span>
+              </div>
             </template>
           </Column>
-          <Column field="glc_country_name" :header="t('Pais')" :sortable="true" class="text-xs text-green-500" />
-          <Column field="glc_city" :header="t('Region')" :sortable="true" class="text-xs text-blue-500" />
+
+          <!-- Columna Cache mejorada -->
+          <Column field="cached" :header="t('Cache')" :sortable="true" class="text-center"
+            :style="{ minWidth: '80px' }">
+            <template #body="slotProps">
+              <div class="flex justify-center">
+                <Tag v-if="slotProps.data.cached" severity="success" :value="t('Sí')" icon="pi pi-check" />
+                <Tag v-else severity="secondary" :value="t('No')" icon="pi pi-times" />
+              </div>
+            </template>
+          </Column>
+
+          <!-- Columna País mejorada -->
+          <Column field="glc_country_name" :header="t('País')" :sortable="true" :style="{ minWidth: '100px' }">
+            <template #body="slotProps">
+              <div class="flex items-center gap-2">
+                <span v-if="slotProps.data.glc_country_name">
+                  <i class="pi pi-globe text-green-500"></i>
+                  <span class="text-green-700 dark:text-green-400 text-sm font-medium">
+                    {{ slotProps.data.glc_country_name }}
+                  </span>
+                </span>
+                <span v-else>
+                  <i class="pi pi-globe text-gray-500"></i> -
+                </span>
+              </div>
+            </template>
+          </Column>
+
+          <!-- Columna Región mejorada -->
+          <Column field="glc_city" :header="t('Región')" :sortable="true" :style="{ minWidth: '100px' }">
+            <template #body="slotProps">
+              <div class="flex items-center gap-2">
+                <span v-if="slotProps.data.glc_city">
+                  <i class="pi pi-map-marker text-blue-500"></i>
+                  <span class="text-blue-700 dark:text-blue-400 text-sm font-medium">
+                    {{ slotProps.data.glc_city }}
+                  </span>
+                </span>
+                <span v-else>
+                  <i class="pi pi-globe text-gray-500"></i> -
+                </span>
+              </div>
+            </template>
+          </Column>
         </DataTable>
       </div>
     </div>

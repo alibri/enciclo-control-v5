@@ -1,5 +1,15 @@
 # VERSIONES
 
+## 5.0.8
+
+- Añade el campo de estadísticas manual en el formulario de usuarios
+- Mejora el formulario de usuarios
+- Mejora el listado de usuarios
+- Mejora el formulario de estadísticas
+- Mejora el listado de páginas
+- Mejora el listado de Pregúntame
+- Se accede a las estadísticas manuales de los usuarios y al dashboard del usuario desde la información del usuario
+
 ## 5.0.7
 
 - Añade el dashboard del usuario en la vista de estadísticas de los usuarios
