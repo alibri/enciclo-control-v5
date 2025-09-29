@@ -75,119 +75,214 @@ onMounted(() => {
 
 <template>
   <div class="card">
-    <h2>{{ t('Sesiones') }}</h2>
-    <div class="grid grid-cols-12 p-1">
-      <div class="col-span-12">
-        <DataTable
-          ref="dt"
-          v-model:filters="filters"
-          :value="stats"
-          :paginator="true"
-          :rows="25"
-          :lazy="true"
-          :total-records="totalRecords"
-          filter-display="menu"
-          paginator-template="CurrentPageReport FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink RowsPerPageDropdown"
-          paginatorPosition="both"
-          :rows-per-page-options="[25, 50, 100]"
-          responsive-layout="scroll"
-          data-key="id"
-          striped-rows
-          sort-mode="multiple"
-          show-gridlines
-          :loading="loading"
-          :global-globalFilterFields-fields="['user', 'name']"
-          :current-page-report-template="t('show-per-page')"
-          @page="onPage($event)"
-          @sort="onSort($event)"
-          @filter="onFilter($event)"
-        >
-          <template #header>
-            <div class="flex flex-wrap gap-1">
-              <div class="left-0">
-                <Button
-                  icon="pi pi-refresh"
-                  :label="t('Refrescar')"
-                  class="p-button-secondary"
-                  @click="loadData()"
+    <!-- Header mejorado -->
+    <div class="flex justify-between items-center mb-6">
+      <div>
+        <h2 class="text-2xl font-bold text-gray-800 mb-2">{{ t('Sesiones') }}</h2>
+        <p class="text-gray-600 text-sm">{{ t('Gestión y seguimiento de sesiones de usuario') }}</p>
+      </div>
+      <div class="flex gap-2">
+        <Button
+          icon="pi pi-refresh"
+          :label="t('Refrescar')"
+          class="p-button-outlined p-button-secondary"
+          @click="loadData()"
+        />
+        <Button 
+          icon="pi pi-file-excel" 
+          :label="t('Exportar')"
+          class="p-button-success" 
+          @click="exportData()" 
+        />
+      </div>
+    </div>
+
+    <!-- Tabla mejorada -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200">
+      <DataTable
+        ref="dt"
+        v-model:filters="filters"
+        :value="stats"
+        :paginator="true"
+        :rows="25"
+        :lazy="true"
+        :total-records="totalRecords"
+        filter-display="menu"
+        paginator-template="CurrentPageReport FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink RowsPerPageDropdown"
+        paginatorPosition="both"
+        :rows-per-page-options="[25, 50, 100]"
+        responsive-layout="scroll"
+        data-key="id"
+        striped-rows
+        sort-mode="multiple"
+        show-gridlines
+        :loading="loading"
+        :global-filter-fields="['user', 'name']"
+        :current-page-report-template="t('show-per-page')"
+        class="p-datatable-sm"
+        @page="onPage($event)"
+        @sort="onSort($event)"
+        @filter="onFilter($event)"
+      >
+        <!-- Header de la tabla -->
+        <template #header>
+          <div class="flex flex-wrap justify-between items-center gap-4 p-4 bg-gray-50 border-b">
+            <div class="flex items-center gap-2">
+              <i class="pi pi-users text-blue-500"></i>
+              <span class="font-semibold text-gray-700">{{ t('Lista de Sesiones') }}</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <span class="text-sm text-gray-500">{{ totalRecords }} {{ t('registros') }}</span>
+            </div>
+          </div>
+        </template>
+
+        <!-- Estados de carga y vacío -->
+        <template #empty>
+          <div class="text-center py-8">
+            <i class="pi pi-inbox text-4xl text-gray-300 mb-4"></i>
+            <p class="text-gray-500 text-lg">{{ t('No se han encontrado datos.') }}</p>
+          </div>
+        </template>
+        
+        <template #loading>
+          <div class="text-center py-8">
+            <i class="pi pi-spin pi-spinner text-2xl text-blue-500 mb-2"></i>
+            <p class="text-gray-600">{{ t('Cargando datos...') }}</p>
+          </div>
+        </template>
+
+        <!-- Columna de acciones -->
+        <Column field="id" :header="t('Acciones')" :sortable="false" :exportable="false" style="width: 80px">
+          <template #body="slotProps">
+            <div class="flex justify-center">
+              <NuxtLink :to="'/sessions/'+slotProps.data.id" class="no-underline">
+                <Button 
+                  icon="pi pi-eye" 
+                  type="button" 
+                  class="p-button-text p-button-sm text-blue-600 hover:text-blue-800"
+                  v-tooltip.top="t('Ver detalles')"
                 />
-                <Button icon="pi pi-file-excel" class="p-button-success ml-2" @click="exportData()" />
+              </NuxtLink>
+            </div>
+          </template>
+        </Column>
+
+        <!-- Usuario -->
+        <Column field="user" :header="t('Usuario')" :sortable="true" style="min-width: 120px">
+          <template #filter="{ filterModel, filterCallback }">
+            <InputText
+              v-model="filterModel.value"
+              v-tooltip.top.focus="t('Pulsa ENTER para aplicar')"
+              type="text"
+              class="p-column-filter"
+              :placeholder="t('busqueda-nombre')"
+              @keydown.enter="filterCallback()"
+            />
+          </template>
+          <template #body="slotProps">
+            <div class="flex items-center gap-2">
+              <i class="pi pi-user text-gray-400"></i>
+              <NuxtLink 
+                :to="'/users/'+slotProps.data.user" 
+                class="text-blue-600 hover:text-blue-800 font-medium no-underline hover:underline"
+              >
+                {{ slotProps.data.user }}
+              </NuxtLink>
+            </div>
+          </template>
+        </Column>
+
+        <!-- Fecha de inicio -->
+        <Column field="begin" :header="t('Inicio')" :sortable="true" style="min-width: 150px">
+          <template #body="slotProps">
+            <div class="flex items-center gap-2">
+              <i class="pi pi-calendar text-gray-400"></i>
+              <span class="text-sm text-gray-700">{{ formatDateTime(slotProps.data.begin) }}</span>
+            </div>
+          </template>
+        </Column>
+
+        <!-- Duración -->
+        <Column field="ts" :header="t('Duración')" :sortable="true" style="min-width: 100px">
+          <template #body="slotProps">
+            <div class="flex items-center gap-2">
+              <i class="pi pi-clock text-gray-400"></i>
+              <span class="text-sm font-mono bg-gray-100 px-2 py-1 rounded">{{ formatSegundosAHora(slotProps.data.ts) }}</span>
+            </div>
+          </template>
+        </Column>
+
+        <!-- Páginas visitadas -->
+        <Column field="pages" :header="t('Páginas')" :sortable="true" style="min-width: 80px">
+          <template #body="slotProps">
+            <div class="flex items-center gap-2">
+              <i class="pi pi-file text-gray-400"></i>
+              <span class="text-sm font-semibold text-blue-600">{{ slotProps.data.pages }}</span>
+            </div>
+          </template>
+        </Column>
+
+        <!-- Modo de login -->
+        <Column field="mode" :header="t('Modo')" :sortable="true" style="min-width: 100px">
+          <template #body="slotProps">
+            <Tag 
+              :severity="formatLoginMode(slotProps.data.mode)" 
+              :value="slotProps.data.mode"
+              class="text-xs"
+            />
+          </template>
+        </Column>
+
+        <!-- Información del dispositivo -->
+        <Column :header="t('Dispositivo')" :sortable="false" style="min-width: 200px">
+          <template #body="slotProps">
+            <div class="space-y-1">
+              <div class="flex items-center gap-2 text-sm">
+                <i class="pi pi-desktop text-gray-400"></i>
+                <span class="text-gray-600">{{ slotProps.data.browser }} {{ slotProps.data.version }}</span>
+              </div>
+              <div class="flex items-center gap-2 text-xs text-gray-500">
+                <i class="pi pi-mobile text-gray-400"></i>
+                <span>{{ slotProps.data.platform }}</span>
+                <div class="flex gap-1 ml-2">
+                  <i v-if="slotProps.data.mobile" class="pi pi-check-circle text-green-500" title="Mobile"></i>
+                  <i v-if="slotProps.data.tablet" class="pi pi-tablet text-blue-500" title="Tablet"></i>
+                </div>
               </div>
             </div>
           </template>
-          <template #empty>
-            {{ t('No se han encontrado datos.') }}
+        </Column>
+
+        <!-- Ubicación -->
+        <Column :header="t('Ubicación')" :sortable="false" style="min-width: 150px">
+          <template #body="slotProps">
+            <div class="space-y-1">
+              <div class="flex items-center gap-2 text-sm">
+                <i class="pi pi-map-marker text-red-500"></i>
+                <span class="text-gray-700">{{ slotProps.data.glc_country_name }}</span>
+              </div>
+              <div class="flex items-center gap-2 text-xs text-gray-500">
+                <i class="pi pi-building text-gray-400"></i>
+                <span>{{ slotProps.data.glc_city }}</span>
+              </div>
+              <div class="flex items-center gap-2 text-xs text-gray-500">
+                <i class="pi pi-wifi text-gray-400"></i>
+                <span class="font-mono">{{ slotProps.data.ip }}</span>
+              </div>
+            </div>
           </template>
-          <template #loading>
-            {{ t('Cargando datos..') }}' <i class="pi pi-spin pi-spinner" style="font-size: 2rem" />
+        </Column>
+
+        <!-- User Agent (colapsable) -->
+        <Column field="agent" :header="t('User Agent')" :sortable="true" style="min-width: 200px" class="hidden lg:table-cell">
+          <template #body="slotProps">
+            <div class="max-w-xs">
+              <span class="text-xs text-gray-500 break-all">{{ slotProps.data.agent }}</span>
+            </div>
           </template>
-          <Column field="id" header="#" :sortable="true">
-            <template #body="slotProps">
-              <NuxtLink :to="'/sessions/'+slotProps.data.id" class="p-button-text">
-                <Button icon="pi pi-search" type="button" class="p-button-text" />
-              </NuxtLink>
-            </template>
-          </Column>
-          <Column field="user" :header="t('Usuario')" :sortable="true">
-            <template #filter="{ filterModel, filterCallback }">
-              <InputText
-                v-model="filterModel.value"
-                v-tooltip.top.focus="t('Pulsa ENTER para aplicar')"
-                type="text"
-                class="p-column-filter"
-                :placeholder="t('busqueda-nombre')"
-                @keydown.enter="filterCallback()"
-              />
-            </template>
-            <template #body="slotProps">
-              <NuxtLink :to="'/users/'+slotProps.data.user" class="text-red-500 border-none border-b border-dotted">
-                {{ slotProps.data.user }}
-              </NuxtLink>
-            </template>
-          </Column>
-          <Column field="begin" :header="t('Inicio')" :sortable="true">
-            <template #body="slotProps">
-              <span class="text-sm">{{ formatDateTime(slotProps.data.begin) }}</span>
-            </template>
-          </Column>
-          <Column field="end" :header="t('Tiempo')" :sortable="true">
-            <template #body="slotProps">
-              <span class="text-sm">{{ formatSegundosAHora(slotProps.data.ts) }}</span>
-            </template>
-          </Column>
-          <Column field="pages" :header="t('Páginas')" :sortable="true">
-            <template #body="slotProps">
-              <span class="text-sm">{{ slotProps.data.pages }}</span>
-            </template>
-          </Column>
-          <Column field="mode" :header="t('Modo')" :sortable="true">
-            <template #body="slotProps">
-              <Tag :severity="formatLoginMode(slotProps.data.mode)" :value="slotProps.data.mode" />
-            </template>
-          </Column>
-          <Column field="browser" :header="t('Browser')" :sortable="true" class="text-gray-500" />
-          <Column field="version" :header="t('Version')" :sortable="true" class="text-gray-400" />
-          <Column field="platform" :header="t('SO')" :sortable="true" class="text-gray-500" />
-          <Column field="mobile" :header="t('Mobile')" :sortable="true">
-            <template #body="slotProps">
-              <i
-                :class="'pi ' + (slotProps.data.mobile ? 'pi pi-check bg-green-500 text-xs text-white font-bold rounded m-2 p-2' : '')"
-              />
-            </template>
-          </Column>
-          <Column field="tablet" :header="t('Tablet')" :sortable="true">
-            <template #body="slotProps">
-              <i
-                :class="'pi ' + (slotProps.data.tablet ? 'pi pi-check bg-green-500 text-xs text-white font-bold rounded m-2 p-2' : '')"
-              />
-            </template>
-          </Column>
-          <Column field="agent" :header="t('Agent')" :sortable="true" class="text-xs text-gray-400" />
-          <Column field="ip" :header="t('IP')" :sortable="true" class="text-yellow-500" />
-          <Column field="glc_country_name" :header="t('Pais')" :sortable="true" class="text-xs text-green-500" />
-          <Column field="glc_city" :header="t('Region')" :sortable="true" class="text-xs text-blue-300" />
-        </DataTable>
-      </div>
+        </Column>
+      </DataTable>
     </div>
   </div>
 </template>

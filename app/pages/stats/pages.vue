@@ -151,8 +151,7 @@ onMounted(() => {
             </template>
             <template #body="slotProps">
               <div class="flex items-center gap-2">
-                <Avatar :label="slotProps.data.user?.charAt(0)?.toUpperCase()" size="small"
-                  class="bg-blue-500 text-white" />
+                <i class="pi pi-user text-gray-400"></i>
                 <NuxtLink :to="'/users/' + slotProps.data.user"
                   class="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 font-medium transition-colors duration-200">
                   {{ slotProps.data.user }}
@@ -183,9 +182,7 @@ onMounted(() => {
           <!-- Columna Título mejorada -->
           <Column field="title" :header="t('Título')" :sortable="true" :style="{ minWidth: '200px' }">
             <template #body="slotProps">
-              <div class="max-w-xs">
-                <PageLink :page="slotProps.data" />
-              </div>
+              <PageLink :page="slotProps.data" />
             </template>
           </Column>
 

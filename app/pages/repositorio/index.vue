@@ -158,12 +158,7 @@ const generateMenuItems = (data: any) => {
     });
   }
 
-  return [
-    {
-      label: t('Opciones'),
-      items: menuItems
-    }
-  ];
+  return menuItems;
 };
 
 const toggle = (event: Event, data: any) => {
@@ -185,7 +180,7 @@ const onUploadError = (error: string) => {
 </script>
 
 <template>
-  <div class=" shadow-md p-6">
+  <div class="card">
     <h2 class="text-2xl font-bold text-gray-800 mb-6">{{ t('Repositorio de Documentos') }}</h2>
 
     <div class="grid grid-cols-12 gap-8 mt-1">
@@ -258,8 +253,16 @@ const onUploadError = (error: string) => {
           </template>
           <Column header="#">
             <template #body="slotProps">              
-                <Button type="button" icon="pi pi-ellipsis-v" @click="(e: Event) => toggle(e, slotProps.data)" aria-haspopup="true" aria-controls="overlay_menu" />
-                <Menu ref="menu" id="overlay_menu" :model="items" :popup="true" />
+              <Button type="button" icon="pi pi-ellipsis-v" @click="(e: Event) => toggle(e, slotProps.data)"
+                  aria-haspopup="true" aria-controls="overlay_menu" class="p-button-sm p-button-text" />
+                <Menu ref="menu" id="overlay_menu" :model="items" :popup="true">
+                  <template #item="{ item, props }">
+                    <a v-ripple class="flex items-center" v-bind="props.action">
+                      <span :class="item.icon + ' ' + item.class" />
+                      <span>{{ item.label }}</span>
+                    </a>
+                  </template>
+                </Menu>
             </template>
           </Column>
           <Column field="id" :header="t('ID')" :sortable="true">

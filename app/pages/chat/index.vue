@@ -107,41 +107,17 @@ onMounted(() => {
     </div>
     <div class="grid grid-cols-12 p-1">
       <div class="col-span-12 overflow-x-auto">
-        <DataTable
-          ref="dt"
-          v-model:filters="filters"
-          :value="stats"
-          :paginator="true"
-          :rows="25"
-          :lazy="true"
-          :total-records="totalRecords"
-          filter-display="menu"
+        <DataTable ref="dt" v-model:filters="filters" :value="stats" :paginator="true" :rows="25" :lazy="true"
+          :total-records="totalRecords" filter-display="menu"
           paginator-template="CurrentPageReport FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink RowsPerPageDropdown"
-          paginator-position="both"
-          :rows-per-page-options="[25, 50, 100]"
-          responsive-layout="scroll"
-          data-key="id"
-          striped-rows
-          sort-mode="multiple"
-          show-gridlines
-          :loading="loading"
-          :global-filter-fields="['user']"
-          :current-page-report-template="t('show-per-page')"
-          class="p-datatable-sm"
-          @page="onPage($event)"
-          @sort="onSort($event)"
-          @filter="onFilter($event)"
-          @row-dblclick="onRowDoubleClick($event)"
-        >
+          paginator-position="both" :rows-per-page-options="[25, 50, 100]" responsive-layout="scroll" data-key="id"
+          striped-rows sort-mode="multiple" show-gridlines :loading="loading" :global-filter-fields="['user']"
+          :current-page-report-template="t('show-per-page')" class="p-datatable-sm" @page="onPage($event)"
+          @sort="onSort($event)" @filter="onFilter($event)" @row-dblclick="onRowDoubleClick($event)">
           <template #header>
             <div class="flex justify-between items-center">
               <div class="left-0">
-                <Button
-                  icon="pi pi-refresh"
-                  :label="t('Refrescar')"
-                  class="p-button-secondary"
-                  @click="loadData()"
-                />
+                <Button icon="pi pi-refresh" :label="t('Refrescar')" class="p-button-secondary" @click="loadData()" />
                 <Button icon="pi pi-file-excel" class="p-button-success ml-2" @click="exportData()" />
               </div>
               <div class="flex items-center justify-center">
@@ -149,12 +125,8 @@ onMounted(() => {
                 <ToggleSwitch v-model="no_respuesta" id="switch1" @change="loadData()" />
               </div>
               <div class="flex items-center gap-2">
-                <Button
-                  type="button"
-                  icon="pi pi-filter-slash"
-                  class="p-button-outlined"
-                  @click="searchTerm = ''; loadData()"
-                />
+                <Button type="button" icon="pi pi-filter-slash" class="p-button-outlined"
+                  @click="searchTerm = ''; loadData()" />
                 <IconField iconPosition="left">
                   <InputIcon class="pi pi-search"> </InputIcon>
                   <InputText v-model="searchTerm" :placeholder="t('Búsqueda')" @keydown.enter="onFilter" />
@@ -168,24 +140,21 @@ onMounted(() => {
           <template #loading>
             {{ t('Cargando datos..') }} <i class="pi pi-spin pi-spinner" style="font-size: 2rem" />
           </template>
-          <Column field="id" :header="t('ID')" :sortable="true" class="text-center">
+          <Column field="id" :header="t('#')" :sortable="true" class="text-center">
             <template #body="slotProps">
-              <span class="inline-flex items-center justify-center w-8 h-8 bg-blue-100 text-blue-800 text-xs font-bold rounded-full">{{ slotProps.data.id }}</span>
+              <a class="flex items-start cursor-pointer hover:bg-gray-50 p-2 rounded transition-colors"
+                @click="showChat(dialog, slotProps.data.id)">
+                <i class="pi pi-eye text-blue-500 mr-2 mt-0.5 flex-shrink-0" v-tooltip.top="t('Ver detalle')"></i> </a>
             </template>
           </Column>
           <Column field="user" :header="t('Usuario')" :sortable="true">
             <template #filter="{ filterModel, filterCallback }">
-              <InputText
-                v-model="filterModel.value"
-                v-tooltip.top.focus="t('Pulsa ENTER para aplicar')"
-                type="text"
-                class="p-column-filter"
-                :placeholder="t('busqueda-nombre')"
-                @keydown.enter="filterCallback()"
-              />
+              <InputText v-model="filterModel.value" v-tooltip.top.focus="t('Pulsa ENTER para aplicar')" type="text"
+                class="p-column-filter" :placeholder="t('busqueda-nombre')" @keydown.enter="filterCallback()" />
             </template>
             <template #body="slotProps">
-              <NuxtLink :to="'/users/'+slotProps.data.user" class="inline-flex items-center text-blue-600 hover:text-blue-800 font-medium transition-colors">
+              <NuxtLink :to="'/users/' + slotProps.data.user"
+                class="inline-flex items-center text-blue-600 hover:text-blue-800 font-medium transition-colors">
                 <i class="pi pi-user mr-1 text-xs"></i>
                 {{ slotProps.data.user }}
               </NuxtLink>
@@ -193,7 +162,8 @@ onMounted(() => {
           </Column>
           <Column field="collection" :header="t('Colección')" :sortable="true" class="text-center">
             <template #body="slotProps">
-              <span class="inline-flex items-center px-2 py-1 bg-yellow-100 text-yellow-800 text-xs font-medium rounded-md">
+              <span
+                class="inline-flex items-center px-2 py-1 bg-yellow-100 text-yellow-800 text-xs font-medium rounded-md">
                 <i class="pi pi-folder mr-1"></i>
                 {{ slotProps.data.collection }}
               </span>
@@ -201,8 +171,8 @@ onMounted(() => {
           </Column>
           <Column field="query" :header="t('Pregunta')" :sortable="true">
             <template #body="slotProps">
-              <a class="flex items-start cursor-pointer hover:bg-gray-50 p-2 rounded transition-colors" @click="showChat(dialog, slotProps.data.id)">
-                <i class="pi pi-eye text-blue-500 mr-2 mt-0.5 flex-shrink-0" v-tooltip.top="t('Ver detalle')"></i>
+              <a class="flex items-start cursor-pointer hover:bg-gray-50 p-2 rounded transition-colors"
+                @click="showChat(dialog, slotProps.data.id)">
                 <span class="text-sm leading-relaxed">{{ slotProps.data.query }}</span>
               </a>
             </template>
@@ -239,7 +209,8 @@ onMounted(() => {
           <Column field="response" :header="t('Idioma')" :sortable="false" class="text-center">
             <template #body="slotProps">
               <div class="flex justify-center">
-                <span v-show="slotProps.data.response?.idioma" class="inline-flex items-center px-2 py-1 bg-blue-500 text-white text-xs font-medium rounded-full shadow-sm">
+                <span v-show="slotProps.data.response?.idioma"
+                  class="inline-flex items-center px-2 py-1 bg-blue-500 text-white text-xs font-medium rounded-full shadow-sm">
                   <i class="pi pi-globe mr-1"></i>
                   {{ slotProps.data.response?.idioma }}
                 </span>
@@ -249,7 +220,8 @@ onMounted(() => {
           <Column field="response" :header="t('Traducciones')" :sortable="false" class="text-center">
             <template #body="slotProps">
               <div class="flex flex-wrap justify-center gap-1">
-                <span v-for="(translation, index) in slotProps.data.response?.langs" :key="index" class="inline-flex items-center px-2 py-1 bg-red-500 text-white text-xs font-medium rounded-full shadow-sm">
+                <span v-for="(translation, index) in slotProps.data.response?.langs" :key="index"
+                  class="inline-flex items-center px-2 py-1 bg-red-500 text-white text-xs font-medium rounded-full shadow-sm">
                   <i class="pi pi-language mr-1"></i>
                   {{ translation }}
                 </span>
@@ -260,7 +232,8 @@ onMounted(() => {
             <template #body="slotProps">
               <div class="flex items-center">
                 <i class="pi pi-cog mr-2 text-gray-400"></i>
-                <span class="text-xs text-gray-600 font-mono bg-gray-100 px-2 py-1 rounded">{{ slotProps.data.response.model }}</span>
+                <span class="text-xs text-gray-600 font-mono bg-gray-100 px-2 py-1 rounded">{{
+                  slotProps.data.response.model }}</span>
               </div>
             </template>
           </Column>
@@ -292,7 +265,8 @@ onMounted(() => {
             <template #body="slotProps">
               <div class="flex items-center justify-center">
                 <i class="pi pi-arrow-right mr-1 text-blue-500"></i>
-                <span class="text-sm font-medium text-blue-600">{{ formatIntNumber(slotProps.data.prompt_tokens) }}</span>
+                <span class="text-sm font-medium text-blue-600">{{ formatIntNumber(slotProps.data.prompt_tokens)
+                  }}</span>
               </div>
             </template>
           </Column>
@@ -300,7 +274,8 @@ onMounted(() => {
             <template #body="slotProps">
               <div class="flex items-center justify-center">
                 <i class="pi pi-arrow-left mr-1 text-purple-500"></i>
-                <span class="text-sm font-medium text-purple-600">{{ formatIntNumber(slotProps.data.completion_tokens) }}</span>
+                <span class="text-sm font-medium text-purple-600">{{ formatIntNumber(slotProps.data.completion_tokens)
+                  }}</span>
               </div>
             </template>
           </Column>
@@ -311,7 +286,6 @@ onMounted(() => {
 </template>
 
 <style scoped>
-
 /* Mejoras para los badges */
 .badge {
   display: inline-flex;
@@ -328,22 +302,24 @@ onMounted(() => {
   :deep(.p-datatable) {
     font-size: 0.75rem;
   }
-  
+
   :deep(.p-datatable-tbody > tr > td) {
     padding: 0.5rem 0.25rem;
   }
-  
+
   :deep(.p-datatable-thead > tr > th) {
     padding: 0.5rem 0.25rem;
   }
 }
 
 /* Animaciones suaves */
-.fade-enter-active, .fade-leave-active {
+.fade-enter-active,
+.fade-leave-active {
   transition: opacity 0.3s ease;
 }
 
-.fade-enter-from, .fade-leave-to {
+.fade-enter-from,
+.fade-leave-to {
   opacity: 0;
 }
 </style>

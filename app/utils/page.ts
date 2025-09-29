@@ -52,7 +52,7 @@ export const showChat = async (dialog: any, id: Object) => {
   } else {
     const { showMessage } = useMessages();
     const { t } = useI18n();
-  showMessage('error', t('Error'), t('No tienes permisos para ver este chat'));
+    showMessage('error', t('Error'), t('No tienes permisos para ver este chat'));
   }
 };
 

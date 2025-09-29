@@ -11,7 +11,6 @@ const dialogRef = inject<Ref<{ data: { chat: string } }>>('dialogRef');
 
 const chat = ref<any>(dialogRef!.value.data.chat);
 chat.value.response.langs = getChatLanguages(chat.value.response);
-console.log('ChatViewer', chat.value.response.langs);
 
 const getLanguageFlag = (lang: string) => {
   const flagMap: { [key: string]: { type: 'fi' | 'img', value: string } } = {

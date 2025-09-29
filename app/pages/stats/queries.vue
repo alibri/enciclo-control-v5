@@ -74,108 +74,215 @@ onMounted(() => {
 
 <template>
   <div class="card">
-    <h2>{{ t('Consultas') }}</h2>
-    <div class="grid grid-cols-12 p-1">
-      <div class="col-span-12">
-        <DataTable
-          ref="dt"
-          v-model:filters="filters"
-          :value="stats"
-          :paginator="true"
-          :rows="25"
-          :lazy="true"
-          :total-records="totalRecords"
-          filter-display="menu"
-          paginator-template="CurrentPageReport FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink RowsPerPageDropdown"
-          paginatorPosition="both"
-          :rows-per-page-options="[25, 50, 100]"
-          responsive-layout="scroll"
-          data-key="id"
-          striped-rows
-          sort-mode="multiple"
-          show-gridlines
-          :loading="loading"
-          :global-filter-fields="['user']"
-          :current-page-report-template="t('show-per-page')"
-          @page="onPage($event)"
-          @sort="onSort($event)"
-          @filter="onFilter($event)"
-        >
-          <template #header>
-            <div class="flex flex-wrap gap-1">
-              <div class="left-0">
-                <Button
-                  icon="pi pi-refresh"
-                  :label="t('Refrescar')"
-                  class="p-button-secondary"
-                  @click="loadData()"
-                />
-                <Button icon="pi pi-file-excel" class="p-button-success ml-2" @click="exportData()" />
+    <!-- Header mejorado -->
+    <div class="flex justify-between items-center mb-6">
+      <div>
+        <h2 class="text-2xl font-bold text-gray-800 mb-2">{{ t('Consultas') }}</h2>
+        <p class="text-gray-600 text-sm">{{ t('Historial de búsquedas y consultas realizadas por los usuarios') }}</p>
+      </div>
+      <div class="flex gap-2">
+        <Button
+          icon="pi pi-refresh"
+          :label="t('Refrescar')"
+          class="p-button-outlined p-button-secondary"
+          @click="loadData()"
+        />
+        <Button 
+          icon="pi pi-file-excel" 
+          :label="t('Exportar')"
+          class="p-button-success" 
+          @click="exportData()" 
+        />
+      </div>
+    </div>
+
+    <!-- Tabla mejorada -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200">
+      <DataTable
+        ref="dt"
+        v-model:filters="filters"
+        :value="stats"
+        :paginator="true"
+        :rows="25"
+        :lazy="true"
+        :total-records="totalRecords"
+        filter-display="menu"
+        paginator-template="CurrentPageReport FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink RowsPerPageDropdown"
+        paginatorPosition="both"
+        :rows-per-page-options="[25, 50, 100]"
+        responsive-layout="scroll"
+        data-key="id"
+        striped-rows
+        sort-mode="multiple"
+        show-gridlines
+        :loading="loading"
+        :global-filter-fields="['user', 'term', 'collections']"
+        :current-page-report-template="t('show-per-page')"
+        class="p-datatable-sm"
+        @page="onPage($event)"
+        @sort="onSort($event)"
+        @filter="onFilter($event)"
+      >
+        <!-- Header de la tabla -->
+        <template #header>
+          <div class="flex flex-wrap justify-between items-center gap-4 p-4 bg-gray-50 border-b">
+            <div class="flex items-center gap-2">
+              <i class="pi pi-search text-blue-500"></i>
+              <span class="font-semibold text-gray-700">{{ t('Lista de Consultas') }}</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <span class="text-sm text-gray-500">{{ totalRecords }} {{ t('registros') }}</span>
+            </div>
+          </div>
+        </template>
+
+        <!-- Estados de carga y vacío -->
+        <template #empty>
+          <div class="text-center py-8">
+            <i class="pi pi-search text-4xl text-gray-300 mb-4"></i>
+            <p class="text-gray-500 text-lg">{{ t('No se han encontrado datos.') }}</p>
+          </div>
+        </template>
+        
+        <template #loading>
+          <div class="text-center py-8">
+            <i class="pi pi-spin pi-spinner text-2xl text-blue-500 mb-2"></i>
+            <p class="text-gray-600">{{ t('Cargando datos...') }}</p>
+          </div>
+        </template>
+
+        <!-- Usuario -->
+        <Column field="user" :header="t('Usuario')" :sortable="true" style="min-width: 120px">
+          <template #filter="{ filterModel, filterCallback }">
+            <InputText
+              v-model="filterModel.value"
+              v-tooltip.top.focus="t('Pulsa ENTER para aplicar')"
+              type="text"
+              class="p-column-filter"
+              :placeholder="t('busqueda-nombre')"
+              @keydown.enter="filterCallback()"
+            />
+          </template>
+          <template #body="slotProps">
+            <div class="flex items-center gap-2">
+              <i class="pi pi-user text-gray-400"></i>
+              <NuxtLink 
+                :to="'/users/'+slotProps.data.user" 
+                class="text-blue-600 hover:text-blue-800 font-medium no-underline hover:underline"
+              >
+                {{ slotProps.data.user }}
+              </NuxtLink>
+            </div>
+          </template>
+        </Column>
+
+        <!-- Término de búsqueda -->
+        <Column field="term" :header="t('Término')" :sortable="true" style="min-width: 200px">
+          <template #body="slotProps">
+            <div class="flex items-center gap-2">
+              <i class="pi pi-search text-gray-400"></i>
+              <span class="font-medium text-gray-800 bg-gray-100 px-2 py-1 rounded text-sm">
+                {{ slotProps.data.term }}
+              </span>
+            </div>
+          </template>
+        </Column>
+
+        <!-- Colección -->
+        <Column field="collections" :header="t('Colección')" :sortable="true" style="min-width: 120px">
+          <template #body="slotProps">
+            <div class="flex items-center gap-2">
+              <i class="pi pi-folder text-yellow-500"></i>
+              <span class="text-sm text-yellow-600 font-medium">{{ slotProps.data.collections }}</span>
+            </div>
+          </template>
+        </Column>
+
+        <!-- Fecha -->
+        <Column field="date" :header="t('Fecha')" :sortable="true" style="min-width: 150px">
+          <template #body="slotProps">
+            <div class="flex items-center gap-2">
+              <i class="pi pi-calendar text-gray-400"></i>
+              <span class="text-sm text-gray-700">{{ formatDateTime(slotProps.data.date) }}</span>
+            </div>
+          </template>
+        </Column>
+
+        <!-- Configuración de búsqueda -->
+        <Column :header="t('Configuración')" :sortable="false" style="min-width: 200px">
+          <template #body="slotProps">
+            <div class="space-y-1">
+              <div v-if="slotProps.data.filter" class="flex items-center gap-2">
+                <i class="pi pi-filter text-blue-400"></i>
+                <Tag severity="info" class="text-xs">{{ slotProps.data.filter }}</Tag>
+              </div>
+              <div v-if="slotProps.data.order" class="flex items-center gap-2">
+                <i class="pi pi-sort text-red-400"></i>
+                <Tag severity="danger" class="text-xs">{{ slotProps.data.order }}</Tag>
               </div>
             </div>
           </template>
-          <template #empty>
-            {{ t('No se han encontrado datos.') }}
+        </Column>
+
+        <!-- Rango de resultados -->
+        <Column :header="t('Rango')" :sortable="false" style="min-width: 120px">
+          <template #body="slotProps">
+            <div class="text-center">
+              <div class="flex items-center justify-center gap-1 text-sm">
+                <span class="text-gray-600">{{ formatIntNumber(slotProps.data.from) }}</span>
+                <i class="pi pi-arrow-right text-gray-400"></i>
+                <span class="text-gray-600">{{ formatIntNumber(slotProps.data.to) }}</span>
+              </div>
+            </div>
           </template>
-          <template #loading>
-            {{ t('Cargando datos..') }}' <i class="pi pi-spin pi-spinner" style="font-size: 2rem" />
+        </Column>
+
+        <!-- Total de resultados -->
+        <Column field="total" :header="t('Total')" :sortable="true" style="min-width: 100px">
+          <template #body="slotProps">
+            <div class="flex items-center gap-2">
+              <i class="pi pi-chart-bar text-green-500"></i>
+              <span class="text-sm font-semibold text-green-600 bg-green-50 px-2 py-1 rounded">
+                {{ formatIntNumber(slotProps.data.total) }}
+              </span>
+            </div>
           </template>
-          <Column field="user" :header="t('Usuario')" :sortable="true">
-            <template #filter="{ filterModel, filterCallback }">
-              <InputText
-                v-model="filterModel.value"
-                v-tooltip.top.focus="t('Pulsa ENTER para aplicar')"
-                type="text"
-                class="p-column-filter"
-                :placeholder="t('busqueda-nombre')"
-                @keydown.enter="filterCallback()"
-              />
-            </template>
-            <template #body="slotProps">
-              <NuxtLink :to="'/users/'+slotProps.data.user" class="text-red-500 border-none border-bottom-1 border-dotted">
-                {{ slotProps.data.user }}
-              </NuxtLink>
-            </template>
-          </Column>
-          <Column field="collections" :header="t('Colección')" :sortable="true" class="text-yellow-500" />
-          <Column field="date" :header="t('Fecha')" :sortable="true">
-            <template #body="slotProps">
-              <span class="text-sm">{{ formatDateTime(slotProps.data.date) }}</span>
-            </template>
-          </Column>
-          <Column field="term" header="Term" :sortable="true" class="font-bold" />
-          <Column field="filter" header="Tipo" :sortable="true">
-            <template #body="slotProps">
-              <Tag v-if="slotProps.data.filter" severity="info">
-                {{ slotProps.data.filter }}
-              </Tag>
-            </template>
-          </Column>
-          <Column field="order" header="Orden" :sortable="true">
-            <template #body="slotProps">
-              <Tag v-if="slotProps.data.order" severity="danger">
-                {{ slotProps.data.order }}
-              </Tag>
-            </template>
-          </Column>
-          <Column field="from" header="De" :sortable="true" class="text-center text-sm" />
-          <Column field="to" header="Hasta" :sortable="true" class="text-center text-sm" />
-          <Column field="total" header="Total" :sortable="true" class="text-right text-sm ">
-            <template #body="slotProps">
-              {{ formatIntNumber(slotProps.data.total) }}
-            </template>
-          </Column>
-          <Column field="cached" :header="t('Cache')" :sortable="true">
-            <template #body="slotProps">
+        </Column>
+
+        <!-- Estado de caché -->
+        <Column field="cached" :header="t('Cache')" :sortable="true" style="min-width: 80px">
+          <template #body="slotProps">
+            <div class="flex justify-center">
               <i
-                :class="'pi ' + (slotProps.data.cached ? 'pi pi-check bg-green-500 text-xs text-white font-bold border-round m-2 p-2' : '')"
+                v-if="slotProps.data.cached"
+                class="pi pi-check-circle text-green-500 text-lg"
+                v-tooltip.top="t('Resultado en caché')"
               />
-            </template>
-          </Column>
-          <Column field="glc_country_name" :header="t('Pais')" :sortable="true" class="text-xs text-green-500" />
-          <Column field="glc_city" :header="t('Region')" :sortable="true" class="text-xs text-blue-500" />
-        </DataTable>
-      </div>
+              <i
+                v-else
+                class="pi pi-times-circle text-gray-400 text-lg"
+                v-tooltip.top="t('No en caché')"
+              />
+            </div>
+          </template>
+        </Column>
+
+        <!-- Ubicación -->
+        <Column :header="t('Ubicación')" :sortable="false" style="min-width: 150px">
+          <template #body="slotProps">
+            <div class="space-y-1">
+              <div class="flex items-center gap-2 text-sm">
+                <i class="pi pi-map-marker text-red-500"></i>
+                <span class="text-gray-700">{{ slotProps.data.glc_country_name }}</span>
+              </div>
+              <div class="flex items-center gap-2 text-xs text-gray-500">
+                <i class="pi pi-building text-gray-400"></i>
+                <span>{{ slotProps.data.glc_city }}</span>
+              </div>
+            </div>
+          </template>
+        </Column>
+      </DataTable>
     </div>
   </div>
 </template>

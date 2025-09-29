@@ -287,5 +287,21 @@
     "Activadas": "Activadas",
     "Desactivadas": "Desactivadas",
     "Roles y Permisos": "Roles y Permisos",
-    "Acceso al Dashboard": "Acceso al Dashboard"
+    "Acceso al Dashboard": "Acceso al Dashboard",
+    "Solo estadísticas manuales": "Solo estadísticas manuales",
+    "Cargando...": "Cargando...",
+    "Sin colecciones": "Sin colecciones",
+    "Inactiva": "Inactiva",
+    "Detalles de Sesión": "Detalles de Sesión",
+    "Última actualización": "Última actualización",
+    "Información de Sesión": "Información de Sesión",
+    "Duración": "Duración",
+    "Páginas visitadas": "Páginas visitadas",
+    "Dirección IP": "Dirección IP",
+    "Información Técnica": "Información Técnica",
+    "Navegador": "Navegador",
+    "Sistema Operativo": "Sistema Operativo",
+    "Modo de acceso": "Modo de acceso",
+    "User Agent": "User Agent",
+    "Ver estadísticas": "Ver estadísticas"
 }

@@ -101,7 +101,11 @@ watch(() => props.visible, (nuevo, anterior) => {
             <div class="flex items-center gap-2">
               <i class="pi pi-calendar text-gray-500"></i>
               <span class="font-semibold text-gray-700">{{ t('Inicio estadísticas') }}:</span>
-              <span class="text-gray-800">{{ user.stats_min || t('No especificado') }}</span>
+              <span class="text-gray-800">{{ user.stats_min ? formatDate(user.stats_min) : '-' }}</span>
+              <span v-if="user.manual_stats" class="inline-flex items-center ml-2 px-2 py-0.5 rounded-full bg-yellow-100 text-yellow-800 text-xs font-semibold">
+                <i class="pi pi-chart-bar mr-1"></i> {{ t('Solo estadísticas manuales') }}
+              </span>
+              <span v-else class="inline-flex items-center ml-2 px-2 py-0.5 rounded-full bg-gray-100 text-gray-800 text-xs font-semibold">{{ t('Estadísticas Manuales + Automaticas') }}</span>
             </div>
           </div>
         </div>

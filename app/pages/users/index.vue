@@ -486,7 +486,7 @@ const onRowClick = (event: any) => {
             <Column field="stats_min" :header="t('I.Est.')" :sortable="true" :style="{ width: '120px' }"
               class="text-center">
               <template #body="slotProps">
-                <span class="text-xs text-gray-600">{{ slotProps.data.stats_min || '-' }}</span>
+                <span class="text-xs text-gray-600">{{ slotProps.data.stats_min ? formatDate(slotProps.data.stats_min) : '-' }}</span>
               </template>
             </Column>
             <Column field="email" :header="t('Email')" :sortable="true" :style="{ width: '200px' }">

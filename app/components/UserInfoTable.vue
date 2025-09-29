@@ -245,7 +245,7 @@ const gestionEstadisticas = (user: any) => {
             </div>
             <div class="text-right">
               <span class="text-blue-600 font-medium">
-                {{ user?.stats_min || t('No especificado') }}
+                {{ user?.stats_min ? formatDate(user?.stats_min) : t('No especificado') }}
               </span>
             </div>
           </div>

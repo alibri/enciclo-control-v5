@@ -266,7 +266,14 @@ const onVisibleChange = (value: boolean) => {
               <div class="flex items-center gap-2 mb-3">
                 <i class="pi pi-chart-line text-indigo-600"></i>
                 <span class="font-semibold text-gray-700">{{ t('Inicio estadísticas') }}:</span>
-                <span class="text-gray-600">{{ user.stats_min || t('No especificado') }}</span>
+                <span class="text-gray-600">{{ user.stats_min ? formatDate(user.stats_min) : t('No especificado') }}</span>
+              </div>
+              <div class="flex items-center gap-2 mb-3"> 
+                <i class="pi pi-chart-bar text-yellow-600"></i>
+                <span class="font-semibold text-gray-700">{{ t('Solo estadísticas manuales') }}:</span>
+                <span :class="user.manual_stats ? 'bg-green-600 text-white px-2 py-0.5 rounded' : 'text-gray-600'">
+                  {{ user.manual_stats ? t('Sí') : t('No') }}
+                </span>
               </div>
             </div>
           </div>

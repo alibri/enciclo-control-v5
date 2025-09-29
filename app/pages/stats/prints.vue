@@ -77,89 +77,167 @@ onMounted(() => {
 
 <template>
   <div class="card">
-    <h2>{{ t('Impresiones') }}</h2>
-    <div class="grid grid-cols-12 p-1">
-      <div class="col-span-12">
-        <DataTable
-          ref="dt"
-          v-model:filters="filters"
-          :value="stats"
-          :paginator="true"
-          :rows="25"
-          :lazy="true"
-          :total-records="totalRecords"
-          filter-display="menu"
-          paginator-template="CurrentPageReport FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink RowsPerPageDropdown"
-          paginatorPosition="both"
-          :rows-per-page-options="[25, 50, 100]"
-          responsive-layout="scroll"
-          data-key="id"
-          striped-rows
-          sort-mode="multiple"
-          show-gridlines
-          :loading="loading"
-          :global-filter-fields="['user']"
-          :current-page-report-template="t('show-per-page')"
-          @page="onPage($event)"
-          @sort="onSort($event)"
-          @filter="onFilter($event)"
-        >
-          <template #header>
-            <div class="flex flex-wrap gap-1">
-              <div class="left-0">
-                <Button
-                  icon="pi pi-refresh"
-                  :label="t('Refrescar')"
-                  class="p-button-secondary"
-                  @click="loadData()"
-                />
-                <Button icon="pi pi-file-excel" class="p-button-success ml-2" @click="exportData()" />
+    <!-- Header mejorado -->
+    <div class="flex justify-between items-center mb-6">
+      <div>
+        <h2 class="text-2xl font-bold text-gray-800 mb-2">{{ t('Impresiones') }}</h2>
+        <p class="text-gray-600 text-sm">{{ t('Registro de páginas impresas por los usuarios') }}</p>
+      </div>
+      <div class="flex gap-2">
+        <Button
+          icon="pi pi-refresh"
+          :label="t('Refrescar')"
+          class="p-button-outlined p-button-secondary"
+          @click="loadData()"
+        />
+        <Button 
+          icon="pi pi-file-excel" 
+          :label="t('Exportar')"
+          class="p-button-success" 
+          @click="exportData()" 
+        />
+      </div>
+    </div>
+
+    <!-- Tabla mejorada -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200">
+      <DataTable
+        ref="dt"
+        v-model:filters="filters"
+        :value="stats"
+        :paginator="true"
+        :rows="25"
+        :lazy="true"
+        :total-records="totalRecords"
+        filter-display="menu"
+        paginator-template="CurrentPageReport FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink RowsPerPageDropdown"
+        paginatorPosition="both"
+        :rows-per-page-options="[25, 50, 100]"
+        responsive-layout="scroll"
+        data-key="id"
+        striped-rows
+        sort-mode="multiple"
+        show-gridlines
+        :loading="loading"
+        :global-filter-fields="['user', 'title', 'collection']"
+        :current-page-report-template="t('show-per-page')"
+        class="p-datatable-sm"
+        @page="onPage($event)"
+        @sort="onSort($event)"
+        @filter="onFilter($event)"
+      >
+        <!-- Header de la tabla -->
+        <template #header>
+          <div class="flex flex-wrap justify-between items-center gap-4 p-4 bg-gray-50 border-b">
+            <div class="flex items-center gap-2">
+              <i class="pi pi-print text-blue-500"></i>
+              <span class="font-semibold text-gray-700">{{ t('Lista de Impresiones') }}</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <span class="text-sm text-gray-500">{{ totalRecords }} {{ t('registros') }}</span>
+            </div>
+          </div>
+        </template>
+
+        <!-- Estados de carga y vacío -->
+        <template #empty>
+          <div class="text-center py-8">
+            <i class="pi pi-print text-4xl text-gray-300 mb-4"></i>
+            <p class="text-gray-500 text-lg">{{ t('No se han encontrado datos.') }}</p>
+          </div>
+        </template>
+        
+        <template #loading>
+          <div class="text-center py-8">
+            <i class="pi pi-spin pi-spinner text-2xl text-blue-500 mb-2"></i>
+            <p class="text-gray-600">{{ t('Cargando datos...') }}</p>
+          </div>
+        </template>
+
+        <!-- Usuario -->
+        <Column field="user" :header="t('Usuario')" :sortable="true" style="min-width: 120px">
+          <template #filter="{ filterModel, filterCallback }">
+            <InputText
+              v-model="filterModel.value"
+              v-tooltip.top.focus="t('Pulsa ENTER para aplicar')"
+              type="text"
+              class="p-column-filter"
+              :placeholder="t('busqueda-nombre')"
+              @keydown.enter="filterCallback()"
+            />
+          </template>
+          <template #body="slotProps">
+            <div class="flex items-center gap-2">
+              <i class="pi pi-user text-gray-400"></i>
+              <NuxtLink 
+                :to="'/users/'+slotProps.data.user" 
+                class="text-blue-600 hover:text-blue-800 font-medium no-underline hover:underline"
+              >
+                {{ slotProps.data.user }}
+              </NuxtLink>
+            </div>
+          </template>
+        </Column>
+
+        <!-- Información del documento -->
+        <Column :header="t('Documento')" :sortable="false" style="min-width: 300px">
+          <template #body="slotProps">
+            <div class="space-y-2">
+              <!-- Título del documento -->
+              <div class="flex items-start gap-2">
+                <i class="pi pi-file text-gray-400 mt-1"></i>
+                <div class="flex-1 min-w-0">
+                  <PageLink :page="slotProps.data" />
+                </div>
+              </div>
+              
+              <!-- Tipo y colección -->
+              <div class="flex items-center gap-2 flex-wrap">
+                <div class="flex items-center gap-1">
+                  <i class="pi pi-tag text-gray-400"></i>
+                  <Tag 
+                    :severity="formatPageType(slotProps.data.type)" 
+                    :value="slotProps.data.type"
+                    class="text-xs"
+                  />
+                </div>
+                <div class="flex items-center gap-1">
+                  <i class="pi pi-folder text-yellow-500"></i>
+                  <span class="text-xs text-yellow-600 font-medium">{{ slotProps.data.collection }}</span>
+                </div>
               </div>
             </div>
           </template>
-          <template #empty>
-            {{ t('No se han encontrado datos.') }}
+        </Column>
+
+        <!-- Fecha de impresión -->
+        <Column field="date" :header="t('Fecha de Impresión')" :sortable="true" style="min-width: 150px">
+          <template #body="slotProps">
+            <div class="flex items-center gap-2">
+              <i class="pi pi-calendar text-gray-400"></i>
+              <div class="text-sm">
+                <div class="text-gray-700">{{ formatDateTime(slotProps.data.date) }}</div>
+              </div>
+            </div>
           </template>
-          <template #loading>
-            {{ t('Cargando datos..') }}' <i class="pi pi-spin pi-spinner" style="font-size: 2rem" />
+        </Column>
+
+        <!-- Ubicación -->
+        <Column :header="t('Ubicación')" :sortable="false" style="min-width: 150px">
+          <template #body="slotProps">
+            <div class="space-y-1">
+              <div class="flex items-center gap-2 text-sm">
+                <i class="pi pi-map-marker text-red-500"></i>
+                <span class="text-gray-700">{{ slotProps.data.glc_country_name }}</span>
+              </div>
+              <div class="flex items-center gap-2 text-xs text-gray-500">
+                <i class="pi pi-building text-gray-400"></i>
+                <span>{{ slotProps.data.glc_city }}</span>
+              </div>
+            </div>
           </template>
-          <Column field="user" :header="t('Usuario')" :sortable="true">
-            <template #filter="{ filterModel, filterCallback }">
-              <InputText
-                v-model="filterModel.value"
-                v-tooltip.top.focus="t('Pulsa ENTER para aplicar')"
-                type="text"
-                class="p-column-filter"
-                :placeholder="t('busqueda-nombre')"
-                @keydown.enter="filterCallback()"
-              />
-            </template>
-            <template #body="slotProps">
-              <NuxtLink :to="'/users/'+slotProps.data.user" class="text-red-500 border-none border-bottom-1 border-dotted">
-                {{ slotProps.data.user }}
-              </NuxtLink>
-            </template>
-          </Column>
-          <Column field="type" header="type" :sortable="true">
-            <template #body="slotProps">
-              <Tag :severity="formatPageType(slotProps.data.type)" :value="slotProps.data.type" />
-            </template>
-          </Column>
-          <Column field="collection" :header="t('Colección')" :sortable="true" class="text-yellow-500" />
-          <Column field="title" header="Título" :sortable="true">
-            <template #body="slotProps">
-              <PageLink :page="slotProps.data" />
-            </template>
-          </Column>
-          <Column field="date" :header="t('Fecha')" :sortable="true">
-            <template #body="slotProps">
-              <span class="text-sm">{{ formatDateTime(slotProps.data.date) }}</span>
-            </template>
-          </Column>
-          <Column field="glc_country_name" :header="t('Pais')" :sortable="true" class="text-xs text-green-500" />
-          <Column field="glc_city" :header="t('Region')" :sortable="true" class="text-xs text-blue-500" />
-        </DataTable>
-      </div>
+        </Column>
+      </DataTable>
     </div>
   </div>
 </template>
