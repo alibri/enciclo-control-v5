@@ -140,7 +140,7 @@ onMounted(() => {
           <template #loading>
             {{ t('Cargando datos..') }} <i class="pi pi-spin pi-spinner" style="font-size: 2rem" />
           </template>
-          <Column field="id" :header="t('#')" :sortable="true" class="text-center">
+          <Column field="id" header="#" :sortable="true" class="text-center">
             <template #body="slotProps">
               <a class="flex items-start cursor-pointer hover:bg-gray-50 p-2 rounded transition-colors"
                 @click="showChat(dialog, slotProps.data.id)">

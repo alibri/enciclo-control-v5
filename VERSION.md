@@ -9,6 +9,10 @@
 - Mejora el listado de páginas
 - Mejora el listado de Pregúntame
 - Se accede a las estadísticas manuales de los usuarios y al dashboard del usuario desde la información del usuario
+- Mejora el detalle de la pregunta en el chat
+- Mejora la vista de las queries
+- Mejora la vista de las impresiones
+- Se implementa la visualización de estadísticas manuales
 
 ## 5.0.7
 

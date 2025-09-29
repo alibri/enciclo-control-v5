@@ -28,156 +28,295 @@ const getLanguageFlag = (lang: string) => {
 </script>
 
 <template>
-  <div class="mb-2">
-    <span class="bg-green-300 text-white border p-1 m-1 text-xs" severity="success">{{ formatDateTime(chat?.date) }}</span>
-    <span class="bg-yellow-300 text-white border p-1 m-1 text-xs" severity="warning">{{ chat?.collection }}</span>
-    <span class="bg-blue-300 text-white border p-1 m-1 text-xs" severity="info">{{ chat?.user }}</span>
-    <span class="bg-red-300 text-white border p-1 m-1 text-xs" severity="danger">{{ formatFloat(chat?.time, 6) }}s </span>
-    <span class="bg-green-400 text-white border p-1 m-1 text-xs" severity="contrast">{{ formatIntNumber(chat?.prompt_tokens + chat?.completion_tokens) }} tokens</span>
-    <span class="bg-green-500 text-white border p-1 m-1 text-xs" severity="success">{{ chat?.response?.model }}</span>
-    <span v-show="chat?.response?.idioma" class="bg-blue-500 text-white border p-1 m-1 text-xs" severity="success">{{ chat?.response?.idioma }}</span>
-  </div>
-  <div class="m-1">
-    <Chip class="py-0 pl-0 pr-3">
-      <span class="bg-pink-600 text-white rounded-full w-8 h-8 flex items-center justify-center">{{ chat?.counter }}</span>
-      <ChatLink :code="chat?.code" :link="chat?.short_url" />
-    </Chip>
+  <!-- Header con información del chat -->
+  <div class="bg-gradient-to-r from-blue-50 to-indigo-50 p-4 rounded-lg mb-4 border border-blue-200">
+    <div class="flex flex-wrap gap-2 mb-3">
+      <div class="flex items-center gap-2 bg-white px-3 py-1 rounded-full shadow-sm border">
+        <i class="pi pi-calendar text-blue-600"></i>
+        <span class="text-sm font-medium text-gray-700">{{ formatDateTime(chat?.date) }}</span>
+      </div>
+      <div class="flex items-center gap-2 bg-white px-3 py-1 rounded-full shadow-sm border">
+        <i class="pi pi-folder text-yellow-600"></i>
+        <span class="text-sm font-medium text-gray-700">{{ chat?.collection }}</span>
+      </div>
+      <div class="flex items-center gap-2 bg-white px-3 py-1 rounded-full shadow-sm border">
+        <i class="pi pi-user text-blue-600"></i>
+        <span class="text-sm font-medium text-gray-700">{{ chat?.user }}</span>
+      </div>
+      <div class="flex items-center gap-2 bg-white px-3 py-1 rounded-full shadow-sm border">
+        <i class="pi pi-clock text-red-600"></i>
+        <span class="text-sm font-medium text-gray-700">{{ formatFloat(chat?.time, 6) }}s</span>
+      </div>
+      <div class="flex items-center gap-2 bg-white px-3 py-1 rounded-full shadow-sm border">
+        <i class="pi pi-tag text-green-600"></i>
+        <span class="text-sm font-medium text-gray-700">{{ formatIntNumber(chat?.prompt_tokens + chat?.completion_tokens) }} tokens</span>
+      </div>
+      <div class="flex items-center gap-2 bg-white px-3 py-1 rounded-full shadow-sm border">
+        <i class="pi pi-cog text-purple-600"></i>
+        <span class="text-sm font-medium text-gray-700">{{ chat?.response?.model }}</span>
+      </div>
+      <div v-show="chat?.response?.idioma" class="flex items-center gap-2 bg-white px-3 py-1 rounded-full shadow-sm border">
+        <i class="pi pi-globe text-indigo-600"></i>
+        <span class="text-sm font-medium text-gray-700">{{ chat?.response?.idioma }}</span>
+      </div>
+    </div>
+    
+    <!-- Chip con contador y enlace -->
+    <div class="flex items-center gap-3">
+      <span v-if="chat?.code">
+        <div
+          class="bg-gradient-to-r from-pink-500 to-rose-500 text-white rounded-full w-10 h-10 flex items-center justify-center font-bold shadow-lg">
+          {{ chat?.counter }}
+        </div>
+        <ChatLink :code="chat?.code" :link="chat?.short_url" />
+      </span>
+      <div v-else class="text-gray-500 text-sm italic text-center py-4">
+        {{ t('No compartido') }}
+      </div>
+    </div>
+
   </div>
 
-  <div class="mb-2 bg-gray-100 p-3">
-    <div v-html="formatLike(chat?.like)" />
-    <TabView>
-      <TabPanel :header="t('Principal')" value="principal">
-        <p class="m-0" v-html="formatStringPre(chat?.response?.content)" />
-      </TabPanel>
-      <TabPanel v-for="(translation, index) in chat?.response?.langs" :key="index" :value="translation">
-        <template #header>
-          <div class="flex items-center gap-2">
-            <template v-if="getLanguageFlag(translation).type === 'fi'">
-              <span :class="'fi fi-' + getLanguageFlag(translation).value" class="w-4 h-4"></span>
-            </template>
-            <template v-else>
-              <img :src="getLanguageFlag(translation).value" :alt="translation" class="w-4 h-4 object-contain" />
-            </template>
+  <!-- Contenido principal -->
+  <div class="bg-white border border-gray-200 rounded-lg shadow-sm mb-4">
+    <div class="p-4 border-b border-gray-100">
+      <div v-html="formatLike(chat?.like)" class="text-center" />
+    </div>
+    <div class="p-4">
+      <TabView class="custom-tabview">
+        <TabPanel :header="t('Principal')" value="principal">
+          <div class="prose prose-sm max-w-none">
+            <div v-html="formatStringPre(chat?.response?.content)" class="leading-relaxed" />
           </div>
-        </template>
-        <p class="m-0" v-html="formatStringPre(chat?.response?.translations.find((t: any) => t.key === translation)?.value)" />
-      </TabPanel>
-    </TabView>
+        </TabPanel>
+        <TabPanel v-for="(translation, index) in chat?.response?.langs" :key="index" :value="translation">
+          <template #header>
+            <div class="flex items-center gap-2">
+              <template v-if="getLanguageFlag(translation).type === 'fi'">
+                <span :class="'fi fi-' + getLanguageFlag(translation).value" class="w-4 h-4"></span>
+              </template>
+              <template v-else>
+                <img :src="getLanguageFlag(translation).value" :alt="translation" class="w-4 h-4 object-contain" />
+              </template>
+              <span class="text-sm font-medium">{{ translation.toUpperCase() }}</span>
+            </div>
+          </template>
+          <div class="prose prose-sm max-w-none">
+            <div v-html="formatStringPre(chat?.response?.translations.find((t: any) => t.key === translation)?.value)" class="leading-relaxed" />
+          </div>
+        </TabPanel>
+      </TabView>
+    </div>
   </div>
+  <!-- Sección Sabías que -->
   <template v-if="chat?.response?.sabias">
-    <div class="bg-gray-100 p-3">
-      <h4>{{ t('Sabías que') }}</h4>
-      <TabView>
-      <TabPanel :header="t('Principal')" value="sabias-principal">
-        <strong>{{ chat?.response.titular }}</strong>
-        <p class="mb-3">
-          {{ chat?.response?.sabias }}
-        </p>
-      </TabPanel>
-      <TabPanel v-for="(translation, index) in chat?.response?.translations?.find((t: any) => t.key === 'titular').value" :key="index" :value="'sabias-' + index">
-        <template #header>
-          <div class="flex items-center gap-2">
-            <template v-if="getLanguageFlag(String(index)).type === 'fi'">
-              <span :class="'fi fi-' + getLanguageFlag(String(index)).value" class="w-4 h-4"></span>
+    <div class="bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-200 rounded-lg shadow-sm mb-4">
+      <div class="p-4 border-b border-amber-200">
+        <h4 class="text-lg font-semibold text-amber-800 flex items-center gap-2">
+          <i class="pi pi-lightbulb text-amber-600"></i>
+          {{ t('Sabías que') }}
+        </h4>
+      </div>
+      <div class="p-4">
+        <TabView class="custom-tabview">
+          <TabPanel :header="t('Principal')" value="sabias-principal">
+            <div class="bg-white p-4 rounded-lg border border-amber-100">
+              <h5 class="font-bold text-amber-900 mb-3 text-lg">{{ chat?.response.titular }}</h5>
+              <p class="text-gray-700 leading-relaxed">
+                {{ chat?.response?.sabias }}
+              </p>
+            </div>
+          </TabPanel>
+          <TabPanel v-for="(translation, index) in chat?.response?.translations?.find((t: any) => t.key === 'titular').value" :key="index" :value="'sabias-' + index">
+            <template #header>
+              <div class="flex items-center gap-2">
+                <template v-if="getLanguageFlag(String(index)).type === 'fi'">
+                  <span :class="'fi fi-' + getLanguageFlag(String(index)).value" class="w-4 h-4"></span>
+                </template>
+                <template v-else>
+                  <img :src="getLanguageFlag(String(index)).value" :alt="String(index)" class="w-4 h-4 object-contain" />
+                </template>
+                <span class="text-sm font-medium">{{ String(index).toUpperCase() }}</span>
+              </div>
             </template>
-            <template v-else>
-              <img :src="getLanguageFlag(String(index)).value" :alt="String(index)" class="w-4 h-4 object-contain" />
-            </template>
-          </div>
-        </template>
-        <strong>{{ translation }}</strong>
-        <p class="mb-3">{{ chat?.response?.translations.find((t: any) => t.key === 'sabias').value[index] }}</p>
-      </TabPanel>
-    </TabView>
-    </div> 
-
-  </template>
-  <hr>
-  <div class="grid">
-    <div class="col">
-      <h4>{{ t('Preguntas') }}</h4>
-      <ul>
-        <div v-for="(question, index) in chat?.response?.queries" :key="index">
-          <li class="mb-1">
-            <Tag severity="info" :value="'💡 ' + question" />
-          </li>
-        </div>
-      </ul>
+            <div class="bg-white p-4 rounded-lg border border-amber-100">
+              <h5 class="font-bold text-amber-900 mb-3 text-lg">{{ translation }}</h5>
+              <p class="text-gray-700 leading-relaxed">{{ chat?.response?.translations.find((t: any) => t.key === 'sabias').value[index] }}</p>
+            </div>
+          </TabPanel>
+        </TabView>
+      </div>
     </div>
-    <div class="col">
-      <h4>{{ t('Entidades') }}</h4>
-      <ul>
-        <div v-for="(question, index) in chat?.response.entidades" :key="index">
-          <li class="mb-1">
-            <Tag severity="success" :value="'🔍 ' + question" />
-          </li>
+  </template>
+  <!-- Sección Preguntas y Entidades -->
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-4">
+    <!-- Preguntas -->
+    <div class="bg-white border border-gray-200 rounded-lg shadow-sm">
+      <div class="p-4 border-b border-gray-100">
+        <h4 class="text-lg font-semibold text-gray-800 flex items-center gap-2">
+          <i class="pi pi-question-circle text-blue-600"></i>
+          {{ t('Preguntas') }}
+        </h4>
+      </div>
+      <div class="p-4">
+        <div v-if="chat?.response?.queries?.length" class="space-y-2">
+          <div v-for="(question, index) in chat?.response?.queries" :key="index" 
+               class="bg-blue-50 border border-blue-200 rounded-lg p-3 hover:bg-blue-100 transition-colors">
+            <div class="flex items-start gap-2">
+              <i class="pi pi-lightbulb text-blue-600 mt-1 text-sm"></i>
+              <span class="text-sm text-gray-700 leading-relaxed">{{ question }}</span>
+            </div>
+          </div>
         </div>
-      </ul>
+        <div v-else class="text-gray-500 text-sm italic text-center py-4">
+          No hay preguntas disponibles
+        </div>
+      </div>
+    </div>
+
+    <!-- Entidades -->
+    <div class="bg-white border border-gray-200 rounded-lg shadow-sm">
+      <div class="p-4 border-b border-gray-100">
+        <h4 class="text-lg font-semibold text-gray-800 flex items-center gap-2">
+          <i class="pi pi-search text-green-600"></i>
+          {{ t('Entidades') }}
+        </h4>
+      </div>
+      <div class="p-4">
+        <div v-if="chat?.response?.entidades?.length" class="space-y-2">
+          <div v-for="(entity, index) in chat?.response.entidades" :key="index" 
+               class="bg-green-50 border border-green-200 rounded-lg p-3 hover:bg-green-100 transition-colors">
+            <div class="flex items-start gap-2">
+              <i class="pi pi-tag text-green-600 mt-1 text-sm"></i>
+              <span class="text-sm text-gray-700 leading-relaxed">{{ entity }}</span>
+            </div>
+          </div>
+        </div>
+        <div v-else class="text-gray-500 text-sm italic text-center py-4">
+          {{ t('No hay entidades disponibles') }}
+        </div>
+      </div>
     </div>
   </div>
-  <hr>
-  <div class="grid">
-    <div class="col">
-      <h4>{{ t('Fuentes') }}</h4>
-      <Tag v-if="chat?.response.documents_used" severity="warning" :value="chat?.response.documents_used" class="ml-1" />
-
-      <ul>
-        <div v-for="(source, index) in chat?.response.sources" :key="index">
-          <li class="mb-3">
-            <a :href="source.source" target="_blank">[{{ source.collection }}] - {{ source.title }}</a>
-            <p class="text-sm text-gray-500">
+  <!-- Sección Fuentes y Relacionados -->
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-4">
+    <!-- Fuentes -->
+    <div class="bg-white border border-gray-200 rounded-lg shadow-sm">
+      <div class="p-4 border-b border-gray-100">
+        <h4 class="text-lg font-semibold text-gray-800 flex items-center gap-2">
+          <i class="pi pi-book text-purple-600"></i>
+          {{ t('Fuentes') }}
+        </h4>
+        <div v-if="chat?.response.documents_used" class="mt-2">
+          <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
+            <i class="pi pi-file mr-1"></i>
+            {{ chat?.response.documents_used }} {{ t('documentos') }}
+          </span>
+        </div>
+      </div>
+      <div class="p-4">
+        <div v-if="chat?.response?.sources?.length" class="space-y-3">
+          <div v-for="(source, index) in chat?.response.sources" :key="index" 
+               class="border border-gray-200 rounded-lg p-3 hover:border-purple-300 hover:shadow-sm transition-all">
+            <a :href="source.source" target="_blank" 
+               class="text-purple-600 hover:text-purple-800 font-medium text-sm block mb-2 hover:underline">
+              <i class="pi pi-external-link mr-1"></i>
+              [{{ source.collection }}] - {{ source.title }}
+            </a>
+            <p class="text-xs text-gray-600 leading-relaxed line-clamp-3">
               {{ source.content }}
             </p>
-          </li>
+          </div>
         </div>
-      </ul>
+        <div v-else class="text-gray-500 text-sm italic text-center py-4">
+          {{ t('No hay fuentes disponibles') }}
+        </div>
+      </div>
     </div>
-    <div class="col">
-      <h4>{{ t('Relacionados') }}</h4>
-      <ul>
-        <div v-for="(source, index) in chat?.response.related" :key="index">
-          <li class="mb-3">
-            <a :href="getPageLink(source.collection, source.title)" target="_blank">[{{ source.collection }}] - {{
-              source.title }}</a>
-          </li>
+
+    <!-- Relacionados -->
+    <div class="bg-white border border-gray-200 rounded-lg shadow-sm">
+      <div class="p-4 border-b border-gray-100">
+        <h4 class="text-lg font-semibold text-gray-800 flex items-center gap-2">
+          <i class="pi pi-link text-indigo-600"></i>
+          {{ t('Relacionados') }}
+        </h4>
+      </div>
+      <div class="p-4">
+        <div v-if="chat?.response?.related?.length" class="space-y-2">
+          <div v-for="(source, index) in chat?.response.related" :key="index" 
+               class="border border-gray-200 rounded-lg p-3 hover:border-indigo-300 hover:shadow-sm transition-all">
+            <a :href="getPageLink(source.collection, source.title)" target="_blank" 
+               class="text-indigo-600 hover:text-indigo-800 font-medium text-sm block hover:underline">
+              <i class="pi pi-external-link mr-1"></i>
+              [{{ source.collection }}] - {{ source.title }}
+            </a>
+          </div>
         </div>
-      </ul>
+        <div v-else class="text-gray-500 text-sm italic text-center py-4">
+          {{ t('No hay contenido relacionado') }} 
+        </div>
+      </div>
     </div>
   </div>
-  <hr>
-  <div class="grid">
-    <div class="col">
-      <h4>{{ t('Tiempos') }}</h4>
-      <DataTable :value="chat?.response.times" striped-rows size="small">
-        <Column field="field">
-          <template #body="slotProps">
-            <span class="font-bold text-sm">{{ slotProps.data.field }}</span>
-          </template>
-        </Column>
-        <Column field="value" class="text-right">
-          <template #body="slotProps">
-            <span class="text-gray-500 text-sm" style="font-family: system-ui;">{{ formatFloat(slotProps.data.value, 6)
-            }}s</span>
-          </template>
-        </Column>
-      </DataTable>
+  <!-- Sección Tiempos y Uso -->
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+    <!-- Tiempos -->
+    <div class="bg-white border border-gray-200 rounded-lg shadow-sm">
+      <div class="p-4 border-b border-gray-100">
+        <h4 class="text-lg font-semibold text-gray-800 flex items-center gap-2">
+          <i class="pi pi-clock text-orange-600"></i>
+          {{ t('Tiempos') }}
+        </h4>
+      </div>
+      <div class="p-4">
+        <DataTable :value="chat?.response.times" striped-rows size="small" class="custom-datatable">
+          <Column field="field">
+            <template #body="slotProps">
+              <div class="flex items-center gap-2">
+                <i class="pi pi-stopwatch text-orange-500 text-xs"></i>
+                <span class="font-medium text-sm text-gray-700">{{ slotProps.data.field }}</span>
+              </div>
+            </template>
+          </Column>
+          <Column field="value" class="text-right">
+            <template #body="slotProps">
+              <span class="text-orange-600 text-sm font-mono font-medium bg-orange-50 px-2 py-1 rounded">
+                {{ formatFloat(slotProps.data.value, 6) }}s
+              </span>
+            </template>
+          </Column>
+        </DataTable>
+      </div>
     </div>
-    <div class="col">
-      <h4>{{ t('Uso') }}</h4>
-      <DataTable :value="chat?.response.usage" striped-rows size="small">
-        <Column field="field">
-          <template #body="slotProps">
-            <span class="font-bold text-sm">{{ slotProps.data.field }}</span>
-          </template>
-        </Column>
-        <Column field="value" class="text-right">
-          <template #body="slotProps">
-            <span class="text-gray-500 text-sm" style="font-family: system-ui;">{{ formatIntNumber(slotProps.data.value)
-            }}</span>
-          </template>
-        </Column>
-      </DataTable>
+
+    <!-- Uso -->
+    <div class="bg-white border border-gray-200 rounded-lg shadow-sm">
+      <div class="p-4 border-b border-gray-100">
+        <h4 class="text-lg font-semibold text-gray-800 flex items-center gap-2">
+          <i class="pi pi-chart-bar text-teal-600"></i>
+          {{ t('Uso') }}
+        </h4>
+      </div>
+      <div class="p-4">
+        <DataTable :value="chat?.response.usage" striped-rows size="small" class="custom-datatable">
+          <Column field="field">
+            <template #body="slotProps">
+              <div class="flex items-center gap-2">
+                <i class="pi pi-database text-teal-500 text-xs"></i>
+                <span class="font-medium text-sm text-gray-700">{{ slotProps.data.field }}</span>
+              </div>
+            </template>
+          </Column>
+          <Column field="value" class="text-right">
+            <template #body="slotProps">
+              <span class="text-teal-600 text-sm font-mono font-medium bg-teal-50 px-2 py-1 rounded">
+                {{ formatIntNumber(slotProps.data.value) }}
+              </span>
+            </template>
+          </Column>
+        </DataTable>
+      </div>
     </div>
   </div>
 </template>
@@ -186,5 +325,95 @@ const getLanguageFlag = (lang: string) => {
 .p-inputtextarea {
   font-family: monospace;
   font-size: 12px;
+}
+
+/* Estilos personalizados para las pestañas */
+.custom-tabview :deep(.p-tabview-nav) {
+  background: #f8fafc;
+  border-radius: 8px 8px 0 0;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.custom-tabview :deep(.p-tabview-nav li) {
+  margin-right: 4px;
+}
+
+.custom-tabview :deep(.p-tabview-nav li .p-tabview-nav-link) {
+  border-radius: 6px 6px 0 0;
+  border: none;
+  background: transparent;
+  color: #64748b;
+  font-weight: 500;
+  padding: 12px 16px;
+  transition: all 0.2s ease;
+}
+
+.custom-tabview :deep(.p-tabview-nav li .p-tabview-nav-link:hover) {
+  background: #e2e8f0;
+  color: #475569;
+}
+
+.custom-tabview :deep(.p-tabview-nav li.p-highlight .p-tabview-nav-link) {
+  background: #3b82f6;
+  color: white;
+  box-shadow: 0 2px 4px rgba(59, 130, 246, 0.3);
+}
+
+.custom-tabview :deep(.p-tabview-panels) {
+  background: white;
+  border-radius: 0 0 8px 8px;
+  border: 1px solid #e2e8f0;
+  border-top: none;
+}
+
+/* Estilos para las tablas de datos */
+.custom-datatable :deep(.p-datatable) {
+  border: none;
+}
+
+.custom-datatable :deep(.p-datatable .p-datatable-header) {
+  background: #f8fafc;
+  border: none;
+  border-bottom: 1px solid #e2e8f0;
+  font-weight: 600;
+  color: #374151;
+}
+
+.custom-datatable :deep(.p-datatable .p-datatable-tbody > tr) {
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.custom-datatable :deep(.p-datatable .p-datatable-tbody > tr:hover) {
+  background: #f8fafc;
+}
+
+.custom-datatable :deep(.p-datatable .p-datatable-tbody > tr > td) {
+  border: none;
+  padding: 12px 16px;
+}
+
+/* Utilidad para truncar texto */
+.line-clamp-3 {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Mejoras responsivas */
+@media (max-width: 768px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .custom-tabview :deep(.p-tabview-nav) {
+    flex-wrap: wrap;
+  }
+  
+  .custom-tabview :deep(.p-tabview-nav li .p-tabview-nav-link) {
+    padding: 8px 12px;
+    font-size: 0.875rem;
+  }
 }
 </style>
