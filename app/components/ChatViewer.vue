@@ -79,18 +79,11 @@ const getLanguageFlag = (lang: string) => {
 
   <!-- Contenido principal -->
   <div class="bg-white border border-gray-200 rounded-lg shadow-sm mb-4">
-    <div class="p-4 border-b border-gray-100">
-      <div v-html="formatLike(chat?.like)" class="text-center" />
-    </div>
     <div class="p-4">
-      <TabView class="custom-tabview">
-        <TabPanel :header="t('Principal')" value="principal">
-          <div class="prose prose-sm max-w-none">
-            <div v-html="formatStringPre(chat?.response?.content)" class="leading-relaxed" />
-          </div>
-        </TabPanel>
-        <TabPanel v-for="(translation, index) in chat?.response?.langs" :key="index" :value="translation">
-          <template #header>
+      <Tabs value="principal" class="custom-tabs">
+        <TabList>
+          <Tab value="principal">{{ t('Principal') }}</Tab>
+          <Tab v-for="(translation, index) in chat?.response?.langs" :key="index" :value="translation">
             <div class="flex items-center gap-2">
               <template v-if="getLanguageFlag(translation).type === 'fi'">
                 <span :class="'fi fi-' + getLanguageFlag(translation).value" class="w-4 h-4"></span>
@@ -100,13 +93,34 @@ const getLanguageFlag = (lang: string) => {
               </template>
               <span class="text-sm font-medium">{{ translation.toUpperCase() }}</span>
             </div>
-          </template>
-          <div class="prose prose-sm max-w-none">
-            <div v-html="formatStringPre(chat?.response?.translations.find((t: any) => t.key === translation)?.value)" class="leading-relaxed" />
-          </div>
-        </TabPanel>
-      </TabView>
+          </Tab>
+        </TabList>
+        <TabPanels>
+          <TabPanel value="principal">
+            <div class="prose prose-sm max-w-none">
+              <div v-html="formatStringPre(chat?.response?.content)" class="leading-relaxed" />
+            </div>
+          </TabPanel>
+          <TabPanel v-for="(translation, index) in chat?.response?.langs" :key="index" :value="translation">
+            <div class="prose prose-sm max-w-none">
+              <div v-html="formatStringPre(chat?.response?.translations.find((t: any) => t.key === translation)?.value)" class="leading-relaxed" />
+            </div>
+          </TabPanel>
+        </TabPanels>
+      </Tabs>
     </div>
+    <div class="p-4 border-t border-gray-100">
+      <span v-if="chat?.like">
+      <div v-html="formatLike(chat?.like)" class="text-center" />
+      </span>
+      <span v-else>
+        <div class="text-gray-500 text-sm italic text-center py-4">
+          {{ t('No se ha pulsado like/dislike a la pregunta') }}
+        </div>
+      </span>
+    </div>
+
+
   </div>
   <!-- Sección Sabías que -->
   <template v-if="chat?.response?.sabias">
@@ -118,17 +132,10 @@ const getLanguageFlag = (lang: string) => {
         </h4>
       </div>
       <div class="p-4">
-        <TabView class="custom-tabview">
-          <TabPanel :header="t('Principal')" value="sabias-principal">
-            <div class="bg-white p-4 rounded-lg border border-amber-100">
-              <h5 class="font-bold text-amber-900 mb-3 text-lg">{{ chat?.response.titular }}</h5>
-              <p class="text-gray-700 leading-relaxed">
-                {{ chat?.response?.sabias }}
-              </p>
-            </div>
-          </TabPanel>
-          <TabPanel v-for="(translation, index) in chat?.response?.translations?.find((t: any) => t.key === 'titular').value" :key="index" :value="'sabias-' + index">
-            <template #header>
+        <Tabs value="sabias-principal" class="custom-tabs">
+          <TabList>
+            <Tab value="sabias-principal">{{ t('Principal') }}</Tab>
+            <Tab v-for="(translation, index) in chat?.response?.translations?.find((t: any) => t.key === 'titular').value" :key="index" :value="'sabias-' + index">
               <div class="flex items-center gap-2">
                 <template v-if="getLanguageFlag(String(index)).type === 'fi'">
                   <span :class="'fi fi-' + getLanguageFlag(String(index)).value" class="w-4 h-4"></span>
@@ -138,13 +145,25 @@ const getLanguageFlag = (lang: string) => {
                 </template>
                 <span class="text-sm font-medium">{{ String(index).toUpperCase() }}</span>
               </div>
-            </template>
-            <div class="bg-white p-4 rounded-lg border border-amber-100">
-              <h5 class="font-bold text-amber-900 mb-3 text-lg">{{ translation }}</h5>
-              <p class="text-gray-700 leading-relaxed">{{ chat?.response?.translations.find((t: any) => t.key === 'sabias').value[index] }}</p>
-            </div>
-          </TabPanel>
-        </TabView>
+            </Tab>
+          </TabList>
+          <TabPanels>
+            <TabPanel value="sabias-principal">
+              <div class="bg-white p-4 rounded-lg border border-amber-100">
+                <h5 class="font-bold text-amber-900 mb-3 text-lg">{{ chat?.response.titular }}</h5>
+                <p class="text-gray-700 leading-relaxed">
+                  {{ chat?.response?.sabias }}
+                </p>
+              </div>
+            </TabPanel>
+            <TabPanel v-for="(translation, index) in chat?.response?.translations?.find((t: any) => t.key === 'titular').value" :key="index" :value="'sabias-' + index">
+              <div class="bg-white p-4 rounded-lg border border-amber-100">
+                <h5 class="font-bold text-amber-900 mb-3 text-lg">{{ translation }}</h5>
+                <p class="text-gray-700 leading-relaxed">{{ chat?.response?.translations.find((t: any) => t.key === 'sabias').value[index] }}</p>
+              </div>
+            </TabPanel>
+          </TabPanels>
+        </Tabs>
       </div>
     </div>
   </template>
@@ -328,17 +347,17 @@ const getLanguageFlag = (lang: string) => {
 }
 
 /* Estilos personalizados para las pestañas */
-.custom-tabview :deep(.p-tabview-nav) {
+.custom-tabs :deep(.p-tabs-nav) {
   background: #f8fafc;
   border-radius: 8px 8px 0 0;
   border-bottom: 1px solid #e2e8f0;
 }
 
-.custom-tabview :deep(.p-tabview-nav li) {
+.custom-tabs :deep(.p-tabs-nav li) {
   margin-right: 4px;
 }
 
-.custom-tabview :deep(.p-tabview-nav li .p-tabview-nav-link) {
+.custom-tabs :deep(.p-tabs-nav li .p-tabs-nav-link) {
   border-radius: 6px 6px 0 0;
   border: none;
   background: transparent;
@@ -348,18 +367,18 @@ const getLanguageFlag = (lang: string) => {
   transition: all 0.2s ease;
 }
 
-.custom-tabview :deep(.p-tabview-nav li .p-tabview-nav-link:hover) {
+.custom-tabs :deep(.p-tabs-nav li .p-tabs-nav-link:hover) {
   background: #e2e8f0;
   color: #475569;
 }
 
-.custom-tabview :deep(.p-tabview-nav li.p-highlight .p-tabview-nav-link) {
+.custom-tabs :deep(.p-tabs-nav li.p-highlight .p-tabs-nav-link) {
   background: #3b82f6;
   color: white;
   box-shadow: 0 2px 4px rgba(59, 130, 246, 0.3);
 }
 
-.custom-tabview :deep(.p-tabview-panels) {
+.custom-tabs :deep(.p-tabs-panels) {
   background: white;
   border-radius: 0 0 8px 8px;
   border: 1px solid #e2e8f0;
@@ -407,11 +426,11 @@ const getLanguageFlag = (lang: string) => {
     grid-template-columns: 1fr;
   }
   
-  .custom-tabview :deep(.p-tabview-nav) {
+  .custom-tabs :deep(.p-tabs-nav) {
     flex-wrap: wrap;
   }
   
-  .custom-tabview :deep(.p-tabview-nav li .p-tabview-nav-link) {
+  .custom-tabs :deep(.p-tabs-nav li .p-tabs-nav-link) {
     padding: 8px 12px;
     font-size: 0.875rem;
   }

@@ -32,7 +32,6 @@ export const showChat = async (dialog: any, id: Object) => {
   const chatService = new ChatService();
   const response = await chatService.getChat(id);
   if (checkLogged(response)) {
-    console.log('chat', response?.data?.value?.chat);
     dialog.open(ChatViewer, {
       props: {
         header: response?.data?.value?.chat?.query ?? '',
