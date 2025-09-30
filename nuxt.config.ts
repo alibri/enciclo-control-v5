@@ -55,12 +55,12 @@ export default defineNuxtConfig({
     ],
     '@vueuse/nuxt'
   ],
-  // @ts-ignore
   primevue: {
     importTheme: { from: '@/theme/app-theme.ts' },
     options: {
       ripple: true,
       inputVariant: 'filled',
+      // @ts-ignore
       darkModeSelector: '.p-dark'
     },
     autoImport: true
