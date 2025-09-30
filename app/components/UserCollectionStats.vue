@@ -56,6 +56,10 @@ const sortedUserPageStats = computed(() => {
 const chartData = computed(() => {
   if (!props.userPageStats) return { labels: [], datasets: [] };
 
+  if (!props.userPageStats[yearSelected.value]) {
+    yearSelected.value = (Object.keys(props.userPageStats || {})[0] || new Date().getFullYear()).toString();
+  }
+
   const entries = Object.entries(props.userPageStats[yearSelected.value] || {});
   const labels = entries.map(([month]) => formatMonthName(Number(month)));
   const loginsData = entries.map(([, stats]) => (stats as StatsData).logins);
