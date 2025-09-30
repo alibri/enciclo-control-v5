@@ -97,12 +97,28 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="card">
-    <div class="flex items-center justify-between mb-4">
-      <h2 class="text-2xl font-bold text-gray-800">{{ t('Consultas Pregúntame') }}</h2>
-      <div class="text-sm text-gray-500">
-        <i class="pi pi-info-circle mr-1"></i>
-        {{ t('Doble clic en una fila para ver detalles') }}
+  <div class="min-h-screen bg-gray-50 p-4">
+    <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between mb-6">
+      <div class="mb-4 lg:mb-0">
+        <h2 class="text-2xl font-bold text-gray-800 dark:text-gray-200 mb-2">
+          <i class="pi pi-comments mr-2 text-blue-500"></i>
+          {{ t('Consultas Pregúntame') }}
+        </h2>
+        <p class="text-gray-600 text-sm">{{ t('Doble clic en una fila para ver detalles') }}</p>
+      </div>
+      <div class="flex gap-2">
+        <Button
+          icon="pi pi-refresh"
+          :label="t('Refrescar')"
+          class="p-button-outlined p-button-secondary"
+          @click="loadData()"
+        />
+        <Button 
+          icon="pi pi-file-excel" 
+          :label="t('Exportar')"
+          class="p-button-success" 
+          @click="exportData()" 
+        />
       </div>
     </div>
     <div class="grid grid-cols-12 p-1">
@@ -115,11 +131,16 @@ onMounted(() => {
           :current-page-report-template="t('show-per-page')" class="p-datatable-sm" @page="onPage($event)"
           @sort="onSort($event)" @filter="onFilter($event)" @row-dblclick="onRowDoubleClick($event)">
           <template #header>
-            <div class="flex justify-between items-center">
-              <div class="left-0">
-                <Button icon="pi pi-refresh" :label="t('Refrescar')" class="p-button-secondary" @click="loadData()" />
-                <Button icon="pi pi-file-excel" class="p-button-success ml-2" @click="exportData()" />
+            <div class="flex flex-wrap justify-between items-center gap-4 p-4 bg-gray-50 border-b">
+              <div class="flex items-center gap-2">
+                <i class="pi pi-table text-blue-500"></i>
+                <span class="font-semibold text-gray-700">{{ t('Lista de Preguntas') }}</span>
               </div>
+              <div class="flex items-center gap-2">
+                <span class="text-sm text-gray-500">{{ formatIntNumber(totalRecords) }} {{ t('registros') }}</span>
+              </div>
+            </div>
+            <div class="flex justify-between items-center mt-2">
               <div class="flex items-center justify-center">
                 <label class="mr-2" for="switch1">{{ t('SIN RESPUESTA') }}</label>
                 <ToggleSwitch v-model="no_respuesta" id="switch1" @change="loadData()" />

@@ -51,6 +51,7 @@ const loadDashboard = async (name: string) => {
     items.value = [];
     dashboard.value = response.data?.value;
     if (dashboard.value) {
+      console.log('dashboard', dashboard.value);
       grupos.value = Object.keys(dashboard.value?.dashboard).map((key) => {
         return { name: key, code: key };
       });
@@ -304,205 +305,436 @@ onMounted(() => {
 
 <template>
   <ConfirmDialog />
-  <div class="card">
-    <h2>{{ t('Portada') }} <span v-if="collection" class="text-gray-600">
-        <span class="text-gray-400">&gt;&gt;</span> {{ collection.name }}</span> <span v-if="grupo" class="text-gray-400"> &gt;&gt; {{ grupo.name }}</span></h2>
-    <BlockUI :blocked="loading">
-      <div class="grid grid-cols-12 gap-4 p-1-">
-        <div class="col-span-6 lg:col-span-1 xl:col-span-1">
-          <strong class="text-xl mb-3 block text-gray-800">{{ t('Colección') }}</strong>
-          <Listbox v-model="collection" :options="collections" option-label="name"
-            class="w-full min-h-full-" />
+  <div class="min-h-screen bg-gray-50 p-4">
+    <!-- Header Section -->
+    <div class="mb-6">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center space-x-3">
+          <h2 class="text-3xl font-bold text-gray-900">
+            <i class="pi pi-desktop mr-2 text-blue-500"></i>
+            {{ t('Portada') }}</h2>
+          <div v-if="collection" class="flex items-center space-x-2 text-gray-500">
+            <i class="pi pi-chevron-right text-sm"></i>
+            <span class="text-lg font-medium">{{ collection.name }}</span>
+          </div>
+          <div v-if="grupo" class="flex items-center space-x-2 text-gray-400">
+            <i class="pi pi-chevron-right text-sm"></i>
+            <span>{{ grupo.name }}</span>
+          </div>
+          <Badge v-if="dirty" value="*" severity="danger" class="ml-2" />
         </div>
-        <div class="col-span-6 lg:col-span-2 xl:col-span-2">
-          <strong class="text-xl mb-3 block text-gray-800">{{ t('Grupos') }}</strong>
-          <Listbox v-model="grupo" :options="grupos" option-label="name" class="w-full min-h-full-" />
+        <div class="flex items-center space-x-2">
+          <Button 
+            :label="t('Refrescar')" 
+            icon="pi pi-refresh" 
+            outlined 
+            severity="warning"
+            @click="refreshData()" 
+          />
+          <Button 
+            :label="t('Vista previa')" 
+            icon="pi pi-eye" 
+            outlined 
+            severity="success"
+            @click="previewData()" 
+          />
+          <Button 
+            :label="t('Guardar')" 
+            icon="pi pi-save" 
+            outlined 
+            severity="primary"
+            :disabled="!dirty"
+            @click="saveDashboard()" 
+          />
+          <Button 
+            :label="t('Publicar')" 
+            icon="pi pi-upload" 
+            severity="success"
+            :disabled="!dirty"
+            @click="publishData()" 
+          />
         </div>
-        <div class="col-span-12 lg:col-span-9 xl:col-span-9">
-          <strong class="text-xl mb-3 block text-gray-800">{{ t('Elementos') }}</strong>
-          <div class=" shadow-sm- border border-gray-200 p-4">
-            <DataTable v-model:editingRows="editingRows" :value="items" edit-mode="row" data-key="id" :pt="{
-              table: { style: 'min-width: 50rem' },
-              column: {
-                bodycell: function (state: any) {
-                  return {
-                    style: state['d_editing'] && 'padding-top: 0.6rem; padding-bottom: 0.6rem'
-                  };
-                }
-              }
-            }">
-              <template #header>
-                <Toolbar>
-                  <template #start>
-                    <Button icon="pi pi-plus" class="mr-2" severity="secondary" @click="addNew()" />
-                  </template>
+      </div>
+    </div>
 
-                  <template #center>
-                    <div class="text-xl text-gray-900 font-bold">
-                      {{ grupo?.name }}
+    <BlockUI :blocked="loading">
+      <div class="grid grid-cols-1 xl:grid-cols-12 gap-6">
+        <!-- Collection and Groups Selector Cards -->
+        <div class="xl:col-span-3 space-y-4">
+          <!-- Collection Selector -->
+          <Card class="h-fit">
+            <template #title>
+              <div class="flex items-center space-x-2">
+                <i class="pi pi-folder text-blue-500"></i>
+                <span>{{ t('Colección') }}</span>
+              </div>
+            </template>
+            <template #content>
+              <Listbox 
+                v-model="collection" 
+                :options="collections" 
+                option-label="name"
+                class="w-full"
+                :placeholder="t('Seleccionar colección')"
+              />
+            </template>
+          </Card>
+
+          <!-- Groups Selector -->
+          <Card class="h-fit">
+            <template #title>
+              <div class="flex items-center space-x-2">
+                <i class="pi pi-th-large text-green-500"></i>
+                <span>{{ t('Grupos') }}</span>
+              </div>
+            </template>
+            <template #content>
+              <Listbox 
+                v-model="grupo" 
+                :options="grupos" 
+                option-label="name" 
+                class="w-full"
+                :placeholder="t('Seleccionar grupo')"
+              />
+            </template>
+          </Card>
+        </div>
+
+        <!-- Data Table Card -->
+        <div class="xl:col-span-9">
+          <Card>
+            <template #title>
+              <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-2">
+                  <i class="pi pi-list text-purple-500"></i>
+                  <span>{{ t('Elementos') }}</span>
+                  <Badge v-if="grupo" :value="grupo.name" severity="info" />
+                </div>
+                <Button 
+                  :label="t('Agregar')" 
+                  icon="pi pi-plus" 
+                  severity="secondary" 
+                  @click="addNew()" 
+                />
+              </div>
+            </template>
+            <template #content>
+              <DataTable 
+                v-model:editingRows="editingRows" 
+                :value="items" 
+                edit-mode="row" 
+                data-key="id" 
+                :pt="{
+                  table: { style: 'min-width: 50rem' },
+                  column: {
+                    bodycell: function (state: any) {
+                      return {
+                        style: state['d_editing'] && 'padding-top: 0.6rem; padding-bottom: 0.6rem'
+                      };
+                    }
+                  }
+                }"
+                class="p-datatable-sm"
+              >
+                <Column v-if="fields.includes('imagen')" field="imagen" :header="t('Imagen')">
+                  <template #body="slotProps">
+                    <div class="flex justify-center">
+                      <img 
+                        :src="slotProps.data.imagen" 
+                        class="w-12 h-12 object-cover rounded-lg border border-gray-200"
+                        :alt="slotProps.data.titulo || 'Imagen'"
+                      />
                     </div>
                   </template>
-
-                  <template #end>
-                    <Button class="mr-1" icon="pi pi-save" outlined severity="primary" @click="saveDashboard()" />
-                    <Button class="mr-3" icon="pi pi-refresh" outlined severity="warning" @click="refreshData()" />
-                    <Button class="mr-1" icon="pi pi-eye" outlined severity="success" @click="previewData()" />
-                    <Button icon="pi pi-upload" severity="success" @click="publishData()" />
+                </Column>
+                
+                <Column v-if="fields.includes('collection')" field="collection" :header="t('Colección')">
+                  <template #editor="{ data, field }">
+                    <InputText v-model="data[field]" class="w-full" />
                   </template>
-                </Toolbar>
-              </template>
-              <Column v-if="fields.includes('imagen')" field="imagen" :header="t('Imagen')">
-                <!--<template #editor="{ data, field }">
-                  <ImageUpload v-model="data[field]" />
-                </template>-->
-                <template #body="slotProps">
-                  <img :src="slotProps.data.imagen" class="max-w-[50px] w-[50px] object-cover rounded">
-                </template>
-              </Column>
-              <Column v-if="fields.includes('collection')" field="collection" :header="t('Colección')">
-                <template #editor="{ data, field }">
-                  <InputText v-model="data[field]" />
-                </template>
-              </Column>
-              <Column v-if="fields.includes('friendly')" field="friendly" :header="t('Entrada')">
-                <template #editor="{ data, field }">
-                  <InputText v-model="data[field]" />
-                </template>
-                <template #body="slotProps">
-                  <PageLink :page="{ title: slotProps.data.friendly, collection: slotProps.data.collection }" />
-                </template>
-              </Column>
-              <Column v-if="fields.includes('categoria')" field="categoria" :header="t('Categoria')">
-                <template #editor="{ data, field }">
-                  <InputText v-model="data[field]" />
-                </template>
-              </Column>
-              <Column v-if="fields.includes('titulo')" field="titulo" :header="t('Título')">
-                <template #editor="{ data, field }">
-                  <InputText v-model="data[field]" />
-                </template>
-              </Column>
-              <Column v-if="fields.includes('titular')" field="titular" :header="t('Titular')">
-                <template #editor="{ data, field }">
-                  <InputText v-model="data[field]" />
-                </template>
-              </Column>
-              <!--<Column v-if="fields.includes('enlace')" field="enlace" :header="t('Enlace')">
-              <template #editor="{ data, field }">
-                <InputText v-model="data[field]" />
-              </template>
-            </Column>-->
-              <Column v-if="fields.includes('fecha')" field="fecha" :header="t('Fecha')">
-                <template #editor="{ data, field }">
-                  <InputText v-model="data[field]" />
-                </template>
-              </Column>
-              <Column v-if="fields.includes('fecha2')" field="fecha2" :header="t('Fecha 2')">
-                <template #editor="{ data, field }">
-                  <InputText v-model="data[field]" />
-                </template>
-              </Column>
-              <Column v-if="fields.includes('resumen')" field="resumen" :header="t('Resumen')">
-                <template #editor="{ data, field }">
-                  <InputText v-model="data[field]" />
-                </template>
-              </Column>
-              <Column v-if="fields.includes('text')" field="text" :header="t('Texto')">
-                <template #editor="{ data, field }">
-                  <InputText v-model="data[field]" />
-                </template>
-              </Column>
-              <Column style="width: 10%; min-width: 8rem" body-style="text-align:center">
-                <template #body="slotProps">
-                  <Button icon="pi pi-pencil" rounded raised text @click="openDialog(slotProps.data)" />
-                  <Button icon="pi pi-trash" severity="danger" rounded raised text
-                    @click="deleteItem(slotProps.data)" />
-                </template>
-              </Column>
-            </DataTable>
-          </div>
+                </Column>
+                
+                <Column v-if="fields.includes('friendly')" field="friendly" :header="t('Entrada')">
+                  <template #editor="{ data, field }">
+                    <InputText v-model="data[field]" class="w-full" />
+                  </template>
+                  <template #body="slotProps">
+                    <PageLink :page="{ title: slotProps.data.friendly, collection: slotProps.data.collection }" />
+                  </template>
+                </Column>
+                
+                <Column v-if="fields.includes('categoria')" field="categoria" :header="t('Categoría')">
+                  <template #editor="{ data, field }">
+                    <InputText v-model="data[field]" class="w-full" />
+                  </template>
+                </Column>
+                
+                <Column v-if="fields.includes('titulo')" field="titulo" :header="t('Título')">
+                  <template #editor="{ data, field }">
+                    <InputText v-model="data[field]" class="w-full" />
+                  </template>
+                </Column>
+                
+                <Column v-if="fields.includes('titular')" field="titular" :header="t('Titular')">
+                  <template #editor="{ data, field }">
+                    <InputText v-model="data[field]" class="w-full" />
+                  </template>
+                </Column>
+                
+                <Column v-if="fields.includes('fecha')" field="fecha" :header="t('Fecha')">
+                  <template #editor="{ data, field }">
+                    <InputText v-model="data[field]" class="w-full" />
+                  </template>
+                </Column>
+                
+                <Column v-if="fields.includes('fecha2')" field="fecha2" :header="t('Fecha 2')">
+                  <template #editor="{ data, field }">
+                    <InputText v-model="data[field]" class="w-full" />
+                  </template>
+                </Column>
+                
+                <Column v-if="fields.includes('resumen')" field="resumen" :header="t('Resumen')">
+                  <template #editor="{ data, field }">
+                    <Textarea v-model="data[field]" rows="2" class="w-full" />
+                  </template>
+                </Column>
+                
+                <Column v-if="fields.includes('text')" field="text" :header="t('Texto')">
+                  <template #editor="{ data, field }">
+                    <Textarea v-model="data[field]" rows="2" class="w-full" />
+                  </template>
+                </Column>
+                
+                <Column style="width: 120px" body-style="text-align:center">
+                  <template #body="slotProps">
+                    <div class="flex justify-center space-x-1">
+                      <Button 
+                        icon="pi pi-pencil" 
+                        size="small"
+                        rounded 
+                        text 
+                        severity="info"
+                        @click="openDialog(slotProps.data)" 
+                      />
+                      <Button 
+                        icon="pi pi-trash" 
+                        size="small"
+                        rounded 
+                        text 
+                        severity="danger"
+                        @click="deleteItem(slotProps.data)" 
+                      />
+                    </div>
+                  </template>
+                </Column>
+              </DataTable>
+            </template>
+          </Card>
         </div>
       </div>
     </BlockUI>
   </div>
-  <Dialog v-model:visible="dialogVisible" modal :header="t('Editar')" :style="{ width: '50rem' }">
+  <Dialog v-model:visible="dialogVisible" modal :style="{ width: '60rem' }" class="p-dialog-maximized-responsive">
     <template #header>
-      <div class="inline-flex items-center justify-center gap-2">
-        <Avatar v-if="editData.imagen" :image="editData.imagen" shape="circle" />
-        <span v-if="!editData.id" class="text-red-600 font-bold">[{{ t('NUEVO') }}]</span>
-        <span class="font-bold whitespace-nowrap"><span class="text-blue-600">{{ grupo?.name }}</span> 🡢 {{
-          editData.titulo }} </span>
+      <div class="flex items-center space-x-3">
+        <Avatar v-if="editData.imagen" :image="editData.imagen" shape="circle" size="large" />
+        <div class="flex items-center space-x-2">
+          <i class="pi pi-edit text-blue-500"></i>
+          <span v-if="!editData.id" class="text-red-600 font-bold text-sm">[{{ t('NUEVO') }}]</span>
+          <span class="font-bold">
+            <span class="text-blue-600">{{ grupo?.name }}</span>
+            <i class="pi pi-chevron-right mx-2 text-gray-400"></i>
+            <span class="text-gray-700">{{ editData.titulo || t('Elemento') }}</span>
+          </span>
+        </div>
       </div>
     </template>
 
-    <div v-if="!fields.includes('text')" class="flex items-center gap-3 mb-3">
-      <label for="search" class="font-semibold w-24 text-green-700">{{ t('Búsqueda') }}</label>
-      <AutoComplete id="search" v-model="selectedItem" option-label="title" :suggestions="filteredEntradas"
-        class="flex-1 mi-input" @complete="searchEntrada">
-        <template #option="slotProps">
-          <div class="flex items-center">
-            <img alt="" :src="slotProps.option.image" style="width: 18px" class="mr-2">
-            <div v-html="slotProps.option.title2" />
+    <div class="space-y-6">
+      <!-- Search Section -->
+      <div v-if="!fields.includes('text')" class="space-y-2">
+        <label for="search" class="block text-sm font-medium text-gray-700">
+          <i class="pi pi-search text-green-500 mr-2"></i>
+          {{ t('Búsqueda') }}
+        </label>
+        <AutoComplete 
+          id="search" 
+          v-model="selectedItem" 
+          option-label="title" 
+          :suggestions="filteredEntradas"
+          class="w-full" 
+          :placeholder="t('Buscar entrada...')"
+          @complete="searchEntrada"
+        >
+          <template #option="slotProps">
+            <div class="flex items-center space-x-3">
+              <img :src="slotProps.option.image" class="w-8 h-8 object-cover rounded" :alt="slotProps.option.title">
+              <div v-html="slotProps.option.title2" class="text-sm" />
+            </div>
+          </template>
+        </AutoComplete>
+      </div>
+
+      <!-- Image Section -->
+      <div v-if="fields.includes('imagen')" class="space-y-4">
+        <h3 class="text-lg font-semibold text-gray-800 border-b border-gray-200 pb-2">
+          <i class="pi pi-image text-purple-500 mr-2"></i>
+          {{ t('Imagen') }}
+        </h3>
+        
+        <div class="space-y-3">
+          <div class="flex items-end space-x-3">
+            <div class="flex-1 space-y-2">
+              <label for="imagen" class="block text-sm font-medium text-gray-700">
+                {{ t('URL de la imagen') }}
+              </label>
+              <InputText 
+                id="imagen" 
+                v-model="editData.imagen" 
+                class="w-full"
+                :placeholder="t('https://ejemplo.com/imagen.jpg')"
+              />
+            </div>
+            <ImagenSelect @select="selectImage" :images="imagesItems" />
           </div>
-        </template>
-      </AutoComplete>
-    </div>
-    <div v-if="fields.includes('imagen')" class="flex items-center gap-3 mb-3">
-      <label for="imagen" class="font-semibold w-24">{{ t('Imagen') }}</label>
-      <InputText id="imagen" v-model="editData.imagen" class="flex-1" />
-      <ImagenSelect @select="selectImage" :images="imagesItems" />
-    </div>
-    <div v-if="fields.includes('imagen')" class="flex items-center gap-3 mb-3 border border-gray-200 text-center">
-      <Image :src="editData.imagen" height="60px" />
+          
+          <!-- Image Preview -->
+          <div v-if="editData.imagen" class="border-2 border-dashed border-gray-300 rounded-lg p-4 bg-gray-50">
+            <div class="text-center">
+              <p class="text-sm text-gray-600 mb-3">{{ t('Vista previa') }}</p>
+              <div class="inline-block border border-gray-200 rounded-lg p-2 bg-white shadow-sm">
+                <Image :src="editData.imagen" height="80" class="rounded" :alt="editData.titulo || 'Imagen'" />
+              </div>
+            </div>
+          </div>
+          
+          <div v-else class="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center bg-gray-50">
+            <i class="pi pi-image text-3xl text-gray-400 mb-2"></i>
+            <p class="text-gray-500 text-sm">{{ t('No hay imagen seleccionada') }}</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Basic Information Section -->
+      <div class="space-y-4">
+        <h3 class="text-lg font-semibold text-gray-800 border-b border-gray-200 pb-2">
+          <i class="pi pi-info-circle text-blue-500 mr-2"></i>
+          {{ t('Información Básica') }}
+        </h3>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div v-if="fields.includes('collection')" class="space-y-2">
+            <label for="collection" class="block text-sm font-medium text-gray-700">
+              {{ t('Colección') }}
+            </label>
+            <InputText id="collection" v-model="editData.collection" class="w-full" />
+          </div>
+          
+          <div v-if="fields.includes('friendly')" class="space-y-2">
+            <label for="friendly" class="block text-sm font-medium text-gray-700">
+              {{ t('Entrada') }}
+            </label>
+            <InputText id="friendly" v-model="editData.friendly" class="w-full" />
+          </div>
+          
+          <div v-if="fields.includes('categoria')" class="space-y-2">
+            <label for="categoria" class="block text-sm font-medium text-gray-700">
+              {{ t('Categoría') }}
+            </label>
+            <InputText id="categoria" v-model="editData.categoria" class="w-full" />
+          </div>
+          
+          <div v-if="fields.includes('titulo')" class="space-y-2">
+            <label for="titulo" class="block text-sm font-medium text-gray-700">
+              {{ t('Título') }} <span class="text-red-500">*</span>
+            </label>
+            <InputText id="titulo" v-model="editData.titulo" class="w-full" />
+          </div>
+          
+          <div v-if="fields.includes('titular')" class="space-y-2">
+            <label for="titular" class="block text-sm font-medium text-gray-700">
+              {{ t('Titular') }}
+            </label>
+            <InputText id="titular" v-model="editData.titular" class="w-full" />
+          </div>
+          
+          <div v-if="fields.includes('fecha')" class="space-y-2">
+            <label for="fecha" class="block text-sm font-medium text-gray-700">
+              {{ t('Fecha') }}
+            </label>
+            <InputText id="fecha" v-model="editData.fecha" class="w-full" />
+          </div>
+          
+          <div v-if="fields.includes('fecha2')" class="space-y-2">
+            <label for="fecha2" class="block text-sm font-medium text-gray-700">
+              {{ t('Fecha 2') }}
+            </label>
+            <InputText id="fecha2" v-model="editData.fecha2" class="w-full" />
+          </div>
+        </div>
+      </div>
+
+      <!-- Content Section -->
+      <div v-if="fields.includes('resumen') || fields.includes('text')" class="space-y-4">
+        <h3 class="text-lg font-semibold text-gray-800 border-b border-gray-200 pb-2">
+          <i class="pi pi-file-edit text-green-500 mr-2"></i>
+          {{ t('Contenido') }}
+        </h3>
+        
+        <div v-if="fields.includes('resumen')" class="space-y-2">
+          <label for="resumen" class="block text-sm font-medium text-gray-700">
+            {{ t('Resumen') }}
+          </label>
+          <Textarea 
+            id="resumen" 
+            v-model="editData.resumen" 
+            rows="4" 
+            class="w-full"
+            :placeholder="t('Escriba un resumen...')"
+          />
+        </div>
+        
+        <div v-if="fields.includes('text')" class="space-y-2">
+          <label for="text" class="block text-sm font-medium text-gray-700">
+            {{ t('Texto') }}
+          </label>
+          <Textarea 
+            id="text" 
+            v-model="editData.text" 
+            rows="6" 
+            class="w-full"
+            :placeholder="t('Escriba el contenido...')"
+          />
+        </div>
+        
+        <div v-if="fields.includes('text')" class="space-y-2">
+          <label for="html" class="block text-sm font-medium text-gray-700">
+            {{ t('Editor HTML') }}
+          </label>
+          <Editor 
+            v-model="editData.text" 
+            editor-style="height: 200px" 
+            class="w-full"
+          />
+        </div>
+      </div>
     </div>
 
-    <div v-if="fields.includes('collection')" class="flex items-center gap-3 mb-3">
-      <label for="collection" class="font-semibold w-24">{{ t('Colección') }}</label>
-      <InputText id="collection" v-model="editData.collection" class="flex-1" />
-    </div>
-    <div v-if="fields.includes('friendly')" class="flex items-center gap-3 mb-2">
-      <label for="friendly" class="font-semibold w-24">{{ t('Entrada') }}</label>
-      <InputText id="friendly" v-model="editData.friendly" class="flex-1" />
-    </div>
-    <div v-if="fields.includes('categoria')" class="flex items-center gap-3 mb-2">
-      <label for="categoria" class="font-semibold w-24">{{ t('Categoría') }}</label>
-      <InputText id="categoria" v-model="editData.categoria" class="flex-1" />
-    </div>
-    <div v-if="fields.includes('titulo')" class="flex items-center gap-3 mb-2">
-      <label for="titulo" class="font-semibold w-24">{{ t('Título') }}</label>
-      <InputText id="titulo" v-model="editData.titulo" class="flex-1" />
-    </div>
-    <div v-if="fields.includes('titular')" class="flex items-center gap-3 mb-2">
-      <label for="titular" class="font-semibold w-24">{{ t('Titular') }}</label>
-      <InputText id="titular" v-model="editData.titular" class="flex-1" />
-    </div>
-    <!--<div v-if="fields.includes('enlace')" class="flex items-center gap-3 mb-2">
-        <label for="enlace" class="font-semibold w-24">{{ t('Enlace') }}</label>
-        <InputText id="enlace" v-model="editData.enlace" class="flex-1" />
-      </div>-->
-    <div v-if="fields.includes('fecha')" class="flex items-center gap-3 mb-2">
-      <label for="fecha" class="font-semibold w-24">{{ t('Fecha') }}</label>
-      <InputText id="fecha" v-model="editData.fecha" class="flex-1" />
-    </div>
-    <div v-if="fields.includes('fecha2')" class="flex items-center gap-3 mb-2">
-      <label for="fecha2" class="font-semibold w-24">{{ t('Fecha 2') }}</label>
-      <InputText id="fecha2" v-model="editData.fecha2" class="flex-1" />
-    </div>
-    <div v-if="fields.includes('resumen')" class="flex items-center gap-3 mb-2">
-      <label for="resumen" class="font-semibold w-24">{{ t('Resumen') }}</label>
-      <Textarea id="resumen" v-model="editData.resumen" rows="5" class="flex-1" />
-    </div>
-    <div v-if="fields.includes('text')" class="flex items-center gap-3 mb-2">
-      <label for="text" class="font-semibold w-24">{{ t('Texto') }}</label>
-      <Textarea id="text" v-model="editData.text" rows="10" class="flex-1" />
-    </div>
-    <div v-if="fields.includes('text')" class="flex items-center gap-3 mb-2">
-      <label for="html" class="font-semibold w-24">{{ t('Texto') }}</label>
-      <Editor v-model="editData.text" editor-style="height: 200px" class="flex-1" />
-    </div>
     <template #footer>
-      <Button :label="t('Cancelar')" text severity="danger" autofocus @click="dialogVisible = false" />
-      <Button :label="t('Guardar')" outlined severity="primary" autofocus @click="saveData()" />
+      <div class="flex justify-end space-x-2">
+        <Button 
+          :label="t('Cancelar')" 
+          icon="pi pi-times" 
+          text 
+          severity="danger" 
+          @click="dialogVisible = false" 
+        />
+        <Button 
+          :label="t('Guardar')" 
+          icon="pi pi-save" 
+          @click="saveData()" 
+        />
+      </div>
     </template>
   </Dialog>
 

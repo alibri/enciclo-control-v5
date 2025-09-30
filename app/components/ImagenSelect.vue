@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import MediaService from '~/services/mediaService';
+import ImageInfo from './ImageInfo.vue';
 
 const mediaService = new MediaService();
 const { t } = useI18n();
@@ -69,6 +70,31 @@ const onError = (error: any) => {
 
 const media = ref();
 
+// Función para obtener las dimensiones de una imagen
+const getImageDimensions = (src: string): Promise<{ width: number; height: number }> => {
+  return new Promise((resolve) => {
+    const img = new Image();
+    img.onload = () => {
+      resolve({ width: img.naturalWidth, height: img.naturalHeight });
+    };
+    img.onerror = () => {
+      resolve({ width: 0, height: 0 });
+    };
+    img.src = src;
+  });
+};
+
+// Función para formatear el tamaño de archivo (si está disponible)
+const formatFileSize = (bytes: number): string => {
+  if (bytes === 0) return '0 Bytes';
+  const k = 1024;
+  const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+  const i = Math.floor(Math.log(bytes) / Math.log(k));
+  return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+};
+
+
+
 const loadData = async () => {
   const response = await mediaService.getImages();
   //console.log('images', response.data);
@@ -131,65 +157,211 @@ const config = {
 
 <template>
   <span>
-    <Dialog v-model:visible="dialogVisible" modal maximizable :header="t('Seleccionar Imagen')" :style="{ width: '75rem' }">
+    <Dialog 
+      v-model:visible="dialogVisible" 
+      modal 
+      maximizable 
+      :header="t('Seleccionar Imagen')" 
+      :style="{ width: '90vw', height: '90vh', maxWidth: '1200px' }"
+      :pt="{
+        root: 'flex flex-col',
+        content: 'flex-1 overflow-scroll',
+        header: 'border-b border-gray-200 bg-gradient-to-r from-blue-50 to-indigo-50',
+        title: 'text-xl font-semibold text-gray-800'
+      }"
+    >
+      <template #header>
+        <div class="flex items-center gap-3">
+          <i class="pi pi-image text-2xl text-blue-600"></i>
+          <span class="text-xl font-semibold text-gray-800">{{ t('Seleccionar Imagen') }}</span>
+        </div>
+      </template>
+      
       <BlockUI :blocked="blocked">
-        <TabView>
-          <TabPanel :header="t('Contenido')">
-            <div class="grid grid-cols-12 gap-4">
-              <div v-for="image in images" :key="image" class="col-span-3">
-                <div class="p-2 border border-gray-300 rounded-lg shadow-sm hover:shadow-md transition-shadow">
-                  <div class="flex gap-1 mb-2">
-                    <Button class="text-xs" rounded severity="warning" icon="pi pi-pencil" @click="editImage(image)" />
-                    <Button class="text-xs" rounded severity="primary" icon="pi pi-check" @click="selectImage(image)" />
-                  </div>
-                  <Image :src="image" class="border-t border-gray-200 pt-2 rounded" width="200px" @dblclick="selectImage(image)" />
+        <div class="h-full flex flex-col">
+          <Tabs value="0" class="flex-1 flex flex-col">
+            <TabList class="border-b border-gray-200 bg-gray-50">
+              <Tab value="0" class="px-6 py-3">
+                <i class="pi pi-folder mr-2"></i>
+                {{ t('Contenido') }}
+              </Tab>
+              <Tab value="1" class="px-6 py-3">
+                <i class="pi pi-upload mr-2"></i>
+                {{ t('Media') }}
+              </Tab>
+              <Tab value="2" class="px-6 py-3">
+                <i class="pi pi-database mr-2"></i>
+                {{ t('Repositorio') }}
+              </Tab>
+            </TabList>
+            
+            <TabPanels class="flex-1 overflow-hidden">
+              <TabPanel value="0" class="h-full overflow-auto p-6 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100 hover:scrollbar-thumb-gray-400">
+                <div v-if="!images || images.length === 0" class="flex flex-col items-center justify-center h-64 text-gray-500">
+                  <i class="pi pi-image text-6xl mb-4"></i>
+                  <p class="text-lg">{{ t('No hay imágenes disponibles') }}</p>
                 </div>
-              </div>
-            </div>
-          </TabPanel>
-          <TabPanel :header="t('Media')">
-            <div class=" shadow-sm border border-gray-200 p-4 mb-4">
-              <FileUpload
-                name="demo[]"
-                accept="image/*"
-                :max-file-size="100000000"
-                :auto="true"
-                custom-upload
-                mode="basic"
-                :choose-label="t('Subir')"
-                @uploader="onAdvancedUpload($event)"
-              >
-                <template #empty>
-                  <p class="text-gray-600 text-center py-4">{{ t('Arrastra y suelta archivos aquí para subirlos') }}</p>
-                </template>
-              </FileUpload>
-            </div>
-            <div class="grid grid-cols-12 gap-4">
-              <div v-for="image in media" :key="image" class="col-span-3">
-                <div class="p-2 border border-gray-200 rounded-lg shadow-sm hover:shadow-md transition-shadow">
-                  <div class="flex gap-1 mb-2">
-                    <Button class="text-xs" rounded severity="warning" icon="pi pi-pencil" @click="editImage(image)" />
-                    <Button class="text-xs" rounded severity="primary" icon="pi pi-check" @click="selectImage(image)" />
+                <div v-else class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+                  <div v-for="image in images" :key="image" class="group relative">
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1 h-64 flex flex-col relative">
+                      <div class="absolute top-2 right-2 z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                        <div class="flex gap-1">
+                          <Button 
+                            class="text-xs" 
+                            rounded 
+                            severity="warning" 
+                            icon="pi pi-pencil" 
+                            size="small"
+                            @click="editImage(image)"
+                            :pt="{ root: 'bg-orange-500 hover:bg-orange-600' }"
+                          />
+                          <Button 
+                            class="text-xs" 
+                            rounded 
+                            severity="success" 
+                            icon="pi pi-check" 
+                            size="small"
+                            @click="selectImage(image)"
+                            :pt="{ root: 'bg-green-500 hover:bg-green-600' }"
+                          />
+                        </div>
+                      </div>
+                      <div class="flex-1 flex items-center justify-center bg-gray-50 p-2 relative">
+                        <Image 
+                          :src="image" 
+                          class="max-w-full max-h-full object-contain cursor-pointer rounded-lg" 
+                          @dblclick="selectImage(image)"
+                          @click="selectImage(image)"
+                        />
+                        <ImageInfo :src="image" />
+                      </div>
+                    </div>
                   </div>
-                  <Image :src="image" class="border-t border-gray-200 pt-2 rounded" width="200px" @dblclick="selectImage(image)" />
                 </div>
-              </div>
-            </div>
-          </TabPanel>
-          <TabPanel :header="t('Repositorio')">
-            <div class="grid grid-cols-12 gap-4">
-              <div v-for="image in repositorio" :key="image" class="col-span-3">
-                <div class="p-2 border border-gray-200 rounded-lg shadow-sm hover:shadow-md transition-shadow">
-                  <div class="flex gap-1 mb-2">
-                    <Button class="text-xs" rounded severity="warning" icon="pi pi-pencil" @click="editImage(image)" />
-                    <Button class="text-xs" rounded severity="primary" icon="pi pi-check" @click="selectImage(image)" />
+              </TabPanel>
+              
+              <TabPanel value="1" class="h-full overflow-auto p-6 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100 hover:scrollbar-thumb-gray-400">
+                <div class="mb-6">
+                  <div class="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-xl p-6">
+                    <div class="flex items-center gap-3 mb-4">
+                      <i class="pi pi-cloud-upload text-2xl text-blue-600"></i>
+                      <h3 class="text-lg font-semibold text-gray-800">{{ t('Subir Nueva Imagen') }}</h3>
+                    </div>
+                    <FileUpload
+                      name="demo[]"
+                      accept="image/*"
+                      :max-file-size="100000000"
+                      :auto="true"
+                      custom-upload
+                      mode="basic"
+                      :choose-label="t('Seleccionar Archivo')"
+                      @uploader="onAdvancedUpload($event)"
+                      class="w-full"
+                      :pt="{
+                        root: 'w-full',
+                        chooseButton: 'w-full bg-blue-600 hover:bg-blue-700 text-white py-3 px-6 rounded-lg font-medium transition-colors duration-200'
+                      }"
+                    >
+                      <template #empty>
+                        <div class="text-center py-8">
+                          <i class="pi pi-cloud-upload text-4xl text-blue-400 mb-3"></i>
+                          <p class="text-gray-600 text-lg">{{ t('Arrastra y suelta archivos aquí para subirlos') }}</p>
+                          <p class="text-gray-500 text-sm mt-2">{{ t('o haz clic para seleccionar') }}</p>
+                        </div>
+                      </template>
+                    </FileUpload>
                   </div>
-                  <Image :src="image" class="border-t border-gray-200 pt-2 rounded" width="200px" @dblclick="selectImage(image)" />
                 </div>
-              </div>
-            </div>
-          </TabPanel>
-        </TabView>
+                
+                <div v-if="!media || media.length === 0" class="flex flex-col items-center justify-center h-64 text-gray-500">
+                  <i class="pi pi-images text-6xl mb-4"></i>
+                  <p class="text-lg">{{ t('No hay imágenes en Media') }}</p>
+                </div>
+                <div v-else class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+                  <div v-for="image in media" :key="image" class="group relative">
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1 h-64 flex flex-col relative">
+                      <div class="absolute top-2 right-2 z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                        <div class="flex gap-1">
+                          <Button 
+                            class="text-xs" 
+                            rounded 
+                            severity="warning" 
+                            icon="pi pi-pencil" 
+                            size="small"
+                            @click="editImage(image)"
+                            :pt="{ root: 'bg-orange-500 hover:bg-orange-600' }"
+                          />
+                          <Button 
+                            class="text-xs" 
+                            rounded 
+                            severity="success" 
+                            icon="pi pi-check" 
+                            size="small"
+                            @click="selectImage(image)"
+                            :pt="{ root: 'bg-green-500 hover:bg-green-600' }"
+                          />
+                        </div>
+                      </div>
+                      <div class="flex-1 flex items-center justify-center bg-gray-50 p-2 relative">
+                        <Image 
+                          :src="image" 
+                          class="max-w-full max-h-full object-contain cursor-pointer rounded-lg" 
+                          @dblclick="selectImage(image)"
+                          @click="selectImage(image)"
+                        />
+                        <ImageInfo :src="image" />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </TabPanel>
+              
+              <TabPanel value="2" class="h-full overflow-auto p-6 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100 hover:scrollbar-thumb-gray-400">
+                <div v-if="!repositorio || repositorio.length === 0" class="flex flex-col items-center justify-center h-64 text-gray-500">
+                  <i class="pi pi-database text-6xl mb-4"></i>
+                  <p class="text-lg">{{ t('No hay imágenes en el Repositorio') }}</p>
+                </div>
+                <div v-else class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+                  <div v-for="image in repositorio" :key="image" class="group relative">
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1 h-64 flex flex-col relative">
+                      <div class="absolute top-2 right-2 z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                        <div class="flex gap-1">
+                          <Button 
+                            class="text-xs" 
+                            rounded 
+                            severity="warning" 
+                            icon="pi pi-pencil" 
+                            size="small"
+                            @click="editImage(image)"
+                            :pt="{ root: 'bg-orange-500 hover:bg-orange-600' }"
+                          />
+                          <Button 
+                            class="text-xs" 
+                            rounded 
+                            severity="success" 
+                            icon="pi pi-check" 
+                            size="small"
+                            @click="selectImage(image)"
+                            :pt="{ root: 'bg-green-500 hover:bg-green-600' }"
+                          />
+                        </div>
+                      </div>
+                      <div class="flex-1 flex items-center justify-center bg-gray-50 p-2 relative">
+                        <Image 
+                          :src="image" 
+                          class="max-w-full max-h-full object-contain cursor-pointer rounded-lg" 
+                          @dblclick="selectImage(image)"
+                          @click="selectImage(image)"
+                        />
+                        <ImageInfo :src="image" />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </TabPanel>
+            </TabPanels>
+          </Tabs>
+        </div>
       </BlockUI>
     </Dialog>
     <Button icon="pi pi-image" @click="dialogVisible = true" />
@@ -205,3 +377,41 @@ const config = {
 
   </span>
 </template>
+
+
+<style scoped>
+/* Scrollbar personalizado para Webkit (Chrome, Safari, Edge) */
+.scrollbar-thin::-webkit-scrollbar {
+  width: 8px;
+}
+
+.scrollbar-thin::-webkit-scrollbar-track {
+  background: #f1f5f9;
+  border-radius: 4px;
+}
+
+.scrollbar-thin::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 4px;
+  transition: background-color 0.2s ease;
+}
+
+.scrollbar-thin::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+/* Scrollbar para Firefox */
+.scrollbar-thin {
+  scrollbar-width: thin;
+  scrollbar-color: #cbd5e1 #f1f5f9;
+}
+
+.scrollbar-thin:hover {
+  scrollbar-color: #94a3b8 #f1f5f9;
+}
+
+/* Asegurar que el scroll funcione correctamente */
+.overflow-auto {
+  scroll-behavior: smooth;
+}
+</style>

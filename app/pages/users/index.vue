@@ -335,8 +335,31 @@ const onRowClick = (event: any) => {
 </script>
 
 <template>
-  <div class="card">
-    <h2>{{ t('Usuarios') }}</h2>
+  <div class="min-h-screen bg-gray-50 p-4">
+    <!-- Header mejorado -->
+    <div class="flex justify-between items-center mb-6">
+    <div>
+      <h2 class="text-2xl font-bold text-gray-800 dark:text-gray-200 mb-2">
+        <i class="pi pi-users mr-2 text-blue-500"></i>
+        {{ t('Usuarios') }}
+      </h2>
+      <p class="text-gray-600 text-sm">{{ t('Gestión y seguimiento de usuarios') }}</p>
+    </div>
+    <div class="flex gap-2">
+        <Button
+          icon="pi pi-refresh"
+          :label="t('Refrescar')"
+          class="p-button-outlined p-button-secondary"
+          @click="loadData()"
+        />
+        <Button 
+          icon="pi pi-file-excel" 
+          :label="t('Exportar')"
+          class="p-button-success" 
+          @click="exportData()" 
+        />
+      </div>
+    </div>
     <div class="grid grid-cols-12 gap-4 p-1">
       <div class="col-span-12">
         <Toolbar>
@@ -366,11 +389,16 @@ const onRowClick = (event: any) => {
             :current-page-report-template="t('show-per-page')" @page="onPage($event)" @sort="onSort($event)"
             @filter="onFilter($event)" @row-click="onRowClick" @row-dblclick="onRowDoubleClick" class="users-table">
             <template #header>
-              <div class="flex justify-between items-center">
-                <div class="left-0">
-                  <Button icon="pi pi-refresh" :label="t('Refrescar')" class="p-button-secondary" @click="loadData()" />
-                  <Button icon="pi pi-file-excel" class="p-button-success ml-2" @click="exportData()" />
+              <div class="flex flex-wrap justify-between items-center gap-4 p-4 bg-gray-50 border-b">
+                <div class="flex items-center gap-2">
+                  <i class="pi pi-table text-blue-500"></i>
+                  <span class="font-semibold text-gray-700">{{ t('Lista de Usuarios') }}</span>
                 </div>
+                <div class="flex items-center gap-2">
+                  <span class="text-sm text-gray-500">{{ formatIntNumber(totalRecords) }} {{ t('registros') }}</span>
+                </div>
+              </div>
+              <div class="flex justify-between items-center mt-2">
                 <div class="flex items-center gap-2">
                   <Button type="button" icon="pi pi-filter-slash" class="p-button-outlined"
                     @click="searchTerm = ''; loadData()" />
@@ -486,7 +514,8 @@ const onRowClick = (event: any) => {
             <Column field="stats_min" :header="t('I.Est.')" :sortable="true" :style="{ width: '120px' }"
               class="text-center">
               <template #body="slotProps">
-                <span class="text-xs text-gray-600">{{ slotProps.data.stats_min ? formatDate(slotProps.data.stats_min) : '-' }}</span>
+                <span class="text-xs text-gray-600">{{ slotProps.data.stats_min ? formatDate(slotProps.data.stats_min) :
+                  '-' }}</span>
               </template>
             </Column>
             <Column field="email" :header="t('Email')" :sortable="true" :style="{ width: '200px' }">

@@ -107,50 +107,177 @@ onMounted(() => {
 
 <template>
   <ConfirmDialog />
-  <div class="card">
-
-    <h2>{{ t('Metas') }} <span v-if="collection" class="text-gray-600"> <span class="text-gray-400">&gt;&gt;</span> {{
-      collection.name }}</span> <span v-if="grupo" class="text-gray-400"> &gt;&gt; {{ grupo.name }}</span> <span
-        v-if="dirty" class="text-red-600">*</span></h2>
-    <BlockUI :blocked="loading">
-      <div class="grid grid-cols-12 gap-4 p-1">
-        <div class="col-span-12 lg:col-span-1 xl:col-span-1">
-          <strong class="text-xl mb-3 block text-gray-800">{{ t('Colección') }}</strong>
-          <Listbox v-model="collection" :options="collections" option-label="name"
-            class="w-full min-h-full-" />
+  <div class="min-h-screen bg-gray-50 p-4">
+    <!-- Header Section -->
+    <div class="mb-6">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center space-x-3">
+          <h2 class="text-3xl font-bold text-gray-900">
+            <i class="pi pi-building mr-2 text-blue-500"></i>
+            {{ t('Metas') }}</h2>
+          <div v-if="collection" class="flex items-center space-x-2 text-gray-500">
+            <i class="pi pi-chevron-right text-sm"></i>
+            <span class="text-lg font-medium">{{ collection.name }}</span>
+          </div>
+          <div v-if="grupo" class="flex items-center space-x-2 text-gray-400">
+            <i class="pi pi-chevron-right text-sm"></i>
+            <span>{{ grupo.name }}</span>
+          </div>
+          <Badge v-if="dirty" value="*" severity="danger" class="ml-2" />
         </div>
-        <div class="col-span-12 lg:col-span-11 xl:col-span-11">
-          <strong class="text-xl mb-3 block text-gray-800">{{ t('Configuración') }}</strong>
+        <div class="flex items-center space-x-2">
+          <Button 
+            :label="t('Cancelar')" 
+            icon="pi pi-times" 
+            text 
+            :disabled="!dirty" 
+            severity="danger"
+            @click="loadDashboard(collection.name)" 
+          />
+          <Button 
+            :label="t('Guardar')" 
+            icon="pi pi-save" 
+            :loading="loading"
+            :disabled="!dirty"
+            @click="saveData()" 
+          />
+        </div>
+      </div>
+    </div>
 
-          <div class="border border-gray-200 p-4">
-            <div class="flex items-center gap-3 mb-3">
-              <label for="metaTitle" class="font-semibold w-24 text-gray-700">{{ t('Título') }}</label>
-              <InputText id="metaTitle" v-model="editData.metaTitle" class="flex-1" @change="dirty = true" />
-            </div>
-            <div class="flex items-center gap-3 mb-3">
-              <label for="metaCollections" class="font-semibold w-24 text-gray-700">{{ t('Colecciones') }}</label>
-              <InputText id="metaCollections" v-model="editData.metaCollections" class="flex-1"
-                @change="dirty = true" />
-            </div>
-            <div class="flex items-center gap-3 mb-3">
-              <label for="metaAbout" class="font-semibold w-24 text-gray-700">{{ t('Acerca de') }}</label>
-              <InputText id="metaAbout" v-model="editData.metaAbout" class="flex-1" @change="dirty = true" />
-            </div>
-            <div class="flex items-center gap-3 mb-2">
-              <label for="metaImage" class="font-semibold w-24 text-gray-700">{{ t('Logo') }}</label>
-              <InputText id="metaImage" v-model="editData.metaImage" class="flex-1" @change="dirty = true" />
-              <ImagenSelect :images="imagesItems" @select="selectImage" />
-            </div>
-            <div class="border border-gray-200 p-2">
-              <Image :src="editData.metaImage" width="200px" />
-            </div>
-          </div>
-          <hr class="my-4 border-gray-200">
-          <div class="flex justify-end flex-wrap gap-2">
-            <Button :label="t('Cancelar')" text :disabled="!dirty" severity="danger" autofocus
-              @click="loadDashboard(collection.name)" />
-            <Button :label="t('Guardar')" outlined severity="primary" autofocus @click="saveData()" />
-          </div>
+    <BlockUI :blocked="loading">
+      <div class="grid grid-cols-1 xl:grid-cols-4 gap-6">
+        <!-- Collection Selector Card -->
+        <div class="xl:col-span-1">
+          <Card class="h-fit">
+            <template #title>
+              <div class="flex items-center space-x-2">
+                <i class="pi pi-folder text-blue-500"></i>
+                <span>{{ t('Colección') }}</span>
+              </div>
+            </template>
+            <template #content>
+              <Listbox 
+                v-model="collection" 
+                :options="collections" 
+                option-label="name"
+                class="w-full"
+                :placeholder="t('Seleccionar colección')"
+              />
+            </template>
+          </Card>
+        </div>
+
+        <!-- Configuration Form Card -->
+        <div class="xl:col-span-3">
+          <Card>
+            <template #title>
+              <div class="flex items-center space-x-2">
+                <i class="pi pi-cog text-green-500"></i>
+                <span>{{ t('Configuración') }}</span>
+              </div>
+            </template>
+            <template #content>
+              <div class="space-y-6">
+                <!-- Basic Information Section -->
+                <div class="space-y-4">
+                  <h3 class="text-lg font-semibold text-gray-800 border-b border-gray-200 pb-2">
+                    <i class="pi pi-info-circle text-blue-500 mr-2"></i>
+                    {{ t('Información Básica') }}
+                  </h3>
+                  
+                  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="space-y-2">
+                      <label for="metaTitle" class="block text-sm font-medium text-gray-700">
+                        {{ t('Título') }} <span class="text-red-500">*</span>
+                      </label>
+                      <InputText 
+                        id="metaTitle" 
+                        v-model="editData.metaTitle" 
+                        class="w-full" 
+                        :placeholder="t('Ingrese el título')"
+                        @change="dirty = true" 
+                      />
+                    </div>
+                    
+                    <div class="space-y-2">
+                      <label for="metaCollections" class="block text-sm font-medium text-gray-700">
+                        {{ t('Colecciones') }}
+                      </label>
+                      <InputText 
+                        id="metaCollections" 
+                        v-model="editData.metaCollections" 
+                        class="w-full"
+                        :placeholder="t('Lista de colecciones')"
+                        @change="dirty = true" 
+                      />
+                    </div>
+                  </div>
+
+                  <div class="space-y-2">
+                    <label for="metaAbout" class="block text-sm font-medium text-gray-700">
+                      {{ t('Acerca de') }}
+                    </label>
+                    <Textarea 
+                      id="metaAbout" 
+                      v-model="editData.metaAbout" 
+                      class="w-full" 
+                      rows="3"
+                      :placeholder="t('Descripción breve')"
+                      @change="dirty = true" 
+                    />
+                  </div>
+                </div>
+
+                <!-- Logo Section -->
+                <div class="space-y-4">
+                  <h3 class="text-lg font-semibold text-gray-800 border-b border-gray-200 pb-2">
+                    <i class="pi pi-image text-purple-500 mr-2"></i>
+                    {{ t('Logo') }}
+                  </h3>
+                  
+                  <div class="space-y-4">
+                    <div class="flex items-end space-x-3">
+                      <div class="flex-1 space-y-2">
+                        <label for="metaImage" class="block text-sm font-medium text-gray-700">
+                          {{ t('URL de la imagen') }}
+                        </label>
+                        <InputText 
+                          id="metaImage" 
+                          v-model="editData.metaImage" 
+                          class="w-full"
+                          :placeholder="t('https://ejemplo.com/imagen.jpg')"
+                          @change="dirty = true" 
+                        />
+                      </div>
+                      <ImagenSelect :images="imagesItems" @select="selectImage" />
+                    </div>
+                    
+                    <!-- Image Preview -->
+                    <div v-if="editData.metaImage" class="border-2 border-dashed border-gray-300 rounded-lg p-4 bg-gray-50">
+                      <div class="text-center">
+                        <p class="text-sm text-gray-600 mb-3">{{ t('Vista previa') }}</p>
+                        <div class="inline-block border border-gray-200 rounded-lg p-2 bg-white shadow-sm">
+                          <Image 
+                            :src="editData.metaImage" 
+                            width="200" 
+                            height="120"
+                            class="rounded"
+                            :alt="t('Logo de la colección')"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div v-else class="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center bg-gray-50">
+                      <i class="pi pi-image text-4xl text-gray-400 mb-2"></i>
+                      <p class="text-gray-500">{{ t('No hay imagen seleccionada') }}</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </template>
+          </Card>
         </div>
       </div>
     </BlockUI>

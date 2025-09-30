@@ -76,11 +76,13 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="card">
+  <div class="min-h-screen bg-gray-50 p-4">
     <!-- Header mejorado -->
     <div class="flex justify-between items-center mb-6">
       <div>
-        <h2 class="text-2xl font-bold text-gray-800 mb-2">{{ t('Impresiones') }}</h2>
+        <h2 class="text-2xl font-bold text-gray-800 dark:text-gray-200 mb-2">
+          <i class="pi pi-print mr-2 text-blue-500"></i>
+          {{ t('Impresiones') }}</h2>
         <p class="text-gray-600 text-sm">{{ t('Registro de páginas impresas por los usuarios') }}</p>
       </div>
       <div class="flex gap-2">
@@ -130,7 +132,7 @@ onMounted(() => {
         <template #header>
           <div class="flex flex-wrap justify-between items-center gap-4 p-4 bg-gray-50 border-b">
             <div class="flex items-center gap-2">
-              <i class="pi pi-print text-blue-500"></i>
+              <i class="pi pi-table text-blue-500"></i>
               <span class="font-semibold text-gray-700">{{ t('Lista de Impresiones') }}</span>
             </div>
             <div class="flex items-center gap-2">

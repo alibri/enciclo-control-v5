@@ -94,112 +94,263 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="card">
-    <h2>{{ t('Búsqueda') }}</h2>
-    <hr>
-    <div class="grid grid-cols-12 p-1">
-      <div class="col-span-12">
-        <h4>{{ t('Búsqueda por texto') }}</h4>
-        <div class="p-6 flex flex-col md:flex-row gap-3">
-          <FloatLabel variant="on">
-            <MultiSelect v-model="selectedCollections" :options="collections" option-label="name" id="collections"
-            :placeholder="t('Colecciones')" :max-selected-labels="3" class="w-full md:w-80" />
-            <label for="collections">{{ t('Colecciones') }}</label>
-          </FloatLabel>
-          <FloatLabel variant="on"> 
-            <MultiSelect v-model="type" :options="searchType" option-label="name" :placeholder="t('Tipo')"
-            class="w-full md:w-80" id="type" />
-            <label for="type">{{ t('Tipo') }}</label>
-          </FloatLabel>
-
-            <FloatLabel variant="on">
-          <InputGroup id="keyword" class="w-full md:w-96">
-            <InputText v-model="keyword" :placeholder="t('Texto de búsqueda')" @keyup.enter="doSearch" />
-              <Button icon="pi pi-times" @click="keyword = ''" />
-              <Button icon="pi pi-search" severity="warning" @click="doSearch" />
-            </InputGroup>
-            <label for="keyword">{{ t('Texto de búsqueda') }}</label>
-          </FloatLabel>
+  <div class="min-h-screen bg-gray-50 p-4">
+    <!-- Header Section -->
+    <div class="mb-6">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center space-x-3">
+          <h2 class="text-3xl font-bold text-gray-900">
+            <i class="pi pi-search mr-2 text-blue-500"></i>
+            {{ t('Búsqueda') }}</h2>
+          <Badge v-if="data.length > 0" :value="formatIntNumber(data.length)" severity="info" />
         </div>
-        <hr>
-        <h4>{{ t('Búsqueda por consulta predefinida') }}</h4>
-        <div class=" p-6 flex flex-col md:flex-row gap-3">
-          <FloatLabel variant="on">
-            <MultiSelect v-model="selectedCollections" :options="collections" option-label="name"
-              :placeholder="t('Colecciones')" class="w-full md:w-80" id="collections" />
-            <label for="collections">{{ t('Colecciones') }}</label>
-          </FloatLabel>
-          <FloatLabel variant="on">
-            <InputGroup id="consultas" class="w-full md:w-96">
-            <Dropdown v-model="selectedQuery" :options="queries" option-label="name" :placeholder="t('Consultas')"
-              :max-selected-labels="3" />
-              <Button icon="pi pi-times" @click="selectedQuery = null" />
-              <Button icon="pi pi-search" severity="warning" @click="doSearchQuery" />
-            </InputGroup>
-            <label for="consultas">{{ t('Consultas') }}</label>
-          </FloatLabel>
+        <div v-if="data.length > 0" class="flex items-center space-x-2">
+          <Button 
+            :label="t('Excel')" 
+            icon="pi pi-file-excel" 
+            size="small"
+            outlined 
+            severity="success"
+            @click="exportCSV()" 
+          />
+          <Button 
+            :label="t('Marcas')" 
+            icon="pi pi-file" 
+            size="small"
+            outlined 
+            severity="info"
+            @click="exportWiki()" 
+          />
         </div>
       </div>
     </div>
-  </div>
-  <div class="card">
-    <div class="grid grid-cols-12 p-1">
-      <div class="col-span-12">
-        <span v-if="!selectedQuery?.value && keyword">
-          <h2>{{ t('Resultados de la búsqueda de') }} "<strong>{{ keyword }}</strong>"</h2>
-          <div class="mb-1 bg-gray-100 p-2">
-            {{ t('Tipo') }}: <span class="text-orange-400">{{ typeValue }}</span> - {{ t('Colecciones') }}: <span
-              class="text-blue-400">{{ collectionValue }}</span>
-          </div>
-        </span>
-        <span v-else-if="selectedQuery?.value">
-          {{ t('Consulta genérica') }}: <strong>{{ selectedQuery?.name }}</strong>
-        </span>
-        <span v-else>
-          <span class="text-red-500">{{ t('Selecciona una consulta o un texto de búsqueda') }}</span>
-        </span>
-        <span v-if="selectedQuery?.value || keyword">
-          <div class="mt-1"><span class="text-green-700 font-bold">{{ formatIntNumber(data.length) }}</span> {{
-            t('Entradas encontradas') }}</div>
-        </span>
-        <DataTable ref="dt" class="mt-2" :value="data" :loading="loading" :rows="50" :paginator="true"
-          responsive-layout="scroll"
-          paginator-template="CurrentPageReport FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink RowsPerPageDropdown"
-          paginatorPosition="both" :rows-per-page-options="[25, 50, 100]">
-          <template #header>
-            <div style_="text-align: right">
-              <Button size="small" icon="pi pi-file-excel" :label="t('Excel')" outlined severity="success"
-                @click="exportCSV()" />
-              <Button size="small" class="ml-1" icon="pi pi-file-excel" :label="t('Marcas')" outlined
-                @click="exportWiki()" />
+
+    <div class="grid grid-cols-1 xl:grid-cols-12 gap-6">
+      <!-- Search Forms -->
+      <div class="xl:col-span-12 space-y-6">
+        <!-- Text Search Card -->
+        <Card>
+          <template #title>
+            <div class="flex items-center space-x-2">
+              <i class="pi pi-search text-blue-500"></i>
+              <span>{{ t('Búsqueda por texto') }}</span>
             </div>
           </template>
-          <Column field="title" :header="t('Título')" :sortable="true">
-            <template #body="slotProps">
-              <PageLink :page="slotProps.data" />
-            </template>
-          </Column>
-          <Column field="alias" :header="t('Alias')" :sortable="true">
-            <template #body="slotProps">
-              {{ slotProps.data.alias }}
-            </template>
-          </Column>
-          <Column field="collection" :header="t('Colección')" :sortable="true">
-            <template #body="slotProps">
-              <span class="text-yellow-500">{{ slotProps.data.collection }}</span>
-            </template>
-          </Column>
-          <Column field="touched" :header="t('Modificación')" :sortable="true">
-            <template #body="slotProps">
-              <span class="text-sm">{{ formatDateTime(slotProps.data.touched) }}</span>
-            </template>
-          </Column>
-          <Column field="wordcount" :header="t('Num.Palabras')" :sortable="true" class="text-right">
-            <template #body="slotProps">
-              <span class="text-green-400">{{ formatIntNumber(slotProps.data.wordcount) }}</span>
-            </template>
-          </Column>
-        </DataTable>
+          <template #content>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div class="space-y-2">
+                <label for="collections" class="block text-sm font-medium text-gray-700">
+                  {{ t('Colecciones') }}
+                </label>
+                <MultiSelect 
+                  v-model="selectedCollections" 
+                  :options="collections" 
+                  option-label="name" 
+                  id="collections"
+                  :placeholder="t('Seleccionar colecciones')" 
+                  :max-selected-labels="3" 
+                  class="w-full"
+                  display="chip"
+                />
+              </div>
+              
+              <div class="space-y-2">
+                <label for="type" class="block text-sm font-medium text-gray-700">
+                  {{ t('Tipo de búsqueda') }}
+                </label>
+                <MultiSelect 
+                  v-model="type" 
+                  :options="searchType" 
+                  option-label="name" 
+                  :placeholder="t('Seleccionar tipos')"
+                  class="w-full" 
+                  id="type"
+                  display="chip"
+                />
+              </div>
+              
+              <div class="space-y-2">
+                <label for="keyword" class="block text-sm font-medium text-gray-700">
+                  {{ t('Texto de búsqueda') }}
+                </label>
+                <InputGroup id="keyword" class="w-full">
+                  <InputText 
+                    v-model="keyword" 
+                    :placeholder="t('Ingrese texto a buscar...')" 
+                    @keyup.enter="doSearch"
+                    class="flex-1"
+                  />
+                  <Button 
+                    icon="pi pi-times" 
+                    severity="secondary"
+                    @click="keyword = ''" 
+                  />
+                  <Button 
+                    icon="pi pi-search" 
+                    severity="primary"
+                    :loading="loading"
+                    @click="doSearch" 
+                  />
+                </InputGroup>
+              </div>
+            </div>
+          </template>
+        </Card>
+
+        <!-- Query Search Card -->
+        <Card>
+          <template #title>
+            <div class="flex items-center space-x-2">
+              <i class="pi pi-database text-green-500"></i>
+              <span>{{ t('Búsqueda por consulta predefinida') }}</span>
+            </div>
+          </template>
+          <template #content>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div class="space-y-2">
+                <label for="collections-query" class="block text-sm font-medium text-gray-700">
+                  {{ t('Colecciones') }}
+                </label>
+                <MultiSelect 
+                  v-model="selectedCollections" 
+                  :options="collections" 
+                  option-label="name"
+                  :placeholder="t('Seleccionar colecciones')" 
+                  class="w-full" 
+                  id="collections-query"
+                  display="chip"
+                />
+              </div>
+              
+              <div class="space-y-2">
+                <label for="consultas" class="block text-sm font-medium text-gray-700">
+                  {{ t('Consultas predefinidas') }}
+                </label>
+                <InputGroup id="consultas" class="w-full">
+                  <Dropdown 
+                    v-model="selectedQuery" 
+                    :options="queries" 
+                    option-label="name" 
+                    :placeholder="t('Seleccionar consulta')"
+                    class="flex-1"
+                  />
+                  <Button 
+                    icon="pi pi-times" 
+                    severity="secondary"
+                    @click="selectedQuery = null" 
+                  />
+                  <Button 
+                    icon="pi pi-search" 
+                    severity="primary"
+                    :loading="loading"
+                    @click="doSearchQuery" 
+                  />
+                </InputGroup>
+              </div>
+            </div>
+          </template>
+        </Card>
+      </div>
+
+      <!-- Results Section -->
+      <div v-if="data.length > 0 || loading" class="xl:col-span-12">
+        <Card>
+          <template #title>
+            <div class="flex items-center justify-between">
+              <div class="flex items-center space-x-3">
+                <i class="pi pi-list text-purple-500"></i>
+                <span>{{ t('Resultados') }}</span>
+                <Badge :value="formatIntNumber(data.length)" severity="info" />
+              </div>
+            </div>
+          </template>
+          <template #content>
+            <!-- Search Info -->
+            <div v-if="!selectedQuery?.value && keyword" class="mb-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+              <div class="flex items-center space-x-2 mb-2">
+                <i class="pi pi-info-circle text-blue-500"></i>
+                <h3 class="font-semibold text-blue-900">
+                  {{ t('Resultados de la búsqueda de') }} "<span class="text-blue-700">{{ keyword }}</span>"
+                </h3>
+              </div>
+              <div class="text-sm text-blue-700">
+                <span class="font-medium">{{ t('Tipo') }}:</span> 
+                <Badge v-for="t in typeValue" :key="t" :value="t" severity="warning" class="ml-1" />
+                <span class="font-medium ml-3">{{ t('Colecciones') }}:</span> 
+                <Badge v-for="c in collectionValue" :key="c" :value="c" severity="info" class="ml-1" />
+              </div>
+            </div>
+            
+            <div v-else-if="selectedQuery?.value" class="mb-4 p-4 bg-green-50 border border-green-200 rounded-lg">
+              <div class="flex items-center space-x-2">
+                <i class="pi pi-check-circle text-green-500"></i>
+                <span class="font-semibold text-green-900">
+                  {{ t('Consulta ejecutada') }}: <span class="text-green-700">{{ selectedQuery?.name }}</span>
+                </span>
+              </div>
+            </div>
+            
+            <div v-else class="mb-4 p-4 bg-red-50 border border-red-200 rounded-lg">
+              <div class="flex items-center space-x-2">
+                <i class="pi pi-exclamation-triangle text-red-500"></i>
+                <span class="text-red-700">{{ t('Selecciona una consulta o un texto de búsqueda') }}</span>
+              </div>
+            </div>
+
+            <!-- Data Table -->
+            <DataTable 
+              ref="dt" 
+              :value="data" 
+              :loading="loading" 
+              :rows="50" 
+              :paginator="true"
+              responsive-layout="scroll"
+              paginator-template="CurrentPageReport FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink RowsPerPageDropdown"
+              paginatorPosition="both" 
+              :rows-per-page-options="[25, 50, 100]"
+              class="p-datatable-sm"
+            >
+              <Column field="title" :header="t('Título')" :sortable="true">
+                <template #body="slotProps">
+                  <div class="flex items-center space-x-2">
+                    <i class="pi pi-file text-gray-400"></i>
+                    <PageLink :page="slotProps.data" class="font-medium text-blue-600 hover:text-blue-800" />
+                  </div>
+                </template>
+              </Column>
+              
+              <Column field="alias" :header="t('Alias')" :sortable="true">
+                <template #body="slotProps">
+                  <span class="text-sm text-gray-600">{{ slotProps.data.alias }}</span>
+                </template>
+              </Column>
+              
+              <Column field="collection" :header="t('Colección')" :sortable="true">
+                <template #body="slotProps">
+                  <Badge :value="slotProps.data.collection" severity="warning" />
+                </template>
+              </Column>
+              
+              <Column field="touched" :header="t('Modificación')" :sortable="true">
+                <template #body="slotProps">
+                  <div class="flex items-center space-x-2">
+                    <i class="pi pi-clock text-gray-400"></i>
+                    <span class="text-sm text-gray-600">{{ formatDateTime(slotProps.data.touched) }}</span>
+                  </div>
+                </template>
+              </Column>
+              
+              <Column field="wordcount" :header="t('Palabras')" :sortable="true" class="text-right">
+                <template #body="slotProps">
+                  <div class="flex items-center justify-end space-x-1">
+                    <i class="pi pi-hashtag text-gray-400"></i>
+                    <span class="font-medium text-green-600">{{ formatIntNumber(slotProps.data.wordcount) }}</span>
+                  </div>
+                </template>
+              </Column>
+            </DataTable>
+          </template>
+        </Card>
       </div>
     </div>
   </div>

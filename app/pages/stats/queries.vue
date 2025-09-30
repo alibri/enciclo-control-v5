@@ -73,11 +73,13 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="card">
+  <div class="min-h-screen bg-gray-50 p-4">
     <!-- Header mejorado -->
     <div class="flex justify-between items-center mb-6">
       <div>
-        <h2 class="text-2xl font-bold text-gray-800 mb-2">{{ t('Consultas') }}</h2>
+        <h2 class="text-2xl font-bold text-gray-800 dark:text-gray-200 mb-2">
+          <i class="pi pi-search mr-2 text-blue-500"></i>
+          {{ t('Consultas') }}</h2>
         <p class="text-gray-600 text-sm">{{ t('Historial de búsquedas y consultas realizadas por los usuarios') }}</p>
       </div>
       <div class="flex gap-2">
@@ -127,11 +129,11 @@ onMounted(() => {
         <template #header>
           <div class="flex flex-wrap justify-between items-center gap-4 p-4 bg-gray-50 border-b">
             <div class="flex items-center gap-2">
-              <i class="pi pi-search text-blue-500"></i>
+              <i class="pi pi-table text-blue-500"></i>
               <span class="font-semibold text-gray-700">{{ t('Lista de Consultas') }}</span>
             </div>
             <div class="flex items-center gap-2">
-              <span class="text-sm text-gray-500">{{ totalRecords }} {{ t('registros') }}</span>
+              <span class="text-sm text-gray-500">{{ formatIntNumber(totalRecords) }} {{ t('registros') }}</span>
             </div>
           </div>
         </template>

@@ -126,7 +126,6 @@ const onTemplatedUpload = async (event: any) => {
 
 <template>
   <div>
-    <h5 class="text-lg font-semibold text-gray-700 mb-4">{{ t('Cargar documentos') }}</h5>
     <FileUpload 
         name="demo[]"
         :customUpload="true"

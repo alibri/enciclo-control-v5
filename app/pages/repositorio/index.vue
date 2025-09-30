@@ -28,7 +28,6 @@ const totalRecords = ref(0);
 const searchTerm = ref('');
 
 const loadData = async () => {
-  console.log('loadData');
   loading.value = true;
 
   const data = getParamsData(lazyParams.value) as any;
@@ -180,8 +179,30 @@ const onUploadError = (error: string) => {
 </script>
 
 <template>
-  <div class="card">
-    <h2 class="text-2xl font-bold text-gray-800 mb-6">{{ t('Repositorio de Documentos') }}</h2>
+  <div class="min-h-screen bg-gray-50 p-4">
+    <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between mb-6">
+      <div class="mb-4 lg:mb-0">
+        <h2 class="text-2xl font-bold text-gray-800 dark:text-gray-200 mb-2">
+          <i class="pi pi-file-o mr-2 text-blue-500"></i>
+          {{ t('Repositorio de Documentos') }}
+        </h2>
+        <p class="text-gray-600 text-sm">{{ t('Gestión y seguimiento de documentos') }}</p>
+      </div>
+      <div class="flex gap-2">
+        <Button
+          icon="pi pi-refresh"
+          :label="t('Refrescar')"
+          class="p-button-outlined p-button-secondary"
+          @click="loadData()"
+        />
+        <Button 
+          icon="pi pi-file-excel" 
+          :label="t('Exportar')"
+          class="p-button-success" 
+          @click="exportData()" 
+        />
+      </div>
+    </div>
 
     <div class="grid grid-cols-12 gap-8 mt-1">
       <div class="col-span-12">
@@ -221,16 +242,16 @@ const onUploadError = (error: string) => {
           @filter="onFilter($event)"
         >
           <template #header>
-            <div class="flex justify-between">
-              <div class="left-0">
-                <Button
-                  icon="pi pi-refresh"
-                  :label="t('Refrescar')"
-                  class="p-button-secondary"
-                  @click="loadData()"
-                />
-                <Button icon="pi pi-file-excel" class="p-button-success ml-2" @click="exportData()" />
+            <div class="flex flex-wrap justify-between items-center gap-4 p-4 bg-gray-50 border-b">
+              <div class="flex items-center gap-2">
+                <i class="pi pi-table text-blue-500"></i>
+                <span class="font-semibold text-gray-700">{{ t('Lista de Documentos') }}</span>
               </div>
+              <div class="flex items-center gap-2">
+                <span class="text-sm text-gray-500">{{ formatIntNumber(totalRecords) }} {{ t('registros') }}</span>
+              </div>
+            </div>
+            <div class="flex justify-between items-center mt-2">
               <div class="flex items-center gap-2">
                 <Button
                   type="button"
