@@ -180,7 +180,7 @@ const config = {
       <BlockUI :blocked="blocked">
         <div class="h-full flex flex-col">
           <Tabs value="0" class="flex-1 flex flex-col">
-            <TabList class="border-b border-gray-200 bg-gray-50">
+            <TabList class="border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800">
               <Tab value="0" class="px-6 py-3">
                 <i class="pi pi-folder mr-2"></i>
                 {{ t('Contenido') }}
@@ -226,7 +226,7 @@ const config = {
                           />
                         </div>
                       </div>
-                      <div class="flex-1 flex items-center justify-center bg-gray-50 p-2 relative">
+                      <div class="flex-1 flex items-center justify-center bg-gray-50 dark:bg-gray-700 p-2 relative">
                         <Image 
                           :src="image" 
                           class="max-w-full max-h-full object-contain cursor-pointer rounded-lg" 
@@ -302,7 +302,7 @@ const config = {
                           />
                         </div>
                       </div>
-                      <div class="flex-1 flex items-center justify-center bg-gray-50 p-2 relative">
+                      <div class="flex-1 flex items-center justify-center bg-gray-50 dark:bg-gray-700 p-2 relative">
                         <Image 
                           :src="image" 
                           class="max-w-full max-h-full object-contain cursor-pointer rounded-lg" 
@@ -346,7 +346,7 @@ const config = {
                           />
                         </div>
                       </div>
-                      <div class="flex-1 flex items-center justify-center bg-gray-50 p-2 relative">
+                      <div class="flex-1 flex items-center justify-center bg-gray-50 dark:bg-gray-700 p-2 relative">
                         <Image 
                           :src="image" 
                           class="max-w-full max-h-full object-contain cursor-pointer rounded-lg" 

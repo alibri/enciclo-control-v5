@@ -335,7 +335,7 @@ const onRowClick = (event: any) => {
 </script>
 
 <template>
-  <div class="min-h-screen bg-gray-50 p-4">
+  <div class="min-h-screen bg-gray-50 dark:bg-gray-900 p-4">
     <!-- Header mejorado -->
     <div class="flex justify-between items-center mb-6">
     <div>
@@ -343,7 +343,7 @@ const onRowClick = (event: any) => {
         <i class="pi pi-users mr-2 text-blue-500"></i>
         {{ t('Usuarios') }}
       </h2>
-      <p class="text-gray-600 text-sm">{{ t('Gestión y seguimiento de usuarios') }}</p>
+      <p class="text-gray-600 dark:text-gray-400 text-sm">{{ t('Gestión y seguimiento de usuarios') }}</p>
     </div>
     <div class="flex gap-2">
         <Button
@@ -389,13 +389,13 @@ const onRowClick = (event: any) => {
             :current-page-report-template="t('show-per-page')" @page="onPage($event)" @sort="onSort($event)"
             @filter="onFilter($event)" @row-click="onRowClick" @row-dblclick="onRowDoubleClick" class="users-table">
             <template #header>
-              <div class="flex flex-wrap justify-between items-center gap-4 p-4 bg-gray-50 border-b">
+              <div class="flex flex-wrap justify-between items-center gap-4 p-4 bg-gray-50 dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
                 <div class="flex items-center gap-2">
                   <i class="pi pi-table text-blue-500"></i>
-                  <span class="font-semibold text-gray-700">{{ t('Lista de Usuarios') }}</span>
+                  <span class="font-semibold text-gray-700 dark:text-gray-300">{{ t('Lista de Usuarios') }}</span>
                 </div>
                 <div class="flex items-center gap-2">
-                  <span class="text-sm text-gray-500">{{ formatIntNumber(totalRecords) }} {{ t('registros') }}</span>
+                  <span class="text-sm text-gray-500 dark:text-gray-400">{{ formatIntNumber(totalRecords) }} {{ t('registros') }}</span>
                 </div>
               </div>
               <div class="flex justify-between items-center mt-2">
@@ -410,10 +410,10 @@ const onRowClick = (event: any) => {
               </div>
             </template>
             <template #empty>
-              <div class="text-center text-gray-500 py-8">{{ t('No se han encontrado datos.') }}</div>
+              <div class="text-center text-gray-500 dark:text-gray-400 py-8">{{ t('No se han encontrado datos.') }}</div>
             </template>
             <template #loading>
-              <div class="text-center text-gray-600 py-8">{{ t('Cargando datos..') }} <i class="pi pi-spin pi-spinner"
+              <div class="text-center text-gray-600 dark:text-gray-400 py-8">{{ t('Cargando datos..') }} <i class="pi pi-spin pi-spinner"
                   style="font-size: 2rem" /></div>
             </template>
             <Column header="#" :style="{ width: '60px' }" class="text-center">

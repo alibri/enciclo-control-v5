@@ -46,7 +46,7 @@ const blocked = ref(false);
 </script>
 
 <template>
-  <div class="min-h-screen bg-gray-50 p-4">
+  <div class="min-h-screen bg-gray-50 dark:bg-gray-900 p-4">
     <!-- Header Section -->
     <div class="mb-6">
       <div class="flex items-center space-x-3">

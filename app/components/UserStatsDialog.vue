@@ -352,7 +352,7 @@ const onVisibleChange = (value: boolean) => {
                 <span class="font-semibold text-gray-700 block mb-2">
                   <i class="pi pi-globe text-blue-600"></i> {{ t('Rango IP') }}:
                 </span>
-                <div class="bg-gray-50 p-3 rounded border text-sm">
+                <div class="bg-gray-50 dark:bg-gray-700 p-3 rounded border border-gray-200 dark:border-gray-600 text-sm">
                   {{ user.iprange || t('No especificado') }}
                 </div>
               </div>
@@ -360,7 +360,7 @@ const onVisibleChange = (value: boolean) => {
                 <span class="font-semibold text-gray-700 block mb-2">
                   <i class="pi pi-map-marker text-green-600"></i> {{ t('GeoIP') }}:
                 </span>
-                <div class="bg-gray-50 p-3 rounded border text-sm">
+                <div class="bg-gray-50 dark:bg-gray-700 p-3 rounded border border-gray-200 dark:border-gray-600 text-sm">
                   {{ user.geoip || t('No especificado') }}
                 </div>
               </div>
@@ -370,7 +370,7 @@ const onVisibleChange = (value: boolean) => {
                 <span class="font-semibold text-gray-700 block mb-2">
                   <i class="pi pi-link text-purple-600"></i> {{ t('Referer') }}:
                 </span>
-                <div class="bg-gray-50 p-3 rounded border text-sm">
+                <div class="bg-gray-50 dark:bg-gray-700 p-3 rounded border border-gray-200 dark:border-gray-600 text-sm">
                   {{ user.referer || t('No especificado') }}
                 </div>
               </div>
@@ -378,7 +378,7 @@ const onVisibleChange = (value: boolean) => {
                 <span class="font-semibold text-gray-700 block mb-2">
                   <i class="pi pi-tag text-orange-600"></i> {{ t('Meta') }}:
                 </span>
-                <div class="bg-gray-50 p-3 rounded border text-sm">
+                <div class="bg-gray-50 dark:bg-gray-700 p-3 rounded border border-gray-200 dark:border-gray-600 text-sm">
                   {{ user.meta || t('No especificado') }}
                 </div>
               </div>

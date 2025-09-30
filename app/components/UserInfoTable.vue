@@ -73,7 +73,7 @@ const gestionEstadisticas = (user: any) => {
   <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
     <!-- Información del Usuario -->
     <div class="bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden">
-      <div class="bg-gray-50 px-6 py-4 border-b border-gray-200">
+      <div class="bg-gray-50 dark:bg-gray-700 px-6 py-4 border-b border-gray-200 dark:border-gray-600">
         <h3 class="text-lg font-semibold text-gray-900 flex items-center">
           <i class="pi pi-user mr-2 text-blue-600"></i>
           {{ t('Información del Usuario') }}
@@ -136,7 +136,7 @@ const gestionEstadisticas = (user: any) => {
 
     <!-- Información de Licencias y Acceso -->
     <div class="bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden">
-      <div class="bg-gray-50 px-6 py-4 border-b border-gray-200">
+      <div class="bg-gray-50 dark:bg-gray-700 px-6 py-4 border-b border-gray-200 dark:border-gray-600">
         <h3 class="text-lg font-semibold text-gray-900 flex items-center">
           <i class="pi pi-key mr-2 text-green-600"></i>
           {{ t('Licencias y Acceso') }}
@@ -255,7 +255,7 @@ const gestionEstadisticas = (user: any) => {
 
     <!-- Información de Roles -->
     <div class="bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden">
-      <div class="bg-gray-50 px-6 py-4 border-b border-gray-200">
+      <div class="bg-gray-50 dark:bg-gray-700 px-6 py-4 border-b border-gray-200 dark:border-gray-600">
         <h3 class="text-lg font-semibold text-gray-900 flex items-center">
           <i class="pi pi-shield mr-2 text-purple-600"></i>
           {{ t('Roles y Permisos') }}

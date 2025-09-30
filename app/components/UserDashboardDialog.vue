@@ -68,7 +68,7 @@ watch(() => props.visible, (nuevo, anterior) => {
     @update:visible="emit('update:visible', $event)"
   >
     <div v-if="user" class="flex flex-col gap-4">
-      <div class="flex items-center gap-3  bg-gray-50 rounded-lg p-4">
+      <div class="flex items-center gap-3 bg-gray-50 dark:bg-gray-700 rounded-lg p-4">
         <i class="pi pi-user text-2xl text-blue-500"></i>
         <div class="p-4 shadow-sm">
           <h3 class="text-2xl font-extrabold text-blue-700 mb-2 flex items-center gap-2">

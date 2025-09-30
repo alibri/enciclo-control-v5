@@ -97,7 +97,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="min-h-screen bg-gray-50 p-4">
+  <div class="min-h-screen bg-gray-50 dark:bg-gray-900 p-4">
     <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between mb-6">
       <div class="mb-4 lg:mb-0">
         <h2 class="text-2xl font-bold text-gray-800 dark:text-gray-200 mb-2">
@@ -131,7 +131,7 @@ onMounted(() => {
           :current-page-report-template="t('show-per-page')" class="p-datatable-sm" @page="onPage($event)"
           @sort="onSort($event)" @filter="onFilter($event)" @row-dblclick="onRowDoubleClick($event)">
           <template #header>
-            <div class="flex flex-wrap justify-between items-center gap-4 p-4 bg-gray-50 border-b">
+            <div class="flex flex-wrap justify-between items-center gap-4 p-4 bg-gray-50 dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
               <div class="flex items-center gap-2">
                 <i class="pi pi-table text-blue-500"></i>
                 <span class="font-semibold text-gray-700">{{ t('Lista de Preguntas') }}</span>
@@ -163,7 +163,7 @@ onMounted(() => {
           </template>
           <Column field="id" header="#" :sortable="true" class="text-center">
             <template #body="slotProps">
-              <a class="flex items-start cursor-pointer hover:bg-gray-50 p-2 rounded transition-colors"
+              <a class="flex items-start cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700 p-2 rounded transition-colors"
                 @click="showChat(dialog, slotProps.data.id)">
                 <i class="pi pi-eye text-blue-500 mr-2 mt-0.5 flex-shrink-0" v-tooltip.top="t('Ver detalle')"></i> </a>
             </template>
@@ -192,7 +192,7 @@ onMounted(() => {
           </Column>
           <Column field="query" :header="t('Pregunta')" :sortable="true">
             <template #body="slotProps">
-              <a class="flex items-start cursor-pointer hover:bg-gray-50 p-2 rounded transition-colors"
+              <a class="flex items-start cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700 p-2 rounded transition-colors"
                 @click="showChat(dialog, slotProps.data.id)">
                 <span class="text-sm leading-relaxed">{{ slotProps.data.query }}</span>
               </a>

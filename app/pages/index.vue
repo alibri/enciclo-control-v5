@@ -52,25 +52,25 @@ onUnmounted(() => {
   <div class="card">
     <div class="grid grid-cols-12 gap-8">
       <div class="col-span-12 lg:col-span-6 xl:col-span-6">
-        <div class="border border-gray-200 rounded-lg p-6 mb-0">
+        <div class="border border-gray-200 dark:border-gray-700 rounded-lg p-6 mb-0 bg-white dark:bg-gray-800">
           <div class="flex justify-between mb-3">
             <div>
-              <span class="block text-gray-500 font-medium mb-3">{{ t('Sesiones Activas') }}</span>
-              <div class="text-gray-900 font-medium text-xl">
+              <span class="block text-gray-500 dark:text-gray-400 font-medium mb-3">{{ t('Sesiones Activas') }}</span>
+              <div class="text-gray-900 dark:text-gray-100 font-medium text-xl">
                 {{ sessions.length }}
               </div>
             </div>
-            <div class="flex items-center justify-center bg-cyan-100 rounded-full"
+            <div class="flex items-center justify-center bg-cyan-100 dark:bg-cyan-900 rounded-full"
               style="width: 2.5rem; height: 2.5rem">
-              <i class="pi pi-star text-cyan-500 text-xl" />
+              <i class="pi pi-star text-cyan-500 dark:text-cyan-400 text-xl" />
             </div>
           </div>
         </div>
       </div>
 
       <div class="col-span-12 lg:col-span-6 xl:col-span-6">
-        <div class="border border-gray-200 rounded-lg p-6">
-          <h5>{{ t('Sesiones Activas') }}</h5>
+        <div class="border border-gray-200 dark:border-gray-700 rounded-lg p-6 bg-white dark:bg-gray-800">
+          <h5 class="text-gray-900 dark:text-gray-100">{{ t('Sesiones Activas') }}</h5>
           <SimpleSessionsDataTable :value="sessions" :rows="5" :show-user="true" :show-end="true" />
         </div>
       </div>

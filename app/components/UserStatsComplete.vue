@@ -145,41 +145,41 @@ const chartOptions = computed(() => {
 <template>
 
     <div class="col-span-12 lg:col-span-6 xl:col-span-6">
-      <div class="border border-gray-200 rounded-lg p-6 mb-2">
+      <div class="border border-gray-200 dark:border-gray-700 rounded-lg p-6 mb-2 bg-white dark:bg-gray-800">
         <div class="flex justify-between mb-3">
           <div>
-            <span class="block text-gray-900 font-medium mb-3">{{ t('Total Logins') }}</span>
-            <div class="text-blue-400 font-medium text-xl">
+            <span class="block text-gray-900 dark:text-gray-100 font-medium mb-3">{{ t('Total Logins') }}</span>
+            <div class="text-blue-400 dark:text-blue-300 font-medium text-xl">
               {{ formatIntNumber(loginlength) }}
             </div>
           </div>
-          <div class="flex items-center justify-center bg-blue-100 rounded-full print:hidden"
+          <div class="flex items-center justify-center bg-blue-100 dark:bg-blue-900 rounded-full print:hidden"
             style="width: 2.5rem; height: 2.5rem">
-            <i class="pi pi-sign-in text-blue-500 text-xl" />
+            <i class="pi pi-sign-in text-blue-500 dark:text-blue-400 text-xl" />
           </div>
         </div>
       </div>
-      <div class="border border-gray-200 rounded-lg p-6">
+      <div class="border border-gray-200 dark:border-gray-700 rounded-lg p-6 bg-white dark:bg-gray-800">
         <Chart type="line" :data="chartLogins" :options="chartOptions" class="h-96" />
       </div>
     </div>
 
     <div class="col-span-12 lg:col-span-6 xl:col-span-6">
-      <div class="border border-gray-200 rounded-lg p-6 mb-2">
+      <div class="border border-gray-200 dark:border-gray-700 rounded-lg p-6 mb-2 bg-white dark:bg-gray-800">
         <div class="flex justify-between mb-3">
           <div>
-            <span class="block text-gray-900 font-medium mb-3">{{ t('Páginas Vistas') }}</span>
-            <div class="text-green-400 font-medium text-xl">
+            <span class="block text-gray-900 dark:text-gray-100 font-medium mb-3">{{ t('Páginas Vistas') }}</span>
+            <div class="text-green-400 dark:text-green-300 font-medium text-xl">
               {{ formatIntNumber(pageslength) }}
             </div>
           </div>
-          <div class="flex items-center justify-center bg-green-100 rounded-full print:hidden"
+          <div class="flex items-center justify-center bg-green-100 dark:bg-green-900 rounded-full print:hidden"
             style="width: 2.5rem; height: 2.5rem">
-            <i class="pi pi-copy text-green-500 text-xl" />
+            <i class="pi pi-copy text-green-500 dark:text-green-400 text-xl" />
           </div>
         </div>
       </div>
-      <div class="border border-gray-200 rounded-lg p-6">
+      <div class="border border-gray-200 dark:border-gray-700 rounded-lg p-6 bg-white dark:bg-gray-800">
         <Chart type="line" :data="chartPages" :options="chartOptions" class="h-96" />
       </div>
     </div>

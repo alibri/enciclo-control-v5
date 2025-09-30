@@ -1,5 +1,15 @@
 # VERSIONES
 
+## 5.0.9
+
+- Mejora visual formulario de portadas
+- Mejora visual de formulario de meta
+- Mejora visual de formulario de búsqueda
+- Mejora en el selector de imágenes
+- Añade la visualización de las dimensiones de las imágenes
+- Unificar estilos de las páginas
+- Revisión de estilos y colores
+
 ## 5.0.8
 
 - Añade el campo de estadísticas manual en el formulario de usuarios

@@ -73,7 +73,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="min-h-screen bg-gray-50 p-4">
+  <div class="min-h-screen bg-gray-50 dark:bg-gray-900 p-4">
     <!-- Header mejorado -->
     <div class="flex justify-between items-center mb-6">
       <div>
@@ -127,7 +127,7 @@ onMounted(() => {
       >
         <!-- Header de la tabla -->
         <template #header>
-          <div class="flex flex-wrap justify-between items-center gap-4 p-4 bg-gray-50 border-b">
+          <div class="flex flex-wrap justify-between items-center gap-4 p-4 bg-gray-50 dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
             <div class="flex items-center gap-2">
               <i class="pi pi-table text-blue-500"></i>
               <span class="font-semibold text-gray-700">{{ t('Lista de Consultas') }}</span>

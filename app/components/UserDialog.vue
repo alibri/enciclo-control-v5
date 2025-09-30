@@ -62,7 +62,7 @@ const closeDialog = () => {
   <Dialog :visible="visible" @update:visible="(value) => emit('update:visible', value)" modal maximizable
     :style="{ width: '50rem' }" :breakpoints="{ '1199px': '75vw', '575px': '90vw' }">
     <template #header>
-      <h3 class="text-lg font-semibold text-gray-800">
+      <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200">
         <i class="pi pi-user" /> {{ title }}
       </h3>
     </template>
@@ -76,7 +76,7 @@ const closeDialog = () => {
               <div class="flex items-center gap-2">
                 <ToggleSwitch v-model="user.isenabled" />
                 <span class="pi pi-check text-green-600" />
-                <label for="isenabled" class="text-gray-700 font-medium">{{ t('Activo') }}</label>
+                <label for="isenabled" class="text-gray-700 dark:text-gray-300 font-medium">{{ t('Activo') }}</label>
               </div>
             </div>
           </div>
@@ -89,28 +89,28 @@ const closeDialog = () => {
             <div class="flex items-center gap-2">
               <ToggleSwitch v-model="user.isadmin" />
               <span class="pi pi-user text-purple-600" />
-              <label for="isadmin" class="text-gray-700 font-medium">{{ t('Admin') }}</label>
+              <label for="isadmin" class="text-gray-700 dark:text-gray-300 font-medium">{{ t('Admin') }}</label>
             </div>
           </div>
           <div class="col-span-3">
             <div class="flex items-center gap-2">
               <ToggleSwitch v-model="user.iseditor" />
               <span class="pi pi-pencil text-blue-600" />
-              <label for="iseditor" class="text-gray-700 font-medium">{{ t('Editor') }}</label>
+              <label for="iseditor" class="text-gray-700 dark:text-gray-300 font-medium">{{ t('Editor') }}</label>
             </div>
           </div>
           <div class="col-span-3">
             <div class="flex items-center gap-2 h-full" style="align-items: center;">
               <ToggleSwitch v-model="user.dashboard_access" />
               <span class="pi pi-chart-bar text-yellow-600" />
-              <label for="dashboard_access" class="text-gray-700 font-medium">{{ t('Dashboard') }}</label>
+              <label for="dashboard_access" class="text-gray-700 dark:text-gray-300 font-medium">{{ t('Dashboard') }}</label>
             </div>
           </div>
           <div class="col-span-3">
             <div class="flex items-center gap-2">
               <ToggleSwitch v-model="user.istester" />
               <span class="pi pi-comment text-orange-600" />
-              <label for="istester" class="text-gray-700 font-medium">{{ t('Pregúntame') }}</label>
+              <label for="istester" class="text-gray-700 dark:text-gray-300 font-medium">{{ t('Pregúntame') }}</label>
             </div>
           </div>
         </div>
@@ -121,13 +121,13 @@ const closeDialog = () => {
         <div class="grid grid-cols-12 gap-4">
           <div class="col-span-6 mb-4">
             <FloatLabel variant="in">
-              <label for="name1" class="block text-sm font-medium text-gray-700 mb-2">{{ t('Nombre') }}</label>
+              <label for="name1" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">{{ t('Nombre') }}</label>
               <InputText id="name1" v-model="user.name" type="text" class="w-full" />
             </FloatLabel>
           </div>
           <div class="col-span-6 mb-4">
             <FloatLabel variant="in">
-              <label for="email1" class="block text-sm font-medium text-gray-700 mb-2">{{ t('Email') }}</label>
+              <label for="email1" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">{{ t('Email') }}</label>
               <InputText id="email1" v-model="user.email" type="text" class="w-full" />
             </FloatLabel>
           </div>
@@ -135,13 +135,13 @@ const closeDialog = () => {
         <div class="grid grid-cols-12 gap-4">
           <div class="col-span-6 mb-4">
             <FloatLabel variant="in" class="w-full">
-              <label for="user" class="block text-sm font-medium text-gray-700 mb-2">{{ t('Usuario') }}</label>
+              <label for="user" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">{{ t('Usuario') }}</label>
               <InputText id="user" v-model="user.user" type="text" />
             </FloatLabel>
           </div>
           <div class="col-span-6 mb-4">
             <FloatLabel variant="in">
-              <label for="passwd" class="block text-sm font-medium text-gray-700 mb-2">{{ t('Contraseña') }}</label>
+              <label for="passwd" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">{{ t('Contraseña') }}</label>
               <InputText id="passwd" v-model="user.passwd" type="text" class="w-full" toggle-mask />
             </FloatLabel>
           </div>
@@ -149,13 +149,13 @@ const closeDialog = () => {
         <div class="grid grid-cols-12 gap-4">
           <div class="col-span-6 mb-4">
             <FloatLabel variant="in">
-              <label for="grupo" class="block text-sm font-medium text-gray-700 mb-2">{{ t('Grupo') }}</label>
+              <label for="grupo" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">{{ t('Grupo') }}</label>
               <InputText id="grupo" v-model="user.grupo" type="text" class="w-full" />
             </FloatLabel>
           </div>
           <div class="col-span-6 mb-4">
             <FloatLabel variant="in">
-              <label for="meta" class="block text-sm font-medium text-gray-700 mb-2">{{ t('Meta Por Defecto') }}</label>
+              <label for="meta" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">{{ t('Meta Por Defecto') }}</label>
               <InputText id="meta" v-model="user.meta" type="text" class="w-full" />
             </FloatLabel>
           </div>

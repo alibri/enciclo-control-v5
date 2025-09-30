@@ -74,7 +74,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="min-h-screen bg-gray-50 p-4">
+  <div class="min-h-screen bg-gray-50 dark:bg-gray-900 p-4">
     <!-- Header mejorado con estadísticas -->
     <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between mb-6">
       <div class="mb-4 lg:mb-0">
@@ -113,7 +113,7 @@ onMounted(() => {
           class="p-datatable-sm" @page="onPage($event)" @sort="onSort($event)" @filter="onFilter($event)">
           <!-- Header con acciones mejoradas -->
           <template #header>
-            <div class="flex flex-wrap justify-between items-center gap-4 p-4 bg-gray-50 border-b">
+            <div class="flex flex-wrap justify-between items-center gap-4 p-4 bg-gray-50 dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
               <div class="flex items-center gap-2">
                 <i class="pi pi-table text-blue-500"></i>
                 <span class="font-semibold text-gray-700">{{ t('Lista de Páginas') }}</span>
