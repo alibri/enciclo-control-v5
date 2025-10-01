@@ -381,5 +381,14 @@
     "Seleccionar Archivo": "Seleccionar Archivo",
     "No hay imágenes en Media": "No hay imágenes en Media",
     "Subir Nueva Imagen": "Subir Nueva Imagen",
-    "Error al cargar": "Error al cargar"
+    "Error al cargar": "Error al cargar",
+    "Lista de Usuarios": "Lista de Usuarios",
+    "Gestión y seguimiento de usuarios": "Gestión y seguimiento de usuarios",
+    "Generando PDF": "Generando PDF",
+    "Por favor espere...": "Por favor espere...",
+    "PDF generado correctamente": "PDF generado correctamente",
+    "Generar PDF": "Generar PDF",
+    "estadisticas": "estadísticas",
+    "usuario": "usuario",
+    "coleccion": "colección"
 }

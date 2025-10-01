@@ -10,6 +10,7 @@ import {
   Tooltip,
   Legend,
 } from 'chart.js';
+import html2pdf from 'html2pdf.js';
 
 const { t } = useI18n();
 const { showMessage } = useMessages();
@@ -66,10 +67,24 @@ const chartData = computed(() => {
   const pagesData = entries.map(([, stats]) => (stats as StatsData).pages);
   const preguntasData = entries.map(([, stats]) => (stats as StatsData).preguntas);
 
+  if (props.collection === 'authoritas') {
+    return {
+      labels,
+      datasets: [
+        {
+          label: t('Pregúntame'),
+          data: preguntasData,
+          backgroundColor: 'rgba(147, 51, 234, 0.6)',
+          borderColor: 'rgba(147, 51, 234, 1)',
+          borderWidth: 1,
+        }
+      ]
+    };
+  }
   return {
     labels,
     datasets: [
-      {
+    {
         label: t('Sesiones'),
         data: loginsData,
         backgroundColor: 'rgba(59, 130, 246, 0.6)',
@@ -81,13 +96,6 @@ const chartData = computed(() => {
         data: pagesData,
         backgroundColor: 'rgba(34, 197, 94, 0.6)',
         borderColor: 'rgba(34, 197, 94, 1)',
-        borderWidth: 1,
-      },
-      {
-        label: t('Pregúntame'),
-        data: preguntasData,
-        backgroundColor: 'rgba(147, 51, 234, 0.6)',
-        borderColor: 'rgba(147, 51, 234, 1)',
         borderWidth: 1,
       }
     ]
@@ -193,14 +201,104 @@ const exportarCSV = () => {
   URL.revokeObjectURL(url);
   showMessage('success', t('Éxito'), t('Exportado correctamente') + ' ' + fileName);
 };
+
+const printing = ref(false);
+// Función para generar PDF del componente
+const generarPDF = async () => {
+  // Obtener el contenido del componente
+  printing.value = true;
+  const contenido = document.querySelector('.print-area');
+  console.log('contenido', contenido);
+
+  if (!contenido) {
+    showMessage('error', t('Error'), t('No se encontró contenido para generar PDF'));
+    return;
+  }
+
+  try {
+    // Esperar a que las imágenes se carguen completamente
+    const images = contenido.querySelectorAll('img');
+    const imagePromises = Array.from(images).map((img: HTMLImageElement) => {
+      return new Promise((resolve) => {
+        if (img.complete) {
+          resolve(img);
+        } else {
+          img.onload = () => resolve(img);
+          img.onerror = () => resolve(img);
+        }
+      });
+    });
+
+    await Promise.all(imagePromises);
+
+    // Configuración para el PDF
+    const opt = {
+      margin: 1,
+      filename: `${t('estadisticas')}_${props.user || t('usuario')}_${props.collection || t('coleccion')}_${yearSelected.value}.pdf`,
+      image: { type: 'jpeg' as const, quality: 0.98 },
+      html2canvas: {
+        scale: 2,
+        useCORS: true,
+        letterRendering: true,
+        allowTaint: true,
+        logging: false,
+        // Configuración específica para imágenes
+        onclone: (clonedDoc: Document) => {
+          // Asegurar que las imágenes se muestren en el documento clonado
+          const clonedImages = clonedDoc.querySelectorAll('img');
+          clonedImages.forEach((img: HTMLImageElement) => {
+            img.style.maxWidth = '100%';
+            img.style.height = 'auto';
+            img.style.display = 'block';
+          });
+        },
+        // Excluir elementos específicos del PDF
+        ignoreElements: (element: Element) => {
+          return element.classList.contains('no-print') ||
+            element.classList.contains('no-pdf') ||
+            element.tagName === 'BUTTON' ||
+            element.tagName === 'A';
+        }
+      },
+      jsPDF: {
+        unit: 'in',
+        format: 'a4',
+        orientation: 'portrait' as const
+      }
+    };
+
+    // Mostrar mensaje de carga
+    showMessage('info', t('Generando PDF'), t('Por favor espere...'));
+
+    // Generar el PDF
+    await html2pdf().set(opt).from(contenido as HTMLElement).save();
+
+    // Mostrar mensaje de éxito
+    showMessage('success', t('Éxito'), t('PDF generado correctamente'));
+
+  } catch (error) {
+    console.error('Error generando PDF:', error);
+    showMessage('error', t('Error'), t('No se pudo generar el PDF'));
+  } finally {
+    printing.value = false;
+  }
+};
+
 </script>
 
 <template>
   <div class="card">
-    <div v-if="userPageStats && !loading">
+    <div v-if="userPageStats && !loading" class="print-area">
+      <div class="flex justify-start gap-2 cursor-pointer no-print">
+      <a class="mb-4 px-4 py-2 bg-red-500 hover:bg-red-600 text-white font-semibold rounded shadow transition-all duration-200"
+        @click="generarPDF">
+        <i class="pi pi-file-pdf mr-2"></i> {{ t('Generar PDF') }}
+      </a>
+    </div>
       <div class="flex justify-center items-center my-6">
         <h1
           class="text-3xl font-bold text-blue-600 dark:text-blue-400 tracking-tight transition-all duration-300">
+          <span v-if="printing">{{ user }} - </span>
           {{ collection }}
         </h1>
       </div>
@@ -216,14 +314,14 @@ const exportarCSV = () => {
 
       <div class="grid grid-cols-12 p-1 gap-4">
         <div class="col-span-12">
-          <div class="rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800">
-            <div class="h-96">
+          <div :class="printing ? 'chart-container' : 'rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800'">
+            <div :class="printing ? '' : 'h-96'">
               <Bar :data="chartData" :options="chartOptions" />
             </div>
           </div>
         </div>
         <div class="col-span-12">
-          <div class="flex justify-start cursor-pointer">
+          <div class="flex justify-start cursor-pointer no-print">
           <a
             class="mb-4 px-4 py-2 bg-green-500 hover:bg-green-600 text-white font-semibold rounded shadow transition-all duration-200"
             @click="exportarCSV">
@@ -237,19 +335,19 @@ const exportarCSV = () => {
                   class="px-6 py-4 text-left text-xs font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wider border-b border-gray-200 dark:border-gray-600">
                   {{ t('Mes') }}
                 </th>
-                <th
+                <th v-if="collection !== 'authoritas'"
                   class="px-6 py-4 text-center text-xs font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wider border-b border-gray-200 dark:border-gray-600">
                   {{ t('Sesiones') }}
                 </th>
-                <th
+                <th v-if="collection !== 'authoritas'"
                   class="px-6 py-4 text-center text-xs font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wider border-b border-gray-200 dark:border-gray-600">
                   {{ t('Páginas') }}
                 </th>
-                <th
+                <th v-if="collection !== 'authoritas'"
                   class="px-6 py-4 text-center text-xs font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wider border-b border-gray-200 dark:border-gray-600">
                   {{ t('Tiempo') }}
                 </th>
-                <th
+                <th v-if="collection === 'authoritas'"
                   class="px-6 py-4 text-center text-xs font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wider border-b border-gray-200 dark:border-gray-600">
                   {{ t('Pregúntame') }}
                 </th>
@@ -264,22 +362,22 @@ const exportarCSV = () => {
                 <td class="px-6 py-4 whitespace-nowrap text-sm font-semibold text-gray-900 dark:text-gray-100">
                 {{ yearSelected }} - {{ formatMonthName(Number(month)) }}
                 </td>
-                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700 dark:text-gray-300 text-center">
+                <td v-if="collection !== 'authoritas'" class="px-6 py-4 whitespace-nowrap text-sm text-gray-700 dark:text-gray-300 text-center">
                   <span
                     class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200">
                     {{ formatIntNumber(stats.logins) }}
                   </span>
                 </td>
-                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700 dark:text-gray-300 text-center">
+                <td v-if="collection !== 'authoritas'" class="px-6 py-4 whitespace-nowrap text-sm text-gray-700 dark:text-gray-300 text-center">
                   <span
                     class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200">
                     {{ formatIntNumber(stats.pages) }}
                   </span>
                 </td>
-                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700 dark:text-gray-300 text-center font-mono">
+                <td v-if="collection !== 'authoritas'" class="px-6 py-4 whitespace-nowrap text-sm text-gray-700 dark:text-gray-300 text-center font-mono">
                   {{ stats.ts }}
                 </td>
-                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700 dark:text-gray-300 text-center">
+                <td v-if="collection === 'authoritas'" class="px-6 py-4 whitespace-nowrap text-sm text-gray-700 dark:text-gray-300 text-center">
                   <span
                     class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-100 dark:bg-purple-900 text-purple-800 dark:text-purple-200">
                     {{ formatIntNumber(stats.preguntas) }}
@@ -292,21 +390,21 @@ const exportarCSV = () => {
                 <td class="px-6 py-4 text-sm text-gray-900 dark:text-gray-100 text-right">
                   {{ t('Totales') }}
                 </td>
-                <td class="px-6 py-4 text-sm text-blue-800 dark:text-blue-200 text-center">
+                <td v-if="collection !== 'authoritas'" class="px-6 py-4 text-sm text-blue-800 dark:text-blue-200 text-center">
                   {{
                     formatIntNumber(
                       Object.values(sortedUserPageStats || {}).reduce((acc, stats) => acc + (stats.logins || 0), 0)
                     )
                   }}
                 </td>
-                <td class="px-6 py-4 text-sm text-green-800 dark:text-green-200 text-center">
+                <td v-if="collection !== 'authoritas'" class="px-6 py-4 text-sm text-green-800 dark:text-green-200 text-center">
                   {{
                     formatIntNumber(
                       Object.values(sortedUserPageStats || {}).reduce((acc, stats) => acc + (stats.pages || 0), 0)
                     )
                   }}
                 </td>
-                <td class="px-6 py-4 text-sm text-gray-700 dark:text-gray-300 text-center font-mono">
+                <td v-if="collection !== 'authoritas'" class="px-6 py-4 text-sm text-gray-700 dark:text-gray-300 text-center font-mono">
                   {{
                     (() => {
                       // Sumar los tiempos en formato HH:MM:SS
@@ -322,7 +420,7 @@ const exportarCSV = () => {
                     })()
                   }}
                 </td>
-                <td class="px-6 py-4 text-sm text-purple-800 dark:text-purple-200 text-center">
+                <td v-if="collection === 'authoritas'" class="px-6 py-4 text-sm text-purple-800 dark:text-purple-200 text-center">
                   {{
                     formatIntNumber(
                       Object.values(sortedUserPageStats || {}).reduce((acc, stats) => acc + (stats.preguntas || 0), 0)
@@ -343,3 +441,59 @@ const exportarCSV = () => {
     </div>
   </div>
 </template>
+
+<style scoped>
+@media print {
+  .no-print {
+    display: none !important;
+  }
+
+  /* Clases específicas para PDF */
+  .no-pdf {
+    display: none !important;
+  }
+
+  .pdf-only {
+    display: block !important;
+  }
+
+  /* Mejorar la apariencia de la impresión */
+  .card {
+    box-shadow: none !important;
+    border: 1px solid #ddd !important;
+  }
+
+  /* Asegurar que las tablas se impriman correctamente */
+  table {
+    page-break-inside: avoid;
+  }
+
+  /* Mejorar la legibilidad del texto */
+  body {
+    color: #000 !important;
+    background: #fff !important;
+  }
+
+  /* Estilos específicos para el contenedor del gráfico en impresión */
+  .chart-container {
+    border: none !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    border-radius: 0 !important;
+  }
+
+  .chart-container > div {
+    height: auto !important;
+    min-height: 300px;
+  }
+
+  /* Estilos específicos para la imagen en impresión */
+  .col-span-6 img {
+    max-width: 100% !important;
+    height: auto !important;
+    display: block !important;
+    margin: 0 auto !important;
+    page-break-inside: avoid;
+  }
+}
+</style>

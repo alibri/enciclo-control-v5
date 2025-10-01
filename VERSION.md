@@ -1,5 +1,11 @@
 # VERSIONES
 
+## 5.0.10
+
+- Añade la visualización de las preguntas en el dashboard
+- Completa los meses de las estadísticas de las colecciones
+- Añade el botón de generación de PDF de las estadísticas de las colecciones
+
 ## 5.0.9
 
 - Mejora visual formulario de portadas

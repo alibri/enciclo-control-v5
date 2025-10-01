@@ -7,15 +7,26 @@ interface Props {
   visible: boolean;
   user: any;
 }
-
 interface Emits {
   (e: 'update:visible', value: boolean): void;
 }
 
 const props = defineProps<Props>();
 watch(() => props.visible, (nuevo, anterior) => {
+  if (props.user.istester === 1) {
+    // Comprobar si 'authoritas' ya existe en las colecciones antes de agregarlo
+    if (Array.isArray(props.user.collections) && !props.user.collections.includes('authoritas')) {
+      props.user.collections.push('authoritas');
+      // Ordenar las colecciones del usuario al abrir el diálogo
+      if (Array.isArray(props.user.collections)) {
+        props.user.collections.sort();
+      }
+    }
+  }
   getFakeStats();
 });
+
+
 const emit = defineEmits<Emits>();
 
 const userService = new UserService();
