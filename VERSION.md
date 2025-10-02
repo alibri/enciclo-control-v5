@@ -1,5 +1,9 @@
 # VERSIONES
 
+## 5.0.11
+
+- Añade el alias de html2canvas-pro
+
 ## 5.0.10
 
 - Añade la visualización de las preguntas en el dashboard

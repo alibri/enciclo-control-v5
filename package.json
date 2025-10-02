@@ -1,6 +1,6 @@
 {
   "name": "enciclo-control-5",
-  "version": "5.0.10",
+  "version": "5.0.11",
   "private": true,
   "type": "module",
   "license": "proprietary",
@@ -26,6 +26,7 @@
     "chart.js": "^4.5.0",
     "clipboard": "^2.0.11",
     "flag-icons": "^7.5.0",
+    "html2canvas-pro": "^1.5.11",
     "html2pdf.js": "^0.12.1",
     "markdown-it": "^14.1.0",
     "md5-typescript": "^1.0.5",

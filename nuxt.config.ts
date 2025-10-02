@@ -73,5 +73,6 @@ export default defineNuxtConfig({
     plugins: [
       tailwindcss()
     ], 
+    resolve: { alias: { 'html2canvas': 'html2canvas-pro' } }    
   },
 })
