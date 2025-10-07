@@ -304,7 +304,7 @@ const onUploadError = (error: string) => {
           <Column field="original_filename" :header="t('Fichero')" :sortable="true" class="text-blue-400" />
           <Column field="status" :header="t('Estado')" :sortable="true" class="text-center">
             <template #body="slotProps">
-              <Tag :severity="formatStatusRepository(slotProps.data.status)" class="text-sm" :value="slotProps.data.status" />
+              <Tag :severity="formatStatusRepository(slotProps.data.status)" class="text-sm" :value="slotProps.data.status" :icon="formatStatusRepositoryIcon(slotProps.data.status)" />
             </template>
           </Column>
           <Column field="mime_type" :header="t('Tipo')" :sortable="true" class="text-center">

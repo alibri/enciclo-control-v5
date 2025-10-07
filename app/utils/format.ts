@@ -152,6 +152,17 @@ export const formatStatusRepository = (type: string) => {
   return types[type] ?? 'secondary';
 };
 
+export const formatStatusRepositoryIcon = (type: string) => {
+  const types: Record<string, string> = {
+    deleted: 'pi pi-trash',
+    error: 'pi pi-exclamation-triangle',
+      uploaded: 'pi pi-upload',
+    importing: 'pi pi-spinner',
+    imported: 'pi pi-check-circle',
+  };
+
+  return types[type] ?? 'pi pi-file';
+};
 export const formatSize = (bytes: number) => {
     const k = 1024;
     const dm = 3;
