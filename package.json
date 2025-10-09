@@ -1,6 +1,7 @@
 {
   "name": "enciclo-control-5",
-  "version": "5.0.11",
+  "version": "5.0.11.1",
+
   "private": true,
   "type": "module",
   "license": "proprietary",

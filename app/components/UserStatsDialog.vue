@@ -193,7 +193,7 @@ const uploadFile = async () => {
       } else {
         showMessage('success', t('Éxito'), response?.data?.value?.message);
         if (response?.data?.value?.errors?.length > 0 || response?.data?.value?.duplicates?.length > 0) {
-          let mensaje = `${t('Estadísticas falsas importadas')}: ${response.data.value.imported}\n\n`;
+          let mensaje = `${t('Estadísticas manuales importadas')}: ${response.data.value.imported}\n\n`;
           if (response.data.value.duplicates.length > 0) {
             mensaje += `${t('Duplicadas')}:\n`;
             response.data.value.duplicates.forEach((duplicate: string) => {
@@ -547,7 +547,7 @@ const onVisibleChange = (value: boolean) => {
           </div>
           <div v-else class="text-gray-500 italic text-center py-4">
             <i class="pi pi-info-circle text-2xl mb-2 block"></i>
-            {{ t('No hay estadísticas falsas disponibles') }}
+            {{ t('No hay estadísticas manuales disponibles') }}
           </div>
         </Fieldset>
       </div>
@@ -563,7 +563,7 @@ const onVisibleChange = (value: boolean) => {
     :style="{ width: '40rem' }" :breakpoints="{ '1199px': '75vw', '575px': '90vw' }">
     <template #header>
       <h3 class="text-lg font-semibold text-gray-800">
-        <i class="pi pi-plus" /> {{ t('Añadir Estadística Falsa') }}
+        <i class="pi pi-plus" /> {{ t('Añadir Estadística Manual') }}
       </h3>
     </template>
 

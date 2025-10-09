@@ -47,7 +47,7 @@
 
 ## 5.0.5
 
-- Añade la gestión de estadísticas falsas
+- Añade la gestión de estadísticas manuales
 
 ## 5.0.4
 
