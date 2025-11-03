@@ -390,5 +390,12 @@
     "Generar PDF": "Generar PDF",
     "estadisticas": "estadísticas",
     "usuario": "usuario",
-    "coleccion": "colección"
+    "coleccion": "colección",
+    "Desactivar grupo": "Desactivar grupo",
+    "Ingresa el nombre del grupo": "Ingresa el nombre del grupo",
+    "Desactivar": "Desactivar",
+    "Usuarios importados correctamente": "Usuarios importados correctamente",
+    "Usuarios importados": "Usuarios importados",
+    "Usuarios actualizados": "Usuarios actualizados",
+    "Usuarios nuevos": "Usuarios nuevos"
 }
