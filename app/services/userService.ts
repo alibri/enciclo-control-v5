@@ -60,4 +60,8 @@ export default class UserService {
     
     return await this.api.get('import_fake_news', { file: base64Content, user, name: file.name });
   }
+
+  async desactivarGrupo(grupo: string) {
+    return await this.api.get('desactivargrupo', { grupo });
+  }
 };

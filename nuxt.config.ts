@@ -1,4 +1,5 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
+import { defineNuxtConfig } from 'nuxt/config';
 import Aura from '@primevue/themes/aura';
 import Lara from '@primevue/themes/lara';
 import pkg from './package.json';

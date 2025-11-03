@@ -1,5 +1,11 @@
 # VERSIONES
 
+## 5.0.12
+
+- Actualiza los usuarios existentes en la importación de usuarios desde Excel
+- Permite desactivar los usuarios de un grupo
+- Añade la visualización de los usuarios nuevos y actualizados en la importación de usuarios desde Excel
+
 ## 5.0.11
 
 - Añade el alias de html2canvas-pro

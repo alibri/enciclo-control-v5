@@ -148,6 +148,10 @@ const onUserSaved = () => {
   loadData();
 };
 
+// Diálogo para resultado de importación
+const displayImportResult = ref(false);
+const importResultMessage = ref('');
+
 const importFromExcel = async (event: any) => {
   const file = event.files[0];
   const reader = new FileReader();
@@ -160,13 +164,35 @@ const importFromExcel = async (event: any) => {
     if (checkLogged(response)) {
       if (response?.data?.value?.success) {
         showMessage('info', t('Usuarios'), t('Usuarios importados correctamente'));
-        if (response?.data?.value?.errors?.length > 0) {
-          let mensaje = `${t('Usuarios importados')}: ${response.data.value.imported}\n\n`;
-          mensaje += `${t('Errores')}:\n`;
-          response.data.value.errors.forEach((error: string) => {
-            mensaje += `${error}\n`;
-          });
-          showMessage('info', t('Resultado de la importación'), mensaje, -1);
+        if (response?.data?.value?.errors?.length > 0 || response?.data?.value?.new?.length > 0 || response?.data?.value?.updated?.length > 0) {
+          let mensaje = `<div class="mb-4"><strong>${t('Usuarios importados')}:</strong> ${response.data.value.imported}</div>`;
+          
+          if (response.data.value.errors && response.data.value.errors.length > 0) {
+            mensaje += `<h3 class="text-red-600 font-semibold mt-4 mb-2">${t('Errores')}</h3><ul class="list-disc list-inside mb-4">`;
+            response.data.value.errors.forEach((error: string) => {
+              mensaje += `<li class="text-sm text-red-600">${error}</li>`;
+            });
+            mensaje += `</ul>`;
+          }
+          
+          if (response.data.value.new && response.data.value.new.length > 0) {
+            mensaje += `<h3 class="text-green-600 font-semibold mt-4 mb-2">${t('Usuarios nuevos')}</h3><ul class="list-disc list-inside mb-4">`;
+            response.data.value.new.forEach((newUser: string) => {
+              mensaje += `<li class="text-sm text-green-600">${newUser}</li>`;
+            });
+            mensaje += `</ul>`;
+          }
+          
+          if (response.data.value.updated && response.data.value.updated.length > 0) {
+            mensaje += `<h3 class="text-blue-600 font-semibold mt-4 mb-2">${t('Usuarios actualizados')}</h3><ul class="list-disc list-inside mb-4">`;
+            response.data.value.updated.forEach((updatedUser: string) => {
+              mensaje += `<li class="text-sm text-blue-600">${updatedUser}</li>`;
+            });
+            mensaje += `</ul>`;
+          }
+          
+          importResultMessage.value = mensaje;
+          displayImportResult.value = true;
         }
         loadData();
       } else {
@@ -174,6 +200,34 @@ const importFromExcel = async (event: any) => {
       }
     }
   };
+}
+
+// Diálogo para desactivar grupo
+const displayDesactivarGrupo = ref(false);
+const grupoInput = ref('');
+
+const abrirDialogDesactivarGrupo = () => {
+  grupoInput.value = '';
+  displayDesactivarGrupo.value = true;
+};
+
+const desactivarGrupo = async () => {
+  if (!grupoInput.value || grupoInput.value.trim() === '') {
+    showMessage('warn', t('Advertencia'), t('Por favor, ingresa un grupo'), -1, 'c');
+    return;
+  }
+  
+  displayDesactivarGrupo.value = false;
+  
+  const response = await userService.desactivarGrupo(grupoInput.value.trim());
+  if (checkLogged(response)) {
+    if (response?.data?.value?.success !== true) {
+      showMessage('error', t('Error'), response?.data?.value?.message, -1, 'c');
+    } else {
+      showMessage('info', t('Usuarios'), response?.data?.value?.message);
+      loadData();
+    }
+  }
 }
 
 const verDashboard = (user: any) => {
@@ -364,12 +418,14 @@ const onRowClick = (event: any) => {
       <div class="col-span-12">
         <Toolbar>
           <template #start>
-            <Button :label="t('Nuevo')" icon="fas fa-file" class="ml-2" @click="openNewUser()" />
+            <Button :label="t('Nuevo')" icon="pi pi-plus" class="ml-2" @click="openNewUser()" />
             <i class="fas fa-grip-lines-vertical mx-2 text-gray-300" />
           </template>
           <template #end>
-            <FileUpload mode="basic" accept=".xlsx,.xls" :maxFileSize="10000000" :chooseLabel="t('Crear desde EXCEL')"
-              class="p-button-secondary" :customUpload="true" @upload="importFromExcel" @select="importFromExcel"
+            <Button icon="pi pi-trash" :label="t('Desactivar grupo')" class="p-button-danger mr-2" @click="abrirDialogDesactivarGrupo()" />
+            
+            <FileUpload mode="basic" accept=".xlsx,.xls" :maxFileSize="10000000" :chooseLabel="t('Crear desde EXCEL')" icon="pi pi-file-excel"
+              class="p-button-success" :customUpload="true" @upload="importFromExcel" @select="importFromExcel"
               :auto="true">
               <template #chooseicon>
                 <i class="fas fa-file-excel"></i>
@@ -614,6 +670,48 @@ const onRowClick = (event: any) => {
         @user-saved="onUserSaved" />
       <UserStatsDialog v-model:visible="displayStats" :user="selectedUser" />
       <UserDashboardDialog v-model:visible="displayDashboard" :user="dashboardUser" />
+      
+      <!-- Diálogo para desactivar grupo -->
+      <Dialog v-model:visible="displayDesactivarGrupo" modal :header="t('Desactivar grupo')" :style="{ width: '30rem' }">
+        <div class="flex flex-col gap-4 p-4">
+          <div class="flex flex-col gap-2">
+            <label for="grupo" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+              {{ t('Grupo') }}
+            </label>
+            <InputText
+              id="grupo"
+              v-model="grupoInput"
+              :placeholder="t('Ingresa el nombre del grupo')"
+              class="w-full"
+              @keydown.enter="desactivarGrupo"
+            />
+          </div>
+          <div class="flex justify-end gap-2 mt-4">
+            <Button
+              type="button"
+              :label="t('Cancelar')"
+              severity="secondary"
+              @click="displayDesactivarGrupo = false"
+            />
+            <Button
+              type="button"
+              :label="t('Desactivar')"
+              severity="danger"
+              @click="desactivarGrupo"
+            />
+          </div>
+        </div>
+      </Dialog>
+      
+      <!-- Diálogo para resultado de importación -->
+      <Dialog v-model:visible="displayImportResult" modal :header="t('Resultado de la importación')" :style="{ width: '50rem', maxWidth: '90vw' }">
+        <div class="p-4">
+          <div v-html="importResultMessage" class="prose prose-sm max-w-none"></div>
+        </div>
+        <template #footer>
+          <Button :label="t('Cerrar')" icon="pi pi-times" @click="displayImportResult = false" severity="secondary" />
+        </template>
+      </Dialog>
     </div>
   </div>
 </template>
