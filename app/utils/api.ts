@@ -1,4 +1,5 @@
 let apiBaseUrl: string | null = null;
+let apiBaseUrlLongTask: string | null = null;
 
 export const currentDomain = () => {
   let hostname = window.location.hostname;
@@ -13,12 +14,20 @@ export const currentDomain = () => {
   return currentDomain;
 };
 
-export const getApiUrl = () => {
-  if (apiBaseUrl) {
+export const getApiUrl = (longTask: boolean = false) => {
+  if (longTask) {
+    if (apiBaseUrlLongTask) {
+      return apiBaseUrlLongTask;
+    }
+    const runtimeConfig = useRuntimeConfig();
+    apiBaseUrlLongTask = (runtimeConfig.public?.API_BASE_URL_LONG_TASK as string).replace('{domain}', currentDomain());
+    return apiBaseUrlLongTask;
+  } else {
+    if (apiBaseUrl) {
+      return apiBaseUrl;
+    }
+    const runtimeConfig = useRuntimeConfig();
+    apiBaseUrl = (runtimeConfig.public?.API_BASE_URL as string).replace('{domain}', currentDomain());
     return apiBaseUrl;
   }
-  const runtimeConfig = useRuntimeConfig();
-  apiBaseUrl = runtimeConfig.public?.API_BASE_URL.replace('{domain}', currentDomain());
-
-  return apiBaseUrl;
 };

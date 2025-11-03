@@ -2,9 +2,11 @@ import { useApiClient } from '~/stores/api';
 
 export default class UserService {
   api: any;
+  apiLongTask: any;
 
   constructor () {
     this.api = useApiClient();
+    this.apiLongTask = useApiClient(true);
   }
 
   async getUsers (data: any) {
@@ -24,7 +26,7 @@ export default class UserService {
   }
 
   async createFromExcel(file: string) {
-    return await this.api.get('importexcel', { file: file });
+    return await this.apiLongTask.get('importexcel', { file: file });
   }
 
   async resetPassword(id: number) {

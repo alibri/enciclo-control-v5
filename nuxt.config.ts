@@ -20,6 +20,7 @@ export default defineNuxtConfig({
       APP_MODE: process.env?.NODE_ENV,
       APP_TITLE: process.env?.APP_TITLE_ENV,
       API_BASE_URL: process.env?.API_BASE_URL,
+      API_BASE_URL_LONG_TASK: process.env?.API_BASE_URL_LONG_TASK,
       API_USERNAME: process.env?.API_USERNAME,
       API_SECRET: process.env?.API_SECRET,
       PAGE_BASE_URL: process.env?.PAGE_BASE_URL,

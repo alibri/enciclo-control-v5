@@ -1,14 +1,18 @@
 // import { consola } from 'consola';
 import { useAuthStore } from '~/stores/auth'; // import the auth store we just created
+import { getApiUrl } from '~/utils/api';
 
 export interface ConfigApiCall {
     timeout?: number,
     headers?: Record<string, string>
 }
 
-export function useApiClient () {
+export function useApiClient (longTask: boolean = false) {
   // const runtimeConfig = useRuntimeConfig();
-  const apiBaseUrl = getApiUrl();
+  const apiBaseUrl = getApiUrl(longTask);
+  console.log('longTask', longTask);
+  console.log('apiBaseUrl', apiBaseUrl);
+
   const { session_id } = storeToRefs(useAuthStore());
 
   async function get (method: string, data?: Record<string, any> | null, config: ConfigApiCall = {}): Promise<Record<string, any>> {
@@ -31,7 +35,7 @@ export function useApiClient () {
         'Content-Type': 'application/json'
       };
     }
-    
+
     // Convertimos los datos a JSON antes de enviarlos
     const dataString = JSON.stringify(data);
     const response = await useFetch(apiBaseUrl + '/' + method, {
