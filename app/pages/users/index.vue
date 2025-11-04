@@ -263,7 +263,7 @@ const desactivarGrupo = async () => {
     if (response?.data?.value?.success !== true) {
       showMessage('error', t('Error'), response?.data?.value?.message, -1, 'c');
     } else {
-      showMessage('info', t('Usuarios'), response?.data?.value?.message);
+      showMessage('info', t('Usuarios'), response?.data?.value?.message, -1, 'c');
       loadData();
     }
   }
