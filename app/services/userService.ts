@@ -26,7 +26,11 @@ export default class UserService {
   }
 
   async createFromExcel(file: string) {
-    return await this.apiLongTask.get('importexcel', { file: file });
+    return await this.api.get('importexcel', { file: file });
+  }
+
+  async createFromProcess(processId: string) {
+    return await this.api.get('importexcel', { process: processId });
   }
 
   async resetPassword(id: number) {

@@ -151,6 +151,7 @@ const onUserSaved = () => {
 // Diálogo para resultado de importación
 const displayImportResult = ref(false);
 const importResultMessage = ref('');
+const importProgress = ref(0);
 
 const importFromExcel = async (event: any) => {
   const file = event.files[0];
@@ -158,42 +159,80 @@ const importFromExcel = async (event: any) => {
   reader.readAsDataURL(file);
   reader.onload = async () => {
     const base64 = reader.result?.toString();
-    showMessage('info', t('Usuarios'), t('Procesando archivo...'), -1, 'bc');
+    importProgress.value = 0;
+    showMessage('info', t('Usuarios'), t('Procesando archivo...'), -1, 'c');
+    
+    // Simular progreso durante la importación
+    const progressInterval = setInterval(() => {
+      if (importProgress.value < 90) {
+        importProgress.value += 10;
+      }
+    }, 200);
+    
     const response = await userService.createFromExcel(base64 || '');
-    removeGroup('bc');
+    clearInterval(progressInterval);
+    importProgress.value = 100;
+    removeGroup('c');
     if (checkLogged(response)) {
       if (response?.data?.value?.success) {
-        showMessage('info', t('Usuarios'), t('Usuarios importados correctamente'));
-        if (response?.data?.value?.errors?.length > 0 || response?.data?.value?.new?.length > 0 || response?.data?.value?.updated?.length > 0) {
-          let mensaje = `<div class="mb-4"><strong>${t('Usuarios importados')}:</strong> ${response.data.value.imported}</div>`;
-          
-          if (response.data.value.errors && response.data.value.errors.length > 0) {
-            mensaje += `<h3 class="text-red-600 font-semibold mt-4 mb-2">${t('Errores')}</h3><ul class="list-disc list-inside mb-4">`;
-            response.data.value.errors.forEach((error: string) => {
-              mensaje += `<li class="text-sm text-red-600">${error}</li>`;
-            });
-            mensaje += `</ul>`;
+        let paso = 0;
+        importResultMessage.value = '<div class="mb-4">' + t('Usuarios leídos correctamente: {total}').replace('{total}', formatIntNumber(response?.data?.value?.total)) + '</div>';
+        importProgress.value = 0;
+        displayImportResult.value = true;
+        const totalAProcesar = response?.data?.value?.total || 0;
+        let procesados = 0;
+        while (true) {
+          paso++;
+          const responseProcess = await userService.createFromProcess(response?.data?.value?.process_id);
+          if (checkLogged(responseProcess)) {
+            if (responseProcess?.data?.value?.success) {
+              procesados += responseProcess?.data?.value?.imported || 0;
+              importProgress.value = Math.round((procesados / totalAProcesar) * 100);
+
+              if (responseProcess?.data?.value?.errors?.length > 0 || responseProcess?.data?.value?.new?.length > 0 || responseProcess?.data?.value?.updated?.length > 0) {
+                let mensaje = '';
+                mensaje += `<div class="mb-4"><strong>${paso}. ${t('Usuarios importados')}:</strong> ${formatIntNumber(responseProcess?.data?.value?.imported)}</div>`;
+              
+                if (responseProcess?.data?.value?.errors && responseProcess?.data?.value?.errors.length > 0) {
+                  mensaje += `<h3 class="text-red-600 font-semibold mt-4 mb-2">${t('Errores')}</h3><ul class="list-disc list-inside mb-4">`;
+                  responseProcess?.data?.value?.errors.forEach((error: string) => {
+                    mensaje += `<li class="text-sm text-red-600">${error}</li>`;
+                  });
+                  mensaje += `</ul>`;
+                }
+                
+                if (responseProcess?.data?.value?.new && responseProcess?.data?.value?.new.length > 0) {
+                  mensaje += `<h3 class="text-green-600 font-semibold mt-4 mb-2">${t('Usuarios nuevos')}</h3><ul class="list-disc list-inside mb-4">`;
+                  responseProcess?.data?.value?.new.forEach((newUser: string) => {
+                    mensaje += `<li class="text-sm text-green-600">${newUser}</li>`;
+                  });
+                  mensaje += `</ul>`;
+                }
+                
+                if (responseProcess?.data?.value?.updated && responseProcess?.data?.value?.updated.length > 0) {
+                  mensaje += `<h3 class="text-blue-600 font-semibold mt-4 mb-2">${t('Usuarios actualizados')}</h3><ul class="list-disc list-inside mb-4">`;
+                  responseProcess?.data?.value?.updated.forEach((updatedUser: string) => {
+                    mensaje += `<li class="text-sm text-blue-600">${updatedUser}</li>`;
+                  });
+                  mensaje += `</ul>`;
+                }
+                console.log('importResultMessage.value', importResultMessage.value);
+                console.log('mensaje', mensaje);
+                importResultMessage.value = importResultMessage.value + '<div class="mb-4">' + mensaje + '</div>';
+              }
+
+              if (responseProcess?.data?.value?.pending === 0) {
+                break;
+              }
+
+            } else {
+              showMessage('error', t('Error'), responseProcess?.data?.value?.message, -1);
+              break;
+            }
           }
-          
-          if (response.data.value.new && response.data.value.new.length > 0) {
-            mensaje += `<h3 class="text-green-600 font-semibold mt-4 mb-2">${t('Usuarios nuevos')}</h3><ul class="list-disc list-inside mb-4">`;
-            response.data.value.new.forEach((newUser: string) => {
-              mensaje += `<li class="text-sm text-green-600">${newUser}</li>`;
-            });
-            mensaje += `</ul>`;
-          }
-          
-          if (response.data.value.updated && response.data.value.updated.length > 0) {
-            mensaje += `<h3 class="text-blue-600 font-semibold mt-4 mb-2">${t('Usuarios actualizados')}</h3><ul class="list-disc list-inside mb-4">`;
-            response.data.value.updated.forEach((updatedUser: string) => {
-              mensaje += `<li class="text-sm text-blue-600">${updatedUser}</li>`;
-            });
-            mensaje += `</ul>`;
-          }
-          
-          importResultMessage.value = mensaje;
-          displayImportResult.value = true;
         }
+        importProgress.value = 100;
+        importResultMessage.value = `<br/><h3>${t('Importación completada')}</h3><br/>${t('Usuarios importados')}: ${formatIntNumber(totalAProcesar)}` + importResultMessage.value;
         loadData();
       } else {
         showMessage('error', t('Error'), response?.data?.value?.message, -1);
@@ -706,10 +745,16 @@ const onRowClick = (event: any) => {
       <!-- Diálogo para resultado de importación -->
       <Dialog v-model:visible="displayImportResult" modal :header="t('Resultado de la importación')" :style="{ width: '50rem', maxWidth: '90vw' }">
         <div class="p-4">
+          <div class="mb-4">
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              {{ t('Progreso de la importación') }}
+            </label>
+            <ProgressBar :value="importProgress" :showValue="true" />
+          </div>
           <div v-html="importResultMessage" class="prose prose-sm max-w-none"></div>
         </div>
         <template #footer>
-          <Button :label="t('Cerrar')" icon="pi pi-times" @click="displayImportResult = false" severity="secondary" />
+          <Button :label="t('Cerrar')" icon="pi pi-times" @click="displayImportResult = false; importProgress = 0" severity="secondary" />
         </template>
       </Dialog>
     </div>

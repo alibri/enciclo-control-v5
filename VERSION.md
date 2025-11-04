@@ -1,5 +1,9 @@
 # VERSIONES
 
+## 5.0.13
+
+- Importación de usuarios desde Excel en pasos
+
 ## 5.0.12
 
 - Actualiza los usuarios existentes en la importación de usuarios desde Excel
