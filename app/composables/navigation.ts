@@ -49,6 +49,8 @@ export function useNavigationMenu () {
           { label: t('Búsqueda'), icon: 'pi pi-fw pi-search', to: '/utils/search' },
           { label: t('Test IP'), icon: 'pi pi-fw pi-globe', to: '/utils/testip' },
           { label: t('Test Referer'), icon: 'pi pi-fw pi-link', to: '/utils/testreferer' },
+          { label: t('Test RAG'), icon: 'pi pi-fw pi-code', to: '/utils/testrag' },
+          { label: t('Test RAG A/B'), icon: 'pi pi-fw pi-code', to: '/utils/testragab' },
           /* { label: t('Mantenimiento'), icon: 'pi pi-fw pi-cog', to: '/utils/maintenance' } */
         ]
       }/* ,

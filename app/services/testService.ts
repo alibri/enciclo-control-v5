@@ -15,4 +15,12 @@ export default class TestService {
     return await this.api.get('testreferer', data);
   }
 
+  async testRAG (data: any) {
+    return await this.api.get('testrag', data);
+  }
+
+  async evaluateRAG (data: any) {
+    return await this.api.get('evaluaterag', data);
+  }
+
 };

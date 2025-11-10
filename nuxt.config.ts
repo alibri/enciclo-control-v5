@@ -1,9 +1,24 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 import { defineNuxtConfig } from 'nuxt/config';
-import Aura from '@primevue/themes/aura';
-import Lara from '@primevue/themes/lara';
 import pkg from './package.json';
 import tailwindcss from "@tailwindcss/vite";
+
+// Declaración de tipos para process (disponible en Node.js)
+declare const process: {
+  env: {
+    NODE_ENV?: string;
+    APP_TITLE_ENV?: string;
+    API_BASE_URL?: string;
+    API_BASE_URL_LONG_TASK?: string;
+    API_USERNAME?: string;
+    API_SECRET?: string;
+    PAGE_BASE_URL?: string;
+    EDITOR_BASE_URL?: string;
+    AGENTS_MODELS?: string;
+    DEFAULT_LLM_AGENT?: string;
+    DEFAULT_LLM_MODEL?: string;
+  };
+};
 
 export default defineNuxtConfig({
   // @ts-ignore - PrimeVue module configuration
@@ -11,20 +26,23 @@ export default defineNuxtConfig({
   devtools: { enabled: true },
   ssr: false,
   alias: {
-    quill: process.env.NODE_ENV === 'development' ? 'quill/dist/quill.js' : 'quill'
+    quill: process?.env?.NODE_ENV === 'development' ? 'quill/dist/quill.js' : 'quill'
   },
   runtimeConfig: {
     public: {
       APP_VERSION: pkg.version,
       APP_NAME: pkg.name,
-      APP_MODE: process.env?.NODE_ENV,
-      APP_TITLE: process.env?.APP_TITLE_ENV,
-      API_BASE_URL: process.env?.API_BASE_URL,
-      API_BASE_URL_LONG_TASK: process.env?.API_BASE_URL_LONG_TASK,
-      API_USERNAME: process.env?.API_USERNAME,
+      APP_MODE: process?.env?.NODE_ENV,
+      APP_TITLE: process?.env?.APP_TITLE_ENV,
+      API_BASE_URL: process?.env?.API_BASE_URL,
+      API_BASE_URL_LONG_TASK: process?.env?.API_BASE_URL_LONG_TASK,
+      API_USERNAME: process?.env?.API_USERNAME,
       API_SECRET: process.env?.API_SECRET,
       PAGE_BASE_URL: process.env?.PAGE_BASE_URL,
-      EDITOR_BASE_URL: process.env?.EDITOR_BASE_URL
+      EDITOR_BASE_URL: process.env?.EDITOR_BASE_URL,
+      AGENTS_MODELS: process.env?.AGENTS_MODELS,
+      DEFAULT_LLM_AGENT: process.env?.DEFAULT_LLM_AGENT,
+      DEFAULT_LLM_MODEL: process.env?.DEFAULT_LLM_MODEL
     }
   },
   modules: [
@@ -54,8 +72,7 @@ export default defineNuxtConfig({
           preload: ['json', 'js', 'ts', 'html', 'css', 'vue']
         }
       }
-    ],
-    '@vueuse/nuxt'
+    ]
   ],
   primevue: {
     importTheme: { from: '@/theme/app-theme.ts' },

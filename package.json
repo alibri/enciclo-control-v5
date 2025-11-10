@@ -1,7 +1,6 @@
 {
   "name": "enciclo-control-5",
   "version": "5.0.13",
-
   "private": true,
   "type": "module",
   "license": "proprietary",
@@ -52,6 +51,7 @@
     "@pinia/nuxt": "^0.11.2",
     "@primevue/nuxt-module": "^4.3.7",
     "@types/markdown-it": "^14.1.2",
+    "@types/node": "^22.19.0",
     "@unocss/nuxt": "^66.3.3",
     "@vueuse/nuxt": "^13.6.0",
     "sass": "^1.89.2"

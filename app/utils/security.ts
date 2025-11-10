@@ -1,6 +1,7 @@
 const { showMessage } = useMessages();
 
 export const checkLogged = (response: any): boolean => {
+  console.log(response);
   if (response.error?.value?.statusCode === 403) {
     const { logUserOut } = useAuthStore(); // use logUserOut action from  auth store
     logUserOut();
