@@ -1,5 +1,10 @@
 # VERSIONES
 
+## 5.0.14
+
+- Añade test RAG
+- Añade el test A/B de las evaluaciones RAG
+
 ## 5.0.13
 
 - Importación de usuarios desde Excel en pasos
