@@ -434,7 +434,7 @@
     "Número de consultas alternativas a realizar": "Número de consultas alternativas a realizar",
     "Número de documentos completos a usar": "Número de documentos completos a usar",
     "Número mínimo de apariciones de un documento para ser considerado": "Número mínimo de apariciones de un documento para ser considerado",
-    "Ej: ¿Qué es la inteligencia artificial?": "Ej: ¿Qué es la inteligencia artificial?",
+    "Ej: ¿Qué es una célula?": "Ej: ¿Qué es una célula?",
     "Ejecutar Consulta": "Ejecutar Consulta",
     "Ejecutar Test A/B": "Ejecutar Test A/B",
     "Configuración A": "Configuración A",
@@ -465,5 +465,18 @@
     "estrellas": "estrellas",
     "Velocidad de Respuesta": "Velocidad de Respuesta",
     "Ver JSON completo (debug)": "Ver JSON completo (debug)",
-    "Evaluar": "Evaluar"
+    "Evaluar": "Evaluar",
+    "Precios de modelos": "Precios de modelos",
+    "Las configuraciones A y B deben ser diferentes para realizar una comparación": "Las configuraciones A y B deben ser diferentes para realizar una comparación",
+    "Ambos resultados deben estar evaluados": "Ambos resultados deben estar evaluados",
+    "Evaluando Test A/B": "Evaluando Test A/B",
+    "Test A/B evaluado correctamente": "Test A/B evaluado correctamente",
+    "Error al evaluar el test A/B": "Error al evaluar el test A/B",
+    "Error en Resultado A": "Error en Resultado A",
+    "Error en Resultado B": "Error en Resultado B",
+    "Test A/B evaluado": "Test A/B evaluado",
+    "¿Cuál respuesta es mejor?": "¿Cuál respuesta es mejor?",
+    "Elegir Respuesta A": "Elegir Respuesta A",
+    "Elegir Respuesta B": "Elegir Respuesta B",
+    "Evalúa ambas respuestas para poder compararlas": "Evalúa ambas respuestas para poder compararlas"
 }

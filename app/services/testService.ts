@@ -23,4 +23,8 @@ export default class TestService {
     return await this.api.get('evaluaterag', data);
   }
 
+  async evaluateRAGAB (data: any) {
+    return await this.api.get('ragtestab', data);
+  }
+
 };

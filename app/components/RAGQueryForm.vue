@@ -14,7 +14,7 @@ const props = withDefaults(defineProps<Props>(), {
   disabled: false,
   buttonLabel: 'Ejecutar Consulta',
   buttonIcon: 'pi pi-play',
-  placeholder: 'Ej: ¿Qué es la inteligencia artificial?',
+  placeholder: 'Ej: ¿Qué es una célula?',
   rows: 4,
   id: 'query',
   fullWidth: false

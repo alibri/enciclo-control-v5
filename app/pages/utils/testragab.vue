@@ -11,6 +11,8 @@ const blocked = ref(false);
 const query = ref('');
 const resultA = ref<any>(null);
 const resultB = ref<any>(null);
+const abEvaluated = ref(false);
+const evaluatingAB = ref(false);
 
 // Obtener valores por defecto desde variables de entorno
 const defaultAgent = runtimeConfig.public?.DEFAULT_LLM_AGENT || 'gemini';
@@ -71,9 +73,31 @@ const testRAGAB = async () => {
     return;
   }
 
+  // Comprobar que las configuraciones A y B sean diferentes
+  const configAValues = configA.value;
+  const configBValues = configB.value;
+  
+  const areConfigsEqual = 
+    configAValues.agent === configBValues.agent &&
+    configAValues.model === configBValues.model &&
+    configAValues.semantic === configBValues.semantic &&
+    configAValues.bm25 === configBValues.bm25 &&
+    configAValues.context === configBValues.context &&
+    configAValues.clean_query === configBValues.clean_query &&
+    configAValues.topN === configBValues.topN &&
+    configAValues.num_queries === configBValues.num_queries &&
+    configAValues.use_docs === configBValues.use_docs &&
+    configAValues.min_count === configBValues.min_count;
+
+  if (areConfigsEqual) {
+    showMessage('error', t('Error'), t('Las configuraciones A y B deben ser diferentes para realizar una comparación'), 5000);
+    return;
+  }
+
   blocked.value = true;
   resultA.value = null;
   resultB.value = null;
+  abEvaluated.value = false;
   showMessage('info', t('Test RAG A/B'), t('Ejecutando consultas RAG en paralelo...'), -1, 'tc');
   
   try {
@@ -115,16 +139,18 @@ const testRAGAB = async () => {
     
     // Procesar resultado A
     if (checkLogged(responseA)) {
-      resultA.value = responseA?.data?.value;
+      const resultData = responseA?.data?.result || responseA?.data?.value?.result || responseA?.data?.value;
+      resultA.value = resultData ? { ...resultData, query: query.value } : null;
     } else {
-      resultA.value = { error: responseA?.data?.value?.message || t('Error al ejecutar la consulta A') };
+      resultA.value = { error: responseA?.data?.result?.message || responseA?.data?.value?.message || t('Error al ejecutar la consulta A') };
     }
     
     // Procesar resultado B
     if (checkLogged(responseB)) {
-      resultB.value = responseB?.data?.value;
+      const resultData = responseB?.data?.result || responseB?.data?.value?.result || responseB?.data?.value;
+      resultB.value = resultData ? { ...resultData, query: query.value } : null;
     } else {
-      resultB.value = { error: responseB?.data?.value?.message || t('Error al ejecutar la consulta B') };
+      resultB.value = { error: responseB?.data?.result?.message || responseB?.data?.value?.message || t('Error al ejecutar la consulta B') };
     }
     
     if (resultA.value && !resultA.value.error && resultB.value && !resultB.value.error) {
@@ -140,6 +166,54 @@ const testRAGAB = async () => {
   }
 };
 
+// Funciones para manejar los eventos de evaluación
+const handleEvaluationA = (evaluationId: number) => {
+  if (resultA.value && !resultA.value.error) {
+    resultA.value.evaluationId = evaluationId;
+  }
+};
+
+const handleEvaluationB = (evaluationId: number) => {
+  if (resultB.value && !resultB.value.error) {
+    resultB.value.evaluationId = evaluationId;
+  }
+};
+
+// Función para evaluar el test A/B
+const evaluateAB = async (winner: 'A' | 'B') => {
+  if (!resultA.value?.evaluationId || !resultB.value?.evaluationId) {
+    showMessage('warn', t('Advertencia'), t('Ambos resultados deben estar evaluados'), 3000);
+    return;
+  }
+
+  evaluatingAB.value = true;
+  showMessage('info', t('Evaluando Test A/B'), t('Enviando evaluación...'), -1, 'ab-eval');
+
+  try {
+    const response = await testService.evaluateRAGAB({
+      idA: resultA.value.evaluationId,
+      idB: resultB.value.evaluationId,
+      winner: winner
+    });
+
+    if (checkLogged(response)) {
+      abEvaluated.value = true;
+      showMessage('success', t('Éxito'), t('Test A/B evaluado correctamente'), 3000);
+    } else {
+      showMessage('error', t('Error'), response?.data?.result?.message || response?.data?.value?.message || t('Error al evaluar el test A/B'), -1);
+    }
+  } catch (error: any) {
+    showMessage('error', t('Error'), error?.message || t('Error al evaluar el test A/B'), -1);
+  } finally {
+    evaluatingAB.value = false;
+    removeGroup('ab-eval');
+  }
+};
+
+// Computed para verificar si se puede evaluar el test A/B
+const canEvaluateAB = computed(() => {
+  return resultA.value?.evaluationId && resultB.value?.evaluationId && !abEvaluated.value;
+});
 
 </script>
 
@@ -189,113 +263,84 @@ const testRAGAB = async () => {
     <!-- Results Section -->
     <div v-if="resultA || resultB" class="grid grid-cols-1 xl:grid-cols-2 gap-6">
       <!-- Result A -->
-      <Card v-if="resultA">
+      <div v-if="resultA && !resultA.error">
+        <RAGResultView :result="resultA" :config="configA" @evaluated="handleEvaluationA" />
+      </div>
+      <Card v-else-if="resultA?.error">
         <template #title>
           <div class="flex items-center space-x-2">
-            <i class="pi pi-check-circle text-green-500"></i>
-            <span>{{ t('Resultado A') }}</span>
+            <i class="pi pi-exclamation-triangle text-red-500"></i>
+            <span>{{ t('Error en Resultado A') }}</span>
           </div>
         </template>
         <template #content>
-          <div v-if="resultA.error" class="bg-red-50 dark:bg-red-900/20 p-4 rounded-lg">
+          <div class="bg-red-50 dark:bg-red-900/20 p-4 rounded-lg">
             <p class="text-red-700 dark:text-red-300">{{ resultA.error }}</p>
-          </div>
-          <div v-else class="space-y-4">
-            <!-- Response Content -->
-            <div v-if="resultA.response || resultA.content" class="bg-gray-50 dark:bg-gray-800 p-4 rounded-lg">
-              <h3 class="text-lg font-semibold mb-2 text-gray-900 dark:text-gray-100">
-                {{ t('Respuesta') }}
-              </h3>
-              <div class="text-gray-700 dark:text-gray-300 whitespace-pre-wrap">
-                {{ resultA.response || resultA.content }}
-              </div>
-            </div>
-
-            <!-- Sources -->
-            <div v-if="resultA.sources && resultA.sources.length > 0" class="bg-gray-50 dark:bg-gray-800 p-4 rounded-lg">
-              <h3 class="text-lg font-semibold mb-2 text-gray-900 dark:text-gray-100">
-                {{ t('Fuentes') }}
-              </h3>
-              <ul class="list-disc list-inside space-y-1 text-gray-700 dark:text-gray-300">
-                <li v-for="(source, index) in resultA.sources" :key="index">
-                  {{ source }}
-                </li>
-              </ul>
-            </div>
-
-            <!-- Times -->
-            <div v-if="resultA.times" class="bg-gray-50 dark:bg-gray-800 p-4 rounded-lg">
-              <h3 class="text-lg font-semibold mb-2 text-gray-900 dark:text-gray-100">
-                {{ t('Tiempos de Ejecución') }}
-              </h3>
-              <div class="grid grid-cols-2 gap-2 text-sm text-gray-700 dark:text-gray-300">
-                <div v-for="(value, key) in resultA.times" :key="key" class="flex justify-between">
-                  <span class="font-medium">{{ key }}:</span>
-                  <span>{{ value }}s</span>
-                </div>
-              </div>
-            </div>
-
-            <!-- Raw Result (for debugging) -->
-            <div class="bg-gray-900 text-green-400 p-4 rounded-lg font-mono text-xs overflow-x-auto">
-              <pre>{{ JSON.stringify(resultA, null, 2) }}</pre>
-            </div>
           </div>
         </template>
       </Card>
 
       <!-- Result B -->
-      <Card v-if="resultB">
+      <div v-if="resultB && !resultB.error">
+        <RAGResultView :result="resultB" :config="configB" @evaluated="handleEvaluationB" />
+      </div>
+      <Card v-else-if="resultB?.error">
         <template #title>
           <div class="flex items-center space-x-2">
-            <i class="pi pi-check-circle text-blue-500"></i>
-            <span>{{ t('Resultado B') }}</span>
+            <i class="pi pi-exclamation-triangle text-red-500"></i>
+            <span>{{ t('Error en Resultado B') }}</span>
           </div>
         </template>
         <template #content>
-          <div v-if="resultB.error" class="bg-red-50 dark:bg-red-900/20 p-4 rounded-lg">
+          <div class="bg-red-50 dark:bg-red-900/20 p-4 rounded-lg">
             <p class="text-red-700 dark:text-red-300">{{ resultB.error }}</p>
           </div>
-          <div v-else class="space-y-4">
-            <!-- Response Content -->
-            <div v-if="resultB.response || resultB.content" class="bg-gray-50 dark:bg-gray-800 p-4 rounded-lg">
-              <h3 class="text-lg font-semibold mb-2 text-gray-900 dark:text-gray-100">
-                {{ t('Respuesta') }}
-              </h3>
-              <div class="text-gray-700 dark:text-gray-300 whitespace-pre-wrap">
-                {{ resultB.response || resultB.content }}
-              </div>
-            </div>
+        </template>
+      </Card>
+    </div>
 
-            <!-- Sources -->
-            <div v-if="resultB.sources && resultB.sources.length > 0" class="bg-gray-50 dark:bg-gray-800 p-4 rounded-lg">
-              <h3 class="text-lg font-semibold mb-2 text-gray-900 dark:text-gray-100">
-                {{ t('Fuentes') }}
-              </h3>
-              <ul class="list-disc list-inside space-y-1 text-gray-700 dark:text-gray-300">
-                <li v-for="(source, index) in resultB.sources" :key="index">
-                  {{ source }}
-                </li>
-              </ul>
+    <!-- Test A/B Evaluation Section -->
+    <div v-if="resultA && resultB && !resultA.error && !resultB.error" class="mt-6">
+      <Card>
+        <template #content>
+          <div v-if="abEvaluated" class="text-center py-6">
+            <div class="flex items-center justify-center space-x-2 text-green-600 dark:text-green-400">
+              <i class="pi pi-check-circle text-2xl"></i>
+              <span class="text-lg font-semibold">{{ t('Test A/B evaluado') }}</span>
             </div>
-
-            <!-- Times -->
-            <div v-if="resultB.times" class="bg-gray-50 dark:bg-gray-800 p-4 rounded-lg">
-              <h3 class="text-lg font-semibold mb-2 text-gray-900 dark:text-gray-100">
-                {{ t('Tiempos de Ejecución') }}
-              </h3>
-              <div class="grid grid-cols-2 gap-2 text-sm text-gray-700 dark:text-gray-300">
-                <div v-for="(value, key) in resultB.times" :key="key" class="flex justify-between">
-                  <span class="font-medium">{{ key }}:</span>
-                  <span>{{ value }}s</span>
-                </div>
-              </div>
+          </div>
+          <div v-else-if="canEvaluateAB" class="text-center py-6 space-y-4">
+            <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">
+              {{ t('¿Cuál respuesta es mejor?') }}
+            </h3>
+            <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
+              <Button
+                :label="t('Elegir Respuesta A')"
+                icon="pi pi-check"
+                :loading="evaluatingAB"
+                :disabled="evaluatingAB"
+                @click="evaluateAB('A')"
+                class="w-full sm:w-auto"
+                severity="success"
+                size="large"
+              />
+              <span class="text-gray-500 dark:text-gray-400 font-medium">{{ t('o') }}</span>
+              <Button
+                :label="t('Elegir Respuesta B')"
+                icon="pi pi-check"
+                :loading="evaluatingAB"
+                :disabled="evaluatingAB"
+                @click="evaluateAB('B')"
+                class="w-full sm:w-auto"
+                severity="info"
+                size="large"
+              />
             </div>
-
-            <!-- Raw Result (for debugging) -->
-            <div class="bg-gray-900 text-green-400 p-4 rounded-lg font-mono text-xs overflow-x-auto">
-              <pre>{{ JSON.stringify(resultB, null, 2) }}</pre>
-            </div>
+          </div>
+          <div v-else-if="!resultA.evaluationId || !resultB.evaluationId" class="text-center py-6">
+            <p class="text-gray-500 dark:text-gray-400">
+              {{ t('Evalúa ambas respuestas para poder compararlas') }}
+            </p>
           </div>
         </template>
       </Card>

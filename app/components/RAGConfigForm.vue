@@ -104,7 +104,7 @@ const getId = (name: string) => {
         <!-- Agent -->
         <div class="space-y-2">
           <label :for="getId('agent')" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
-            <i class="pi pi-robot text-gray-400 mr-2"></i>
+            <i class="pi pi-server text-gray-400 mr-2"></i>
             {{ t('Agente') }}
           </label>
           <Select 
@@ -122,7 +122,7 @@ const getId = (name: string) => {
         <!-- Model -->
         <div class="space-y-2">
           <label :for="getId('model')" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
-            <i class="pi pi-server text-gray-400 mr-2"></i>
+            <i class="pi pi-microchip text-gray-400 mr-2"></i>
             {{ t('Modelo') }}
           </label>
           <Select 
@@ -249,6 +249,30 @@ const getId = (name: string) => {
               :disabled="disabled"
             />
           </div>
+        </div>
+
+        <!-- Notas al pie con enlaces a precios -->
+        <div class="mt-6 pt-4 border-t border-gray-200 dark:border-gray-700">
+          <p class="text-xs text-gray-500 dark:text-gray-400">
+            {{ t('Precios de modelos') }}:
+            <a 
+              href="https://ai.google.dev/gemini-api/docs/pricing" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              class="text-blue-600 dark:text-blue-400 hover:underline ml-1"
+            >
+              Gemini
+            </a>
+            <span class="mx-1">•</span>
+            <a 
+              href="https://platform.openai.com/docs/pricing" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              class="text-blue-600 dark:text-blue-400 hover:underline"
+            >
+              OpenAI
+            </a>
+          </p>
         </div>
       </div>
     </template>

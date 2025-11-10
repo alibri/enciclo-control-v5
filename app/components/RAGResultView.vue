@@ -8,6 +8,10 @@ interface Props {
 }
 
 const props = defineProps<Props>();
+const emit = defineEmits<{
+  evaluated: [evaluationId: number]
+}>();
+
 const { t } = useI18n();
 const { showMessage, removeGroup } = useMessages();
 
@@ -18,12 +22,14 @@ const ratingRespuesta = ref<number | undefined>(undefined);
 const ratingVelocidad = ref<number | undefined>(undefined);
 const evaluating = ref(false);
 const evaluationSent = ref(false);
+const evaluationId = ref<number | null>(null);
 
 // Resetear evaluación cuando cambie el resultado
 watch(() => props.result, () => {
   evaluationSent.value = false;
   ratingRespuesta.value = undefined;
   ratingVelocidad.value = undefined;
+  evaluationId.value = null;
 });
 
 // Función para convertir markdown a HTML
@@ -65,6 +71,14 @@ const evaluateRAG = async () => {
     });
 
     if (checkLogged(response)) {
+      // Extraer el ID de la evaluación de la respuesta
+      // La respuesta puede estar en response.data.value o response.data.result
+      const resultData = response?.data?.result || response?.data?.value;
+      const id = resultData?.id || response?.data?.id;
+      if (id) {
+        evaluationId.value = id;
+        emit('evaluated', id);
+      }
       showMessage('success', t('Éxito'), t('Evaluación enviada correctamente'), 3000);
       evaluationSent.value = true;
       // Opcional: resetear los ratings después de enviar
