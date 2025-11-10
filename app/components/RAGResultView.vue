@@ -364,9 +364,10 @@ const evaluateRAG = async () => {
                       <span v-if="doc.count" class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-100 dark:bg-purple-900/30 text-purple-800 dark:text-purple-200">
                         <i class="pi pi-hashtag mr-1"></i>{{ t('Usos') }}: {{ doc.count }}
                       </span>
-                      <span v-if="doc.chunk_total !== undefined" class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-100 dark:bg-indigo-900/30 text-indigo-800 dark:text-indigo-200">
-                        <i class="pi pi-th-large mr-1"></i>{{ t('Chunks') }}: {{ doc.chunk_total }}
-                      </span>
+                      
+                      <!--<span v-if="doc.chunk !== undefined" class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-100 dark:bg-indigo-900/30 text-indigo-800 dark:text-indigo-200">
+                        <i class="pi pi-th-large mr-1"></i>{{ t('Chunk') }}: {{ doc.chunk }}
+                      </span>-->
                     </div>
                     <div v-if="doc.content" class="text-sm text-gray-700 dark:text-gray-300 leading-relaxed">
                       <div class="max-h-32 overflow-y-auto">

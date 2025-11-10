@@ -37,7 +37,9 @@ export function useNavigationMenu () {
         label: t('Authoritas'),
         items: [
           { label: t('Pregúntame'), icon: 'pi pi-comment', to: '/chat/' },
-          { label: t('Repositorio'), icon: 'pi pi-file-pdf', to: '/repositorio/' }
+          { label: t('Repositorio'), icon: 'pi pi-file-pdf', to: '/repositorio/' },
+          { label: t('Test RAG'), icon: 'pi pi-fw pi-code', to: '/utils/testrag' },
+          { label: t('Test RAG A/B'), icon: 'pi pi-fw pi-code', to: '/utils/testragab' },
           /* { label: t('Entidades'), icon: 'pi pi-id-card', to: '/chat/entidades' } */
         ]
       },
@@ -49,8 +51,6 @@ export function useNavigationMenu () {
           { label: t('Búsqueda'), icon: 'pi pi-fw pi-search', to: '/utils/search' },
           { label: t('Test IP'), icon: 'pi pi-fw pi-globe', to: '/utils/testip' },
           { label: t('Test Referer'), icon: 'pi pi-fw pi-link', to: '/utils/testreferer' },
-          { label: t('Test RAG'), icon: 'pi pi-fw pi-code', to: '/utils/testrag' },
-          { label: t('Test RAG A/B'), icon: 'pi pi-fw pi-code', to: '/utils/testragab' },
           /* { label: t('Mantenimiento'), icon: 'pi pi-fw pi-cog', to: '/utils/maintenance' } */
         ]
       }/* ,

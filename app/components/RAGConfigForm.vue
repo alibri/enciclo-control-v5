@@ -140,7 +140,7 @@ const getId = (name: string) => {
         <!-- Boolean Parameters -->
         <div class="space-y-3">
           <div class="flex items-center">
-            <Checkbox 
+            <ToggleSwitch 
               :id="getId('semantic')" 
               v-model="localConfig.semantic" 
               :binary="true"
@@ -152,7 +152,7 @@ const getId = (name: string) => {
           </div>
 
           <div class="flex items-center">
-            <Checkbox 
+            <ToggleSwitch 
               :id="getId('bm25')" 
               v-model="localConfig.bm25" 
               :binary="true"
@@ -164,7 +164,7 @@ const getId = (name: string) => {
           </div>
 
           <div class="flex items-center">
-            <Checkbox 
+            <ToggleSwitch 
               :id="getId('context')" 
               v-model="localConfig.context" 
               :binary="true"
@@ -176,7 +176,7 @@ const getId = (name: string) => {
           </div>
 
           <div class="flex items-center">
-            <Checkbox 
+            <ToggleSwitch 
               :id="getId('clean_query')" 
               v-model="localConfig.clean_query" 
               :binary="true"
@@ -201,6 +201,7 @@ const getId = (name: string) => {
               class="w-full"
               :min="1"
               :max="100"
+              showButtons
               :disabled="disabled"
             />
           </div>
@@ -216,6 +217,7 @@ const getId = (name: string) => {
               class="w-full"
               :min="1"
               :max="10"
+              showButtons
               :disabled="disabled"
             />
           </div>
@@ -229,8 +231,9 @@ const getId = (name: string) => {
               :id="getId('use_docs')" 
               v-model="localConfig.use_docs" 
               class="w-full"
-              :min="1"
+              :min="0"
               :max="10"
+              showButtons
               :disabled="disabled"
             />
           </div>
@@ -244,8 +247,9 @@ const getId = (name: string) => {
               :id="getId('min_count')" 
               v-model="localConfig.min_count" 
               class="w-full"
-              :min="1"
+              :min="2"
               :max="20"
+              showButtons
               :disabled="disabled"
             />
           </div>
