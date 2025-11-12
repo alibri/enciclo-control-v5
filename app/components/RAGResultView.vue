@@ -1,13 +1,19 @@
 <script setup lang='ts'>
 import { formatStringPre } from '~/utils/format';
+import { getPageLink } from '~/utils/openExternal';
 import TestService from '~/services/testService';
 
 interface Props {
   result: any;
   config?: any;
+  showEvaluation?: boolean;
+  showJson?: boolean;
 }
 
-const props = defineProps<Props>();
+const props = withDefaults(defineProps<Props>(), {
+  showEvaluation: true,
+  showJson: true
+});
 const emit = defineEmits<{
   evaluated: [evaluationId: number]
 }>();
@@ -436,8 +442,19 @@ const evaluateRAG = async () => {
             <div class="space-y-4">
               <div v-for="(source, index) in result.sources" :key="index" 
                    class="p-4 bg-gray-50 dark:bg-gray-700/50 rounded-lg border-l-4 border-teal-500 hover:shadow-md transition-all">
-                <div v-if="source.title" class="font-bold text-gray-900 dark:text-gray-100 mb-2 text-lg">
-                  {{ source.title }}
+                <div v-if="source.title" class="mb-2">
+                  <a 
+                    v-if="source.collection && (source.friendly || source.title)"
+                    :href="getPageLink(source.collection, source.friendly || source.title)" 
+                    target="_blank"
+                    class="font-bold text-teal-600 dark:text-teal-400 hover:text-teal-800 dark:hover:text-teal-300 text-lg block mb-1 hover:underline flex items-center"
+                  >
+                    <i class="pi pi-external-link mr-2 text-sm"></i>
+                    {{ source.title }}
+                  </a>
+                  <div v-else class="font-bold text-gray-900 dark:text-gray-100 text-lg">
+                    {{ source.title }}
+                  </div>
                 </div>
                 <div v-if="source.collection" class="mb-2">
                   <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-teal-100 dark:bg-teal-900/30 text-teal-800 dark:text-teal-200">
@@ -446,6 +463,59 @@ const evaluateRAG = async () => {
                 </div>
                 <div v-if="source.content" class="text-sm text-gray-700 dark:text-gray-300 leading-relaxed line-clamp-4">
                   {{ source.content }}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Related -->
+          <div v-if="result.related && result.related.length > 0" class="bg-white dark:bg-gray-800 p-5 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
+            <div class="flex items-center space-x-2 mb-4">
+              <i class="pi pi-link text-indigo-600 dark:text-indigo-400"></i>
+              <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100">
+                {{ t('Relacionados') }}
+              </h3>
+              <span class="px-2 py-1 bg-indigo-100 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300 rounded-full text-xs font-medium">
+                {{ result.related.length }}
+              </span>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div v-for="(item, index) in result.related" :key="index" 
+                   class="p-4 bg-gray-50 dark:bg-gray-700/50 rounded-lg border-l-4 border-indigo-500 hover:shadow-md transition-all">
+                <div class="flex items-start gap-3">
+                  <div v-if="item.image" class="flex-shrink-0">
+                    <img :src="item.image" :alt="item.title" class="w-20 h-20 object-cover rounded-lg border border-gray-200 dark:border-gray-600" />
+                  </div>
+                  <div class="flex-1 min-w-0">
+                    <div v-if="item.title" class="mb-2">
+                      <a 
+                        :href="getPageLink(item.collection, item.friendly || item.title)" 
+                        target="_blank"
+                        class="font-bold text-indigo-600 dark:text-indigo-400 hover:text-indigo-800 dark:hover:text-indigo-300 text-base block mb-1 hover:underline"
+                      >
+                        {{ item.title }}
+                      </a>
+                    </div>
+                    <div v-if="item.collection" class="mb-2">
+                      <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-100 dark:bg-indigo-900/30 text-indigo-800 dark:text-indigo-200">
+                        <i class="pi pi-folder mr-1"></i>{{ item.collection }}
+                      </span>
+                      <span v-if="item.weight" class="ml-2 inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-purple-100 dark:bg-purple-900/30 text-purple-800 dark:text-purple-200">
+                        <i class="pi pi-sort-amount-down mr-1"></i>{{ t('Peso') }}: {{ item.weight }}
+                      </span>
+                    </div>
+                    <div v-if="item.description" class="text-sm text-gray-700 dark:text-gray-300 leading-relaxed line-clamp-3">
+                      {{ item.description }}
+                    </div>
+                    <div v-if="item.metadata && item.metadata !== '{}'" class="mt-2">
+                      <details class="text-xs">
+                        <summary class="cursor-pointer text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300">
+                          {{ t('Ver metadata') }}
+                        </summary>
+                        <pre class="mt-2 p-2 bg-gray-100 dark:bg-gray-800 rounded text-xs overflow-x-auto">{{ typeof item.metadata === 'string' ? item.metadata : JSON.stringify(item.metadata, null, 2) }}</pre>
+                      </details>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -476,8 +546,19 @@ const evaluateRAG = async () => {
                        class="p-4 bg-gray-50 dark:bg-gray-700/50 rounded-lg border-l-4 border-cyan-500 hover:shadow-md transition-all">
                     <div class="flex items-start justify-between mb-2">
                       <div class="flex-1">
-                        <div v-if="doc.title" class="font-bold text-gray-900 dark:text-gray-100 mb-1 text-base">
-                          {{ doc.title }}
+                        <div v-if="doc.title" class="mb-1">
+                          <a 
+                            v-if="doc.collection && (doc.friendly || doc.title)"
+                            :href="getPageLink(doc.collection, doc.friendly || doc.title)" 
+                            target="_blank"
+                            class="font-bold text-cyan-600 dark:text-cyan-400 hover:text-cyan-800 dark:hover:text-cyan-300 text-base block hover:underline flex items-center"
+                          >
+                            <i class="pi pi-external-link mr-2 text-sm"></i>
+                            {{ doc.title }}
+                          </a>
+                          <div v-else class="font-bold text-gray-900 dark:text-gray-100 text-base">
+                            {{ doc.title }}
+                          </div>
                         </div>
                         <div v-if="doc.friendly" class="text-xs text-gray-500 dark:text-gray-400 mb-2 font-mono">
                           {{ doc.friendly }}
@@ -581,7 +662,7 @@ const evaluateRAG = async () => {
           </div>
 
           <!-- Evaluación -->
-          <div class="bg-white dark:bg-gray-800 p-5 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
+          <div v-if="showEvaluation" class="bg-white dark:bg-gray-800 p-5 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
             <div class="flex items-center space-x-2 mb-4">
               <i class="pi pi-star text-yellow-600 dark:text-yellow-400"></i>
               <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100">
@@ -639,7 +720,7 @@ const evaluateRAG = async () => {
           </div>
 
           <!-- Raw Result (for debugging) -->
-          <details class="bg-gray-900 dark:bg-gray-950 p-4 rounded-xl font-mono text-xs overflow-x-auto border border-gray-700">
+          <details v-if="showJson" class="bg-gray-900 dark:bg-gray-950 p-4 rounded-xl font-mono text-xs overflow-x-auto border border-gray-700">
             <summary class="cursor-pointer text-green-400 hover:text-green-300 mb-2 flex items-center space-x-2 font-semibold">
               <i class="pi pi-code"></i>
               <span>{{ t('Ver JSON completo (debug)') }}</span>
