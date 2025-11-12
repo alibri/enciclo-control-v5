@@ -16,7 +16,8 @@ const evaluatingAB = ref(false);
 
 // Obtener valores por defecto desde variables de entorno
 const defaultAgent = runtimeConfig.public?.DEFAULT_LLM_AGENT || 'gemini';
-const defaultModel = runtimeConfig.public?.DEFAULT_LLM_MODEL || 'gpt-4o-mini';
+const defaultModel = runtimeConfig.public?.DEFAULT_LLM_MODEL || 'gemini-2.0-flash';
+const defaultCollection = runtimeConfig.public?.COLLECTION_NAME || 'chunks';
 
 // Cargar AGENTS_MODELS para validar el modelo inicial
 const agentsModelsJson = runtimeConfig.public?.AGENTS_MODELS || '{}';
@@ -49,8 +50,11 @@ const configA = ref({
   clean_query: true,
   topN: 5,
   num_queries: 2,
-  use_docs: 1,
-  min_count: 5
+  use_docs: -1,
+  min_count: -1,
+  collection: defaultCollection,
+  temperature: 1.0,
+  classification: '<automática>'
 });
 
 // Parámetros de configuración B con valores por defecto
@@ -63,8 +67,11 @@ const configB = ref({
   clean_query: true,
   topN: 5,
   num_queries: 2,
-  use_docs: 1,
-  min_count: 5
+  use_docs: -1,
+  min_count: -1,
+  collection: defaultCollection,
+  temperature: 1.0,
+  classification: '<automática>'
 });
 
 const testRAGAB = async () => {
@@ -115,7 +122,10 @@ const testRAGAB = async () => {
           topN: configA.value.topN,
           num_queries: configA.value.num_queries,
           use_docs: configA.value.use_docs,
-          min_count: configA.value.min_count
+          min_count: configA.value.min_count,
+          db: configA.value.collection,
+          temperature: configA.value.temperature,
+          classification: configA.value.classification
         }
       }),
       testService.testRAG({
@@ -130,7 +140,10 @@ const testRAGAB = async () => {
           topN: configB.value.topN,
           num_queries: configB.value.num_queries,
           use_docs: configB.value.use_docs,
-          min_count: configB.value.min_count
+          min_count: configB.value.min_count,
+          db: configB.value.collection,
+          temperature: configB.value.temperature,
+          classification: configB.value.classification
         }
       })
     ]);

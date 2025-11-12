@@ -17,6 +17,7 @@ declare const process: {
     AGENTS_MODELS?: string;
     DEFAULT_LLM_AGENT?: string;
     DEFAULT_LLM_MODEL?: string;
+    COLLECTION_NAME?: string;
   };
 };
 

@@ -13,7 +13,8 @@ const result = ref<any>(null);
 
 // Obtener valores por defecto desde variables de entorno
 const defaultAgent = runtimeConfig.public?.DEFAULT_LLM_AGENT || 'gemini';
-const defaultModel = runtimeConfig.public?.DEFAULT_LLM_MODEL || 'gpt-4o-mini';
+const defaultModel = runtimeConfig.public?.DEFAULT_LLM_MODEL || 'gemini-2.0-flash';
+const defaultCollection = runtimeConfig.public?.COLLECTION_NAME || 'chunks';
 
 // Cargar AGENTS_MODELS para validar el modelo inicial
 const agentsModelsJson = runtimeConfig.public?.AGENTS_MODELS || '{}';
@@ -46,8 +47,11 @@ const config = ref({
   clean_query: true,
   topN: 5,
   num_queries: 2,
-  use_docs: 1,
-  min_count: 5
+  use_docs: -1,
+  min_count: -1,
+  collection: defaultCollection,
+  temperature: 1.0,
+  classification: '<automática>'
 });
 
 const testRAG = async () => {
@@ -73,7 +77,10 @@ const testRAG = async () => {
         topN: config.value.topN,
         num_queries: config.value.num_queries,
         use_docs: config.value.use_docs,
-        min_count: config.value.min_count
+        min_count: config.value.min_count,
+        db: config.value.collection,
+        temperature: config.value.temperature,
+        classification: config.value.classification
       }
     });
     

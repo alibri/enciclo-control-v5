@@ -49,6 +49,14 @@ const contentHtml = computed(() => {
   return '';
 });
 
+// Computed para el HTML de "Sabías que"
+const sabiasHtml = computed(() => {
+  if (props.result?.sabias) {
+    return formatMarkdown(props.result.sabias);
+  }
+  return '';
+});
+
 // Función para evaluar la respuesta
 const evaluateRAG = async () => {
   if (!ratingRespuesta.value || !ratingVelocidad.value) {
@@ -146,6 +154,34 @@ const evaluateRAG = async () => {
                   {{ result.clasificacion }}
                 </span>
               </div>
+              <div v-if="result.porcentaje_asignacion !== undefined && result.porcentaje_asignacion !== null" class="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
+                <span class="text-sm font-medium text-gray-600 dark:text-gray-400 flex items-center">
+                  <i class="pi pi-percentage mr-2 text-violet-600"></i>{{ t('Porcentaje de Asignación') }}
+                </span>
+                <span class="px-3 py-1 bg-violet-100 dark:bg-violet-900/30 text-violet-700 dark:text-violet-300 rounded-lg text-sm font-semibold">
+                  {{ result.porcentaje_asignacion }}%
+                </span>
+              </div>
+              <div v-if="result.clasificacion_top3 && result.clasificacion_top3.length > 0" class="md:col-span-3 p-4 bg-gradient-to-r from-violet-50 to-purple-50 dark:from-violet-900/20 dark:to-purple-900/20 rounded-lg border-l-4 border-violet-500">
+                <div class="flex items-start space-x-2 mb-3">
+                  <i class="pi pi-sort-amount-down text-violet-600 dark:text-violet-400 mt-0.5"></i>
+                  <h4 class="text-sm font-semibold text-gray-700 dark:text-gray-300">{{ t('Top 3 Clasificaciones') }}</h4>
+                </div>
+                <div class="space-y-2">
+                  <div v-for="(item, index) in result.clasificacion_top3" :key="index" 
+                       class="flex items-center justify-between p-2 bg-white dark:bg-gray-800/50 rounded-lg">
+                    <span class="text-sm text-gray-700 dark:text-gray-300 capitalize flex items-center">
+                      <span class="px-2 py-0.5 bg-violet-100 dark:bg-violet-900/30 text-violet-700 dark:text-violet-300 rounded text-xs font-semibold mr-2">
+                        {{ index + 1 }}
+                      </span>
+                      {{ item.categoria }}
+                    </span>
+                    <span class="px-3 py-1 bg-violet-100 dark:bg-violet-900/30 text-violet-700 dark:text-violet-300 rounded-lg text-sm font-semibold">
+                      {{ item.porcentaje }}%
+                    </span>
+                  </div>
+                </div>
+              </div>
               <div v-if="result.razonamiento_breve" class="md:col-span-3 p-3 bg-gradient-to-r from-violet-50 to-purple-50 dark:from-violet-900/20 dark:to-purple-900/20 rounded-lg border-l-4 border-violet-500">
                 <div class="flex items-start space-x-2">
                   <i class="pi pi-comments text-violet-600 dark:text-violet-400 mt-0.5"></i>
@@ -188,47 +224,29 @@ const evaluateRAG = async () => {
               <div class="flex items-start space-x-3">
                 <i class="pi pi-lightbulb text-amber-600 dark:text-amber-400 text-xl mt-1"></i>
                 <div class="flex-1">
-                  <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2 flex items-center">
+                  <h3 v-if="result.titular" class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2 flex items-center">
                     <span class="mr-2">{{ result.titular }}</span>
                   </h3>
-                  <p class="text-gray-700 dark:text-gray-300 italic leading-relaxed">
-                    {{ result.sabias }}
-                  </p>
+                  <div 
+                    v-if="sabiasHtml" 
+                    v-html="sabiasHtml" 
+                    class="prose prose-lg dark:prose-invert max-w-none markdown-content text-gray-700 dark:text-gray-300 italic leading-relaxed"
+                  ></div>
                 </div>
               </div>
             </div>
           </div>
 
-          <!-- Grid de Información Adicional -->
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <!-- Entidades -->
-            <div v-if="result.entidades && result.entidades.length > 0" class="bg-white dark:bg-gray-800 p-5 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
-              <div class="flex items-center space-x-2 mb-4">
-                <i class="pi pi-tags text-purple-600 dark:text-purple-400"></i>
-                <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100">
-                  {{ t('Entidades') }}
-                </h3>
-                <span class="px-2 py-1 bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 rounded-full text-xs font-medium">
-                  {{ result.entidades.length }}
-                </span>
-              </div>
-              <div class="flex flex-wrap gap-2">
-                <span v-for="(entidad, index) in result.entidades" :key="index" 
-                      class="px-3 py-1.5 bg-gradient-to-r from-purple-100 to-pink-100 dark:from-purple-900/30 dark:to-pink-900/30 text-purple-800 dark:text-purple-200 rounded-lg text-sm font-medium shadow-sm hover:shadow-md transition-shadow">
-                  {{ entidad.nombre }}
-                  <span v-if="entidad.tipo" class="ml-1 text-xs opacity-75">({{ entidad.tipo }})</span>
-                </span>
-              </div>
+          <!-- Configuración en 2 columnas -->
+          <div class="bg-white dark:bg-gray-800 p-5 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
+            <div class="flex items-center space-x-2 mb-4">
+              <i class="pi pi-cog text-gray-600 dark:text-gray-400"></i>
+              <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100">
+                {{ t('Configuración') }}
+              </h3>
             </div>
-
-            <!-- Información Técnica -->
-            <div class="bg-white dark:bg-gray-800 p-5 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
-              <div class="flex items-center space-x-2 mb-4">
-                <i class="pi pi-cog text-gray-600 dark:text-gray-400"></i>
-                <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100">
-                  {{ t('Configuración') }}
-                </h3>
-              </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <!-- Columna 1 -->
               <div class="space-y-3">
                 <div v-if="result.agent" class="flex items-center justify-between py-2 border-b border-gray-100 dark:border-gray-700 last:border-0">
                   <span class="text-sm font-medium text-gray-600 dark:text-gray-400 flex items-center">
@@ -254,15 +272,126 @@ const evaluateRAG = async () => {
                     {{ result.idioma }}
                   </span>
                 </div>
-                <div v-if="result.documents_used" class="flex items-center justify-between py-2">
+                <div v-if="result.temperature !== undefined && result.temperature !== null" class="flex items-center justify-between py-2 border-b border-gray-100 dark:border-gray-700 last:border-0">
                   <span class="text-sm font-medium text-gray-600 dark:text-gray-400 flex items-center">
-                    <i class="pi pi-file mr-2"></i>{{ t('Documentos') }}
+                    <i class="pi pi-sliders-h mr-2"></i>{{ t('Temperature') }}
                   </span>
-                  <span class="px-3 py-1 bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-300 rounded-lg text-sm font-semibold">
-                    {{ result.documents_used }}
+                  <span class="px-3 py-1 bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 rounded-lg text-sm font-semibold">
+                    {{ result.temperature }}
+                  </span>
+                </div>
+                <div v-if="result.semantic !== undefined && result.semantic !== null" class="flex items-center justify-between py-2 border-b border-gray-100 dark:border-gray-700 last:border-0">
+                  <span class="text-sm font-medium text-gray-600 dark:text-gray-400 flex items-center">
+                    <i class="pi pi-search mr-2"></i>{{ t('Semantic') }}
+                  </span>
+                  <span class="px-3 py-1" :class="result.semantic ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300' : 'bg-gray-100 dark:bg-gray-700/30 text-gray-700 dark:text-gray-300'">
+                    {{ result.semantic ? t('Sí') : t('No') }}
+                  </span>
+                </div>
+                <div v-if="result.bm25 !== undefined && result.bm25 !== null" class="flex items-center justify-between py-2 border-b border-gray-100 dark:border-gray-700 last:border-0">
+                  <span class="text-sm font-medium text-gray-600 dark:text-gray-400 flex items-center">
+                    <i class="pi pi-list mr-2"></i>{{ t('BM25') }}
+                  </span>
+                  <span class="px-3 py-1" :class="result.bm25 ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300' : 'bg-gray-100 dark:bg-gray-700/30 text-gray-700 dark:text-gray-300'">
+                    {{ result.bm25 ? t('Sí') : t('No') }}
+                  </span>
+                </div>
+                <div v-if="result.topN !== undefined && result.topN !== null" class="flex items-center justify-between py-2">
+                  <span class="text-sm font-medium text-gray-600 dark:text-gray-400 flex items-center">
+                    <i class="pi pi-sort-numeric-up mr-2"></i>{{ t('Top N') }}
+                  </span>
+                  <span class="px-3 py-1 bg-cyan-100 dark:bg-cyan-900/30 text-cyan-700 dark:text-cyan-300 rounded-lg text-sm font-semibold">
+                    {{ result.topN }}
                   </span>
                 </div>
               </div>
+              <!-- Columna 2 -->
+              <div class="space-y-3">
+                <div v-if="result.context !== undefined && result.context !== null" class="flex items-center justify-between py-2 border-b border-gray-100 dark:border-gray-700 last:border-0">
+                  <span class="text-sm font-medium text-gray-600 dark:text-gray-400 flex items-center">
+                    <i class="pi pi-book mr-2"></i>{{ t('Context') }}
+                  </span>
+                  <span class="px-3 py-1" :class="result.context ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300' : 'bg-gray-100 dark:bg-gray-700/30 text-gray-700 dark:text-gray-300'">
+                    {{ result.context ? t('Sí') : t('No') }}
+                  </span>
+                </div>
+                <div v-if="result.num_queries !== undefined && result.num_queries !== null" class="flex items-center justify-between py-2 border-b border-gray-100 dark:border-gray-700 last:border-0">
+                  <span class="text-sm font-medium text-gray-600 dark:text-gray-400 flex items-center">
+                    <i class="pi pi-question-circle mr-2"></i>{{ t('Número de Consultas') }}
+                  </span>
+                  <span class="px-3 py-1 bg-teal-100 dark:bg-teal-900/30 text-teal-700 dark:text-teal-300 rounded-lg text-sm font-semibold">
+                    {{ result.num_queries }}
+                  </span>
+                </div>
+                <div v-if="result.filter !== undefined && result.filter !== null" class="flex items-center justify-between py-2 border-b border-gray-100 dark:border-gray-700 last:border-0">
+                  <span class="text-sm font-medium text-gray-600 dark:text-gray-400 flex items-center">
+                    <i class="pi pi-filter mr-2"></i>{{ t('Filtro') }}
+                  </span>
+                  <span class="px-3 py-1 bg-pink-100 dark:bg-pink-900/30 text-pink-700 dark:text-pink-300 rounded-lg text-sm font-semibold">
+                    {{ result.filter || t('Ninguno') }}
+                  </span>
+                </div>
+                <div v-if="result.min_count !== undefined && result.min_count !== null" class="flex items-center justify-between py-2 border-b border-gray-100 dark:border-gray-700 last:border-0">
+                  <span class="text-sm font-medium text-gray-600 dark:text-gray-400 flex items-center">
+                    <i class="pi pi-sort-amount-down mr-2"></i>{{ t('Min Count') }}
+                  </span>
+                  <span class="px-3 py-1 bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300 rounded-lg text-sm font-semibold">
+                    {{ result.min_count }}
+                  </span>
+                </div>
+                <div v-if="result.use_docs !== undefined && result.use_docs !== null" class="flex items-center justify-between py-2 border-b border-gray-100 dark:border-gray-700 last:border-0">
+                  <span class="text-sm font-medium text-gray-600 dark:text-gray-400 flex items-center">
+                    <i class="pi pi-file-edit mr-2"></i>{{ t('Use Docs') }}
+                  </span>
+                  <span class="px-3 py-1 bg-violet-100 dark:bg-violet-900/30 text-violet-700 dark:text-violet-300 rounded-lg text-sm font-semibold">
+                    {{ result.use_docs }}
+                  </span>
+                </div>
+                <div v-if="result.embedding" class="flex items-center justify-between py-2 border-b border-gray-100 dark:border-gray-700 last:border-0">
+                  <span class="text-sm font-medium text-gray-600 dark:text-gray-400 flex items-center">
+                    <i class="pi pi-code mr-2"></i>{{ t('Embedding') }}
+                  </span>
+                  <span class="px-3 py-1 bg-indigo-100 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300 rounded-lg text-sm font-semibold text-xs max-w-xs truncate" :title="result.embedding">
+                    {{ result.embedding }}
+                  </span>
+                </div>
+                <div v-if="result.clean_query !== undefined && result.clean_query !== null" class="flex items-center justify-between py-2 border-b border-gray-100 dark:border-gray-700 last:border-0">
+                  <span class="text-sm font-medium text-gray-600 dark:text-gray-400 flex items-center">
+                    <i class="pi pi-filter-slash mr-2"></i>{{ t('Clean Query') }}
+                  </span>
+                  <span class="px-3 py-1" :class="result.clean_query ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300' : 'bg-gray-100 dark:bg-gray-700/30 text-gray-700 dark:text-gray-300'">
+                    {{ result.clean_query ? t('Sí') : t('No') }}
+                  </span>
+                </div>
+                <div v-if="result.index" class="flex items-center justify-between py-2">
+                  <span class="text-sm font-medium text-gray-600 dark:text-gray-400 flex items-center">
+                    <i class="pi pi-database mr-2"></i>{{ t('Index') }}
+                  </span>
+                  <span class="px-3 py-1 bg-slate-100 dark:bg-slate-900/30 text-slate-700 dark:text-slate-300 rounded-lg text-sm font-semibold">
+                    {{ result.index }}
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Entidades -->
+          <div v-if="result.entidades && result.entidades.length > 0" class="bg-white dark:bg-gray-800 p-5 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
+            <div class="flex items-center space-x-2 mb-4">
+              <i class="pi pi-tags text-purple-600 dark:text-purple-400"></i>
+              <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100">
+                {{ t('Entidades') }}
+              </h3>
+              <span class="px-2 py-1 bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 rounded-full text-xs font-medium">
+                {{ result.entidades.length }}
+              </span>
+            </div>
+            <div class="flex flex-wrap gap-2">
+              <span v-for="(entidad, index) in result.entidades" :key="index" 
+                    class="px-3 py-1.5 bg-gradient-to-r from-purple-100 to-pink-100 dark:from-purple-900/30 dark:to-pink-900/30 text-purple-800 dark:text-purple-200 rounded-lg text-sm font-medium shadow-sm hover:shadow-md transition-shadow">
+                {{ entidad.nombre }}
+                <span v-if="entidad.tipo" class="ml-1 text-xs opacity-75">({{ entidad.tipo }})</span>
+              </span>
             </div>
           </div>
 
@@ -299,6 +428,9 @@ const evaluateRAG = async () => {
               </h3>
               <span class="px-2 py-1 bg-teal-100 dark:bg-teal-900/30 text-teal-700 dark:text-teal-300 rounded-full text-xs font-medium">
                 {{ result.sources.length }}
+              </span>
+              <span v-if="result.documents_used" class="px-2 py-1 bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-300 rounded-full text-xs font-medium flex items-center">
+                <i class="pi pi-file mr-1"></i>{{ t('Documentos') }}: {{ result.documents_used }}
               </span>
             </div>
             <div class="space-y-4">

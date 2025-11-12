@@ -2,6 +2,8 @@
 interface RAGConfig {
   agent: string;
   model: string;
+  collection: string;
+  classification: string;
   semantic: boolean;
   bm25: boolean;
   context: boolean;
@@ -10,6 +12,7 @@ interface RAGConfig {
   num_queries: number;
   use_docs: number;
   min_count: number;
+  temperature: number;
 }
 
 interface Props {
@@ -46,7 +49,8 @@ try {
 
 // Obtener valores por defecto desde variables de entorno
 const defaultAgent = runtimeConfig.public?.DEFAULT_LLM_AGENT || 'gemini';
-const defaultModel = runtimeConfig.public?.DEFAULT_LLM_MODEL || 'gpt-4o-mini';
+const defaultModel = runtimeConfig.public?.DEFAULT_LLM_MODEL || 'gemini-2.0-flash';
+const defaultCollection = runtimeConfig.public?.COLLECTION_NAME || 'chunks';
 
 // Crear opciones para agentes basadas en las claves del objeto
 const agentOptions = Object.keys(agentsModels).map(agent => ({
@@ -63,6 +67,33 @@ const modelOptions = computed(() => {
   }));
 });
 
+// Opciones para la colección
+const collectionOptions = [
+  { label: 'Actual', value: 'chunks' },
+  { label: 'Nuevo', value: 'chunks_new' }
+];
+
+// Opciones para la clasificación
+const classificationOptions = [
+  { label: '<automática>', value: null },
+  { label: 'pregunta general', value: 'pregunta general' },
+  { label: 'definición', value: 'definición' },
+  { label: 'biografía/identidad', value: 'biografía/identidad' },
+  { label: 'hecho puntual (lugar/fecha/causa)', value: 'hecho puntual (lugar/fecha/causa)' },
+  { label: 'dato/medida/lista corta', value: 'dato/medida/lista corta' },
+  { label: 'lista/enumeración', value: 'lista/enumeración' },
+  { label: 'explicación/tema', value: 'explicación/tema' },
+  { label: 'opinión/preferencia personal', value: 'opinión/preferencia personal' },
+  { label: 'comparación/ordenación', value: 'comparación/ordenación' },
+  { label: 'geografía (capital/localización)', value: 'geografía (capital/localización)' },
+  { label: 'verificación/controversia', value: 'verificación/controversia' },
+  { label: 'instrucción/encargo', value: 'instrucción/encargo' },
+  { label: 'tópico/palabras clave', value: 'tópico/palabras clave' },
+  { label: 'declaración/tema general', value: 'declaración/tema general' }
+];
+
+
+
 // Computed para el valor local que emite actualizaciones
 const localConfig = computed({
   get: () => props.modelValue,
@@ -72,7 +103,7 @@ const localConfig = computed({
 // Watcher para actualizar el modelo cuando cambie el agente
 watch(() => localConfig.value.agent, (newAgent) => {
   const models = agentsModels[newAgent] || [];
-  const currentModel = localConfig.value.model || '';
+  const currentModel = localConfig.value.model || defaultModel;
   if (models.length > 0 && !models.includes(currentModel)) {
     const firstModel = models[0];
     if (firstModel) {
@@ -84,6 +115,13 @@ watch(() => localConfig.value.agent, (newAgent) => {
     localConfig.value = { ...localConfig.value, model: defaultModel };
   }
 });
+
+// Watcher para establecer el valor por defecto de la colección
+watch(() => localConfig.value.collection, (newCollection) => {
+  if (!newCollection || newCollection === '') {
+    localConfig.value = { ...localConfig.value, collection: defaultCollection };
+  }
+}, { immediate: true });
 
 // Función helper para generar IDs únicos
 const getId = (name: string) => {
@@ -134,6 +172,42 @@ const getId = (name: string) => {
             class="w-full"
             :disabled="disabled"
             :placeholder="t('Seleccione un modelo')"
+          />
+        </div>
+
+        <!-- Collection -->
+        <div class="space-y-2">
+          <label :for="getId('collection')" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+            <i class="pi pi-database text-gray-400 mr-2"></i>
+            {{ t('Chunks') }}
+          </label>
+          <Select 
+            :id="getId('collection')" 
+            v-model="localConfig.collection" 
+            :options="collectionOptions"
+            optionLabel="label"
+            optionValue="value"
+            class="w-full"
+            :disabled="disabled"
+            :placeholder="t('Seleccione chunks')"
+          />
+        </div>
+
+        <!-- Classification -->
+        <div class="space-y-2">
+          <label :for="getId('classification')" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+            <i class="pi pi-tags text-gray-400 mr-2"></i>
+            {{ t('Clasificación') }}
+          </label>
+          <Select 
+            :id="getId('classification')" 
+            v-model="localConfig.classification" 
+            :options="classificationOptions"
+            optionLabel="label"
+            optionValue="value"
+            class="w-full"
+            :disabled="disabled"
+            :placeholder="t('Seleccione una clasificación')"
           />
         </div>
 
@@ -231,7 +305,7 @@ const getId = (name: string) => {
               :id="getId('use_docs')" 
               v-model="localConfig.use_docs" 
               class="w-full"
-              :min="0"
+              :min="-1"
               :max="10"
               showButtons
               :disabled="disabled"
@@ -247,9 +321,26 @@ const getId = (name: string) => {
               :id="getId('min_count')" 
               v-model="localConfig.min_count" 
               class="w-full"
-              :min="2"
+              :min="-1"
               :max="20"
               showButtons
+              :disabled="disabled"
+            />
+          </div>
+
+          <div class="space-y-2">
+            <label :for="getId('temperature')" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+              <i class="pi pi-sliders-h text-gray-400 mr-2"></i>
+              {{ t('Temperatura') }}
+              <span class="ml-2 text-gray-500 dark:text-gray-400">({{ localConfig.temperature }})</span>
+            </label>
+            <Slider 
+              :id="getId('temperature')" 
+              v-model="localConfig.temperature" 
+              :min="0"
+              :max="2"
+              :step="0.1"
+              class="w-full"
               :disabled="disabled"
             />
           </div>
