@@ -4,6 +4,8 @@
 
 - Añade test RAG
 - Añade el test A/B de las evaluaciones RAG
+- Generación de PDF de las respuestas RAG
+- Actualización de la lista de chats
 
 ## 5.0.13
 
