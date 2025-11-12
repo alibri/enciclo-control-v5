@@ -163,11 +163,11 @@ const generarPDF = async () => {
 
     // Configuración para el PDF
     const opt = {
-      margin: 1,
+      margin: [0.3, 0.3, 0.3, 0.3] as [number, number, number, number], // Márgenes más pequeños: [top, right, bottom, left] en pulgadas
       filename: `${t('resultado_consulta')}_${props.result?.query?.substring(0, 50) || t('consulta')}_${new Date().toISOString().split('T')[0]}.pdf`,
       image: { type: 'jpeg' as const, quality: 0.98 },
       html2canvas: {
-        scale: 2,
+        scale: 2, // Reducido de 3 a 2 para mejor rendimiento y manejo de saltos
         useCORS: true,
         letterRendering: true,
         allowTaint: true,
@@ -181,6 +181,22 @@ const generarPDF = async () => {
             img.style.height = 'auto';
             img.style.display = 'block';
           });
+          
+          // Aplicar estilos para evitar cortes de texto en elementos importantes
+          const elementsToProtect = clonedDoc.querySelectorAll('.print-area > *, .print-area .space-y-6 > *, .print-area .space-y-4 > *');
+          elementsToProtect.forEach((el: Element) => {
+            const htmlEl = el as HTMLElement;
+            htmlEl.style.breakInside = 'avoid';
+            htmlEl.style.orphans = '3';
+            htmlEl.style.widows = '3';
+          });
+          
+          // Proteger párrafos y bloques de texto
+          const textBlocks = clonedDoc.querySelectorAll('p, div.markdown-content, .prose');
+          textBlocks.forEach((el: Element) => {
+            const htmlEl = el as HTMLElement;
+            htmlEl.style.breakInside = 'avoid';
+          });
         },
         // Excluir elementos específicos del PDF
         ignoreElements: (element: Element) => {
@@ -193,6 +209,12 @@ const generarPDF = async () => {
         unit: 'in',
         format: 'a4',
         orientation: 'portrait' as const
+      },
+      pagebreak: { 
+        mode: ['avoid-all', 'css', 'legacy'],
+        before: '.page-break-before',
+        after: '.page-break-after',
+        avoid: ['.markdown-content', 'p', 'div.space-y-6 > *', 'div.space-y-4 > *']
       }
     };
 
@@ -1249,12 +1271,38 @@ const generarPDF = async () => {
     height: auto !important;
     display: block !important;
     margin: 0 auto !important;
-    page-break-inside: avoid;
+    break-inside: avoid;
   }
 
   /* Asegurar que las tablas se impriman correctamente */
   table {
-    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+
+  /* Evitar cortes de texto en elementos importantes */
+  .print-area > *,
+  .print-area .space-y-6 > *,
+  .print-area .space-y-4 > * {
+    break-inside: avoid;
+    orphans: 3;
+    widows: 3;
+  }
+
+  /* Proteger párrafos y bloques de contenido */
+  p,
+  .markdown-content,
+  .prose,
+  .markdown-content > * {
+    break-inside: avoid;
+    orphans: 3;
+    widows: 3;
+  }
+
+  /* Proteger secciones de contenido */
+  .bg-white,
+  .bg-gray-50,
+  .bg-gradient-to-r {
+    break-inside: avoid;
   }
 
   /* Mejorar la visualización de enlaces en PDF */
