@@ -2,6 +2,8 @@
 import { formatStringPre } from '~/utils/format';
 import { getPageLink } from '~/utils/openExternal';
 import TestService from '~/services/testService';
+import html2pdf from 'html2pdf.js';
+import 'flag-icons/css/flag-icons.min.css';
 
 interface Props {
   result: any;
@@ -22,6 +24,7 @@ const { t } = useI18n();
 const { showMessage, removeGroup } = useMessages();
 
 const testService = new TestService();
+const printing = ref(false);
 
 // Ratings para evaluación
 const ratingRespuesta = ref<number | undefined>(undefined);
@@ -44,6 +47,35 @@ const formatMarkdown = (markdown: string | null | undefined): string => {
   return formatStringPre(markdown);
 };
 
+// Obtener idiomas disponibles de las traducciones
+const availableLanguages = computed(() => {
+  const translations = props.result?.translations || {};
+  const languages: string[] = [];
+  
+  // Buscar idiomas en las traducciones directas (content)
+  Object.keys(translations).forEach(key => {
+    if (key !== 'titular' && key !== 'sabias' && typeof translations[key] === 'string') {
+      languages.push(key);
+    }
+  });
+  
+  return languages;
+});
+
+// Función para obtener la bandera del idioma
+const getLanguageFlag = (lang: string) => {
+  const flagMap: { [key: string]: { type: 'fi' | 'img', value: string } } = {
+    'es': { type: 'fi', value: 'es' },
+    'en': { type: 'fi', value: 'gb' },
+    'fr': { type: 'fi', value: 'fr' },
+    'pt': { type: 'fi', value: 'pt' },
+    'cat': { type: 'img', value: '/flags/catalonia.svg' },
+    'eu': { type: 'img', value: '/flags/basque.svg' },
+    'gl': { type: 'img', value: '/flags/galicia.svg' }
+  };
+  return flagMap[lang] || { type: 'fi', value: 'es' };
+};
+
 // Computed para el contenido HTML
 const contentHtml = computed(() => {
   if (props.result?.content) {
@@ -51,14 +83,6 @@ const contentHtml = computed(() => {
   }
   if (props.result?.response) {
     return formatMarkdown(props.result.response);
-  }
-  return '';
-});
-
-// Computed para el HTML de "Sabías que"
-const sabiasHtml = computed(() => {
-  if (props.result?.sabias) {
-    return formatMarkdown(props.result.sabias);
   }
   return '';
 });
@@ -108,11 +132,104 @@ const evaluateRAG = async () => {
     removeGroup('eval');
   }
 };
+
+// Función para generar PDF del componente
+const generarPDF = async () => {
+  // Obtener el contenido del componente
+  printing.value = true;
+  const contenido = document.querySelector('.print-area');
+  
+  if (!contenido) {
+    showMessage('error', t('Error'), t('No se encontró contenido para generar PDF'));
+    printing.value = false;
+    return;
+  }
+
+  try {
+    // Esperar a que las imágenes se carguen completamente
+    const images = contenido.querySelectorAll('img');
+    const imagePromises = Array.from(images).map((img: HTMLImageElement) => {
+      return new Promise((resolve) => {
+        if (img.complete) {
+          resolve(img);
+        } else {
+          img.onload = () => resolve(img);
+          img.onerror = () => resolve(img);
+        }
+      });
+    });
+
+    await Promise.all(imagePromises);
+
+    // Configuración para el PDF
+    const opt = {
+      margin: 1,
+      filename: `${t('resultado_consulta')}_${props.result?.query?.substring(0, 50) || t('consulta')}_${new Date().toISOString().split('T')[0]}.pdf`,
+      image: { type: 'jpeg' as const, quality: 0.98 },
+      html2canvas: {
+        scale: 2,
+        useCORS: true,
+        letterRendering: true,
+        allowTaint: true,
+        logging: false,
+        // Configuración específica para imágenes
+        onclone: (clonedDoc: Document) => {
+          // Asegurar que las imágenes se muestren en el documento clonado
+          const clonedImages = clonedDoc.querySelectorAll('img');
+          clonedImages.forEach((img: HTMLImageElement) => {
+            img.style.maxWidth = '100%';
+            img.style.height = 'auto';
+            img.style.display = 'block';
+          });
+        },
+        // Excluir elementos específicos del PDF
+        ignoreElements: (element: Element) => {
+          return element.classList.contains('no-print') ||
+            element.classList.contains('no-pdf') ||
+            element.tagName === 'BUTTON';
+        }
+      },
+      jsPDF: {
+        unit: 'in',
+        format: 'a4',
+        orientation: 'portrait' as const
+      }
+    };
+
+    // Mostrar mensaje de carga
+    showMessage('info', t('Generando PDF'), t('Por favor espere...'));
+
+    // Generar el PDF
+    await html2pdf().set(opt).from(contenido as HTMLElement).save();
+
+    // Mostrar mensaje de éxito
+    showMessage('success', t('Éxito'), t('PDF generado correctamente'));
+
+  } catch (error) {
+    console.error('Error generando PDF:', error);
+    showMessage('error', t('Error'), t('No se pudo generar el PDF'));
+  } finally {
+    printing.value = false;
+  }
+};
 </script>
 
 <template>
   <div v-if="result" class="mt-6 space-y-6">
+    <!-- Botón para generar PDF -->
+    <div class="flex justify-start gap-2 no-print">
+      <Button
+        :label="t('Generar PDF')"
+        icon="pi pi-file-pdf"
+        @click="generarPDF"
+        :loading="printing"
+        severity="danger"
+        class="px-4 py-2"
+      />
+    </div>
+    
     <!-- Main Content Card -->
+    <div class="print-area">
     <Card class="shadow-lg">
       <template #title>
         <div class="flex items-center justify-between">
@@ -125,10 +242,44 @@ const evaluateRAG = async () => {
               <p v-if="result.query" class="text-sm text-gray-500 dark:text-gray-400 mt-1">{{ result.query }}</p>
             </div>
           </div>
-          <div v-if="result.times?.total" class="text-right">
-            <div class="text-xs text-gray-500 dark:text-gray-400">{{ t('Tiempo total') }}</div>
-            <div class="text-lg font-semibold text-blue-600 dark:text-blue-400">
-              {{ typeof result.times.total === 'number' ? result.times.total.toFixed(2) : result.times.total }}s
+          <div class="flex items-center gap-4">
+            <!-- Like -->
+            <div v-if="result.like !== null && result.like !== undefined" class="flex items-center">
+              <div v-if="result.like === 1" class="flex items-center space-x-2 px-3 py-2 bg-green-100 dark:bg-green-900/30 rounded-lg">
+                <i class="pi pi-thumbs-up text-green-600 dark:text-green-400 text-xl"></i>
+                <span class="text-sm font-semibold text-green-700 dark:text-green-300">{{ t('Me gusta') }}</span>
+              </div>
+              <div v-else-if="result.like === 0" class="flex items-center space-x-2 px-3 py-2 bg-red-100 dark:bg-red-900/30 rounded-lg">
+                <i class="pi pi-thumbs-down text-red-600 dark:text-red-400 text-xl"></i>
+                <span class="text-sm font-semibold text-red-700 dark:text-red-300">{{ t('No me gusta') }}</span>
+              </div>
+            </div>
+            
+            <!-- Counter -->
+            <div v-if="result.counter !== null && result.counter !== undefined" class="flex items-center space-x-2 px-3 py-2 bg-blue-100 dark:bg-blue-900/30 rounded-lg">
+              <i class="pi pi-mouse-pointer text-blue-600 dark:text-blue-400"></i>
+              <span class="text-sm font-semibold text-blue-700 dark:text-blue-300">{{ formatIntNumber(result.counter) }}</span>
+              <span class="text-xs text-blue-600 dark:text-blue-400">{{ t('clicks') }}</span>
+            </div>
+            
+            <!-- Short URL -->
+            <div v-if="result.short_url" class="flex items-center no-print">
+              <a 
+                :href="result.short_url" 
+                target="_blank"
+                class="flex items-center space-x-2 px-3 py-2 bg-indigo-100 dark:bg-indigo-900/30 rounded-lg hover:bg-indigo-200 dark:hover:bg-indigo-800/50 transition-colors"
+              >
+                <i class="pi pi-external-link text-indigo-600 dark:text-indigo-400"></i>
+                <span class="text-sm font-semibold text-indigo-700 dark:text-indigo-300">{{ t('Ver enlace') }}</span>
+              </a>
+            </div>
+            
+            <!-- Tiempo total -->
+            <div v-if="result.times?.total" class="text-right">
+              <div class="text-xs text-gray-500 dark:text-gray-400">{{ t('Tiempo total') }}</div>
+              <div class="text-lg font-semibold text-blue-600 dark:text-blue-400">
+                {{ typeof result.times.total === 'number' ? result.times.total.toFixed(2) : result.times.total }}s
+              </div>
             </div>
           </div>
         </div>
@@ -216,30 +367,109 @@ const evaluateRAG = async () => {
             </div>
 
             <!-- Content / Respuesta -->
-            <div v-if="contentHtml" class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
-              <div class="prose prose-lg dark:prose-invert max-w-none markdown-content">
-                <div 
-                  v-html="contentHtml" 
-                  class="text-gray-800 dark:text-gray-200 leading-relaxed"
-                ></div>
+            <div v-if="contentHtml || (result.translations && availableLanguages.length > 0)" class="space-y-4">
+              <!-- Contenido Principal -->
+              <div v-if="result.content || result.response" class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
+                <div class="flex items-center space-x-2 mb-4">
+                  <template v-if="getLanguageFlag('es').type === 'fi'">
+                    <span class="fi fi-es w-5 h-5"></span>
+                  </template>
+                  <template v-else>
+                    <img :src="getLanguageFlag('es').value" alt="es" class="w-5 h-5 object-contain" />
+                  </template>
+                  <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100">
+                    {{ t('Principal') }} (ES)
+                  </h3>
+                </div>
+                <div class="prose prose-lg dark:prose-invert max-w-none markdown-content">
+                  <div 
+                    v-html="formatMarkdown(result.content || result.response)" 
+                    class="text-gray-800 dark:text-gray-200 leading-relaxed"
+                  ></div>
+                </div>
+              </div>
+              
+              <!-- Traducciones -->
+              <div v-for="lang in availableLanguages" :key="lang" 
+                   class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
+                <div class="flex items-center space-x-2 mb-4">
+                  <template v-if="getLanguageFlag(lang).type === 'fi'">
+                    <span :class="'fi fi-' + getLanguageFlag(lang).value" class="w-5 h-5"></span>
+                  </template>
+                  <template v-else>
+                    <img :src="getLanguageFlag(lang).value" :alt="lang" class="w-5 h-5 object-contain" />
+                  </template>
+                  <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100">
+                    {{ lang.toUpperCase() }}
+                  </h3>
+                </div>
+                <div class="prose prose-lg dark:prose-invert max-w-none markdown-content">
+                  <div 
+                    v-html="formatMarkdown(result.translations?.[lang])" 
+                    class="text-gray-800 dark:text-gray-200 leading-relaxed"
+                  ></div>
+                </div>
               </div>
             </div>
 
             <!-- Sabías que -->
-            <div v-if="result.sabias" class="bg-gradient-to-r from-amber-50 to-yellow-50 dark:from-amber-900/20 dark:to-yellow-900/20 p-5 rounded-xl border-l-4 border-amber-500">
-              <div class="flex items-start space-x-3">
-                <i class="pi pi-lightbulb text-amber-600 dark:text-amber-400 text-xl mt-1"></i>
-                <div class="flex-1">
-                  <h3 v-if="result.titular" class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2 flex items-center">
-                    <span class="mr-2">{{ result.titular }}</span>
-                  </h3>
-                  <div 
-                    v-if="sabiasHtml" 
-                    v-html="sabiasHtml" 
-                    class="prose prose-lg dark:prose-invert max-w-none markdown-content text-gray-700 dark:text-gray-300 italic leading-relaxed"
-                  ></div>
+            <div v-if="result.sabias || (result.translations?.sabias && availableLanguages.length > 0)" class="space-y-4">
+              <!-- Sabías que Principal -->
+              <div v-if="result.sabias" class="bg-gradient-to-r from-amber-50 to-yellow-50 dark:from-amber-900/20 dark:to-yellow-900/20 p-5 rounded-xl border-l-4 border-amber-500">
+                <div class="flex items-start space-x-3">
+                  <i class="pi pi-lightbulb text-amber-600 dark:text-amber-400 text-xl mt-1"></i>
+                  <div class="flex-1">
+                    <div class="flex items-center space-x-2 mb-3">
+                      <template v-if="getLanguageFlag('es').type === 'fi'">
+                        <span class="fi fi-es w-5 h-5"></span>
+                      </template>
+                      <template v-else>
+                        <img :src="getLanguageFlag('es').value" alt="es" class="w-5 h-5 object-contain" />
+                      </template>
+                      <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100">
+                        {{ t('Principal') }} (ES)
+                      </h3>
+                    </div>
+                    <h3 v-if="result.titular" class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2 flex items-center">
+                      <span class="mr-2">{{ result.titular }}</span>
+                    </h3>
+                    <div 
+                      v-html="formatMarkdown(result.sabias)" 
+                      class="prose prose-lg dark:prose-invert max-w-none markdown-content text-gray-700 dark:text-gray-300 italic leading-relaxed"
+                    ></div>
+                  </div>
                 </div>
               </div>
+              
+              <!-- Traducciones de Sabías que -->
+              <template v-for="lang in availableLanguages" :key="lang">
+                <div v-if="result.translations?.sabias?.[lang]"
+                     class="bg-gradient-to-r from-amber-50 to-yellow-50 dark:from-amber-900/20 dark:to-yellow-900/20 p-5 rounded-xl border-l-4 border-amber-500">
+                <div class="flex items-start space-x-3">
+                  <i class="pi pi-lightbulb text-amber-600 dark:text-amber-400 text-xl mt-1"></i>
+                  <div class="flex-1">
+                    <div class="flex items-center space-x-2 mb-3">
+                      <template v-if="getLanguageFlag(lang).type === 'fi'">
+                        <span :class="'fi fi-' + getLanguageFlag(lang).value" class="w-5 h-5"></span>
+                      </template>
+                      <template v-else>
+                        <img :src="getLanguageFlag(lang).value" :alt="lang" class="w-5 h-5 object-contain" />
+                      </template>
+                      <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100">
+                        {{ lang.toUpperCase() }}
+                      </h3>
+                    </div>
+                    <h3 v-if="result.translations?.titular?.[lang]" class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2 flex items-center">
+                      <span class="mr-2">{{ result.translations.titular[lang] }}</span>
+                    </h3>
+                    <div 
+                      v-html="formatMarkdown(result.translations.sabias[lang])" 
+                      class="prose prose-lg dark:prose-invert max-w-none markdown-content text-gray-700 dark:text-gray-300 italic leading-relaxed"
+                    ></div>
+                  </div>
+                </div>
+                </div>
+              </template>
             </div>
           </div>
 
@@ -662,7 +892,7 @@ const evaluateRAG = async () => {
           </div>
 
           <!-- Evaluación -->
-          <div v-if="showEvaluation" class="bg-white dark:bg-gray-800 p-5 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
+          <div v-if="showEvaluation" class="bg-white dark:bg-gray-800 p-5 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 no-print">
             <div class="flex items-center space-x-2 mb-4">
               <i class="pi pi-star text-yellow-600 dark:text-yellow-400"></i>
               <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100">
@@ -720,7 +950,7 @@ const evaluateRAG = async () => {
           </div>
 
           <!-- Raw Result (for debugging) -->
-          <details v-if="showJson" class="bg-gray-900 dark:bg-gray-950 p-4 rounded-xl font-mono text-xs overflow-x-auto border border-gray-700">
+          <details v-if="showJson" class="bg-gray-900 dark:bg-gray-950 p-4 rounded-xl font-mono text-xs overflow-x-auto border border-gray-700 no-print">
             <summary class="cursor-pointer text-green-400 hover:text-green-300 mb-2 flex items-center space-x-2 font-semibold">
               <i class="pi pi-code"></i>
               <span>{{ t('Ver JSON completo (debug)') }}</span>
@@ -730,6 +960,7 @@ const evaluateRAG = async () => {
         </div>
       </template>
     </Card>
+    </div>
   </div>
 </template>
 
@@ -922,6 +1153,115 @@ const evaluateRAG = async () => {
   height: auto;
   border-radius: 0.5rem;
   margin: 1rem 0;
+}
+
+/* Estilos personalizados para las pestañas */
+.custom-tabs :deep(.p-tabs-nav) {
+  background: #f8fafc;
+  border-radius: 8px 8px 0 0;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.custom-tabs :deep(.p-tabs-nav li) {
+  margin-right: 4px;
+}
+
+.custom-tabs :deep(.p-tabs-nav li .p-tabs-nav-link) {
+  border-radius: 6px 6px 0 0;
+  border: none;
+  background: transparent;
+  color: #64748b;
+  font-weight: 500;
+  padding: 12px 16px;
+  transition: all 0.2s ease;
+}
+
+.custom-tabs :deep(.p-tabs-nav li .p-tabs-nav-link:hover) {
+  background: #e2e8f0;
+  color: #475569;
+}
+
+.custom-tabs :deep(.p-tabs-nav li.p-highlight .p-tabs-nav-link) {
+  background: #3b82f6;
+  color: white;
+  box-shadow: 0 2px 4px rgba(59, 130, 246, 0.3);
+}
+
+.custom-tabs :deep(.p-tabs-panels) {
+  background: white;
+  border-radius: 0 0 8px 8px;
+  border: 1px solid #e2e8f0;
+  border-top: none;
+}
+
+.dark .custom-tabs :deep(.p-tabs-nav) {
+  background: #1f2937;
+  border-bottom-color: #374151;
+}
+
+.dark .custom-tabs :deep(.p-tabs-nav li .p-tabs-nav-link) {
+  color: #9ca3af;
+}
+
+.dark .custom-tabs :deep(.p-tabs-nav li .p-tabs-nav-link:hover) {
+  background: #374151;
+  color: #d1d5db;
+}
+
+.dark .custom-tabs :deep(.p-tabs-nav li.p-highlight .p-tabs-nav-link) {
+  background: #3b82f6;
+  color: white;
+}
+
+.dark .custom-tabs :deep(.p-tabs-panels) {
+  background: #1f2937;
+  border-color: #374151;
+}
+
+@media print {
+  .no-print {
+    display: none !important;
+  }
+
+  /* Clases específicas para PDF */
+  .no-pdf {
+    display: none !important;
+  }
+
+  .pdf-only {
+    display: block !important;
+  }
+
+  /* Mejorar la apariencia de la impresión */
+  .print-area {
+    box-shadow: none !important;
+  }
+
+  /* Mejorar la legibilidad del texto */
+  body {
+    color: #000 !important;
+    background: #fff !important;
+  }
+
+  /* Estilos específicos para las imágenes en impresión */
+  .print-area img {
+    max-width: 100% !important;
+    height: auto !important;
+    display: block !important;
+    margin: 0 auto !important;
+    page-break-inside: avoid;
+  }
+
+  /* Asegurar que las tablas se impriman correctamente */
+  table {
+    page-break-inside: avoid;
+  }
+
+  /* Mejorar la visualización de enlaces en PDF */
+  a.print-link {
+    color: #000 !important;
+    text-decoration: underline;
+  }
 }
 </style>
 

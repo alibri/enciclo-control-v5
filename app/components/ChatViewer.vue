@@ -97,6 +97,7 @@ const transformedResult = computed(() => {
     sources: response.sources || [],
     related: response.related || [],
     docs: response.docs || [],
+    translations: response.translations || {},
     times: times,
     usage: usage,
     documents_used: response.documents_used,

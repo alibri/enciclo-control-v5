@@ -168,7 +168,6 @@ const exportarCSV = () => {
   // Cabeceras de la tabla
   const headers = [t('Mes'), t('Sesiones'), t('Páginas'), t('Tiempo'), t('Pregúntame')];
   
-  console.log('headers', headers);
   // Construir las filas de datos
   const rows = Object.entries(sortedUserPageStats.value).map(([month, stats]) => {
     return [
@@ -180,14 +179,11 @@ const exportarCSV = () => {
     ];
   });
 
-  console.log('rows', rows);
-
   // Unir cabeceras y filas
   const csvContent = [headers, ...rows]
     .map(row => row.map(cell => `"${String(cell).replace(/"/g, '""')}"`).join(','))
     .join('\n');
 
-  console.log(csvContent);
   // Crear un blob y descargar
   const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
   const url = URL.createObjectURL(blob);
