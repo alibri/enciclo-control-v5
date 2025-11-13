@@ -1,5 +1,10 @@
 # VERSIONES
 
+## 5.0.15
+
+- Añade los precios de los modelos de IA en el formulario de configuración RAG
+- Añade la visualización de los precios de los modelos de IA en el resultado de la consulta RAG
+
 ## 5.0.14
 
 - Añade test RAG

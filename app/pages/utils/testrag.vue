@@ -1,5 +1,4 @@
 <script setup lang='ts'>
-import { useConfirm } from 'primevue/useconfirm';
 import TestService from '~/services/testService';
 
 const { showMessage, removeGroup } = useMessages();
@@ -51,7 +50,7 @@ const config = ref({
   min_count: -1,
   collection: defaultCollection,
   temperature: 1.0,
-  classification: '<automática>'
+  classification: 'auto'
 });
 
 const testRAG = async () => {

@@ -5,6 +5,18 @@ import TestService from '~/services/testService';
 import html2pdf from 'html2pdf.js';
 import 'flag-icons/css/flag-icons.min.css';
 
+interface ModelInfo {
+  input: number;
+  output: number;
+  max_tokens: number;
+}
+
+interface AgentsModels {
+  [agent: string]: {
+    [model: string]: ModelInfo;
+  };
+}
+
 interface Props {
   result: any;
   config?: any;
@@ -25,6 +37,14 @@ const { showMessage, removeGroup } = useMessages();
 
 const testService = new TestService();
 const printing = ref(false);
+
+// Cargar precios de modelos desde archivo JSON
+const { data: agentsModelsData } = useFetch<AgentsModels>('/agents-models.json', {
+  default: () => ({ openai: {}, gemini: {} }),
+  server: false
+});
+
+const agentsModels = computed(() => agentsModelsData.value || { openai: {}, gemini: {} });
 
 // Ratings para evaluación
 const ratingRespuesta = ref<number | undefined>(undefined);
@@ -85,6 +105,39 @@ const contentHtml = computed(() => {
     return formatMarkdown(props.result.response);
   }
   return '';
+});
+
+// Computed para calcular el coste de los tokens
+const tokenCost = computed(() => {
+  if (!props.result?.usage || !props.result?.agent || !props.result?.model) {
+    return null;
+  }
+
+  const agent = props.result.agent;
+  let model = props.result.model;
+  model = model.split('/')[1];
+
+  console.log(agent, model);
+  const modelInfo = agentsModels.value[agent]?.[model];
+
+  if (!modelInfo) {
+    return null;
+  }
+
+  const promptTokens = props.result.usage.prompt_tokens || 0;
+  const completionTokens = props.result.usage.completion_tokens || 0;
+
+  // Los precios están por millón de tokens
+  const promptCost = (promptTokens / 1_000_000) * modelInfo.input;
+  const completionCost = (completionTokens / 1_000_000) * modelInfo.output;
+  const totalCost = promptCost + completionCost;
+
+  return {
+    promptCost,
+    completionCost,
+    totalCost,
+    modelInfo
+  };
 });
 
 // Función para evaluar la respuesta
@@ -889,25 +942,53 @@ const generarPDF = async () => {
                   <span class="text-sm font-medium text-gray-600 dark:text-gray-400 flex items-center">
                     <i class="pi pi-arrow-right mr-2 text-emerald-600"></i>{{ t('Prompt') }}
                   </span>
-                  <span class="px-3 py-1 bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300 rounded-lg text-sm font-semibold">
-                    {{ result.usage.prompt_tokens?.toLocaleString() || 0 }}
-                  </span>
+                  <div class="flex flex-col items-end">
+                    <span class="px-3 py-1 bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300 rounded-lg text-sm font-semibold">
+                      {{ result.usage.prompt_tokens?.toLocaleString() || 0 }}
+                    </span>
+                    <span v-if="tokenCost" class="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                      ${{ tokenCost.promptCost.toFixed(6) }}
+                    </span>
+                  </div>
                 </div>
                 <div class="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
                   <span class="text-sm font-medium text-gray-600 dark:text-gray-400 flex items-center">
                     <i class="pi pi-arrow-left mr-2 text-blue-600"></i>{{ t('Completación') }}
                   </span>
-                  <span class="px-3 py-1 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 rounded-lg text-sm font-semibold">
-                    {{ result.usage.completion_tokens?.toLocaleString() || 0 }}
-                  </span>
+                  <div class="flex flex-col items-end">
+                    <span class="px-3 py-1 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 rounded-lg text-sm font-semibold">
+                      {{ result.usage.completion_tokens?.toLocaleString() || 0 }}
+                    </span>
+                    <span v-if="tokenCost" class="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                      ${{ tokenCost.completionCost.toFixed(6) }}
+                    </span>
+                  </div>
                 </div>
                 <div class="flex items-center justify-between p-3 bg-gradient-to-r from-emerald-50 to-blue-50 dark:from-emerald-900/20 dark:to-blue-900/20 rounded-lg border-2 border-emerald-200 dark:border-emerald-800">
                   <span class="text-sm font-bold text-gray-700 dark:text-gray-300 flex items-center">
                     <i class="pi pi-calculator mr-2"></i>{{ t('Total') }}
                   </span>
-                  <span class="px-4 py-1.5 bg-gradient-to-r from-emerald-500 to-blue-500 text-white rounded-lg text-sm font-bold shadow-md">
-                    {{ result.usage.total_tokens?.toLocaleString() || 0 }}
-                  </span>
+                  <div class="flex flex-col items-end">
+                    <span class="px-4 py-1.5 bg-gradient-to-r from-emerald-500 to-blue-500 text-white rounded-lg text-sm font-bold shadow-md">
+                      {{ result.usage.total_tokens?.toLocaleString() || 0 }}
+                    </span>
+                    <span v-if="tokenCost" class="text-xs text-gray-700 dark:text-white/90 mt-1 font-semibold">
+                      ${{ tokenCost.totalCost.toFixed(6) }}
+                    </span>
+                  </div>
+                </div>
+                <div v-if="tokenCost && result.model" class="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
+                  <div class="flex items-center justify-between p-3 bg-gradient-to-r from-yellow-50 to-orange-50 dark:from-yellow-900/20 dark:to-orange-900/20 rounded-lg border-l-4 border-yellow-500">
+                    <span class="text-sm font-medium text-gray-700 dark:text-gray-300 flex items-center">
+                      <i class="pi pi-dollar mr-2 text-yellow-600"></i>{{ t('Coste Total') }}
+                    </span>
+                    <span class="px-4 py-2 bg-gradient-to-r from-yellow-500 to-orange-500 text-white rounded-lg text-lg font-bold shadow-md">
+                      ${{ tokenCost.totalCost.toFixed(6) }}
+                    </span>
+                  </div>
+                  <div class="mt-2 text-xs text-gray-500 dark:text-gray-400 text-center">
+                    {{ t('Modelo') }}: {{ result.model }} ({{ t('Input') }}: ${{ tokenCost.modelInfo.input }}/1M, {{ t('Output') }}: ${{ tokenCost.modelInfo.output }}/1M)
+                  </div>
                 </div>
               </div>
             </div>

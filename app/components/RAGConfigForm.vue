@@ -1,4 +1,16 @@
 <script setup lang='ts'>
+interface ModelInfo {
+  input: number;
+  output: number;
+  max_tokens: number;
+}
+
+interface AgentsModels {
+  [agent: string]: {
+    [model: string]: ModelInfo;
+  };
+}
+
 interface RAGConfig {
   agent: string;
   model: string;
@@ -37,15 +49,13 @@ const emit = defineEmits<{
 const { t } = useI18n();
 const runtimeConfig = useRuntimeConfig();
 
-// Cargar AGENTS_MODELS desde variables de entorno
-const agentsModelsJson = runtimeConfig.public?.AGENTS_MODELS || '{}';
-let agentsModels: Record<string, string[]> = {};
-try {
-  agentsModels = JSON.parse(agentsModelsJson);
-} catch (e) {
-  console.error('Error parsing AGENTS_MODELS:', e);
-  agentsModels = { openai: [], gemini: [] };
-}
+// Cargar AGENTS_MODELS desde archivo JSON
+const { data: agentsModelsData } = useFetch<AgentsModels>('/agents-models.json', {
+  default: () => ({ openai: {}, gemini: {} }),
+  server: false
+});
+
+const agentsModels = computed(() => agentsModelsData.value || { openai: {}, gemini: {} });
 
 // Obtener valores por defecto desde variables de entorno
 const defaultAgent = runtimeConfig.public?.DEFAULT_LLM_AGENT || 'gemini';
@@ -53,18 +63,26 @@ const defaultModel = runtimeConfig.public?.DEFAULT_LLM_MODEL || 'gemini-2.0-flas
 const defaultCollection = runtimeConfig.public?.COLLECTION_NAME || 'chunks';
 
 // Crear opciones para agentes basadas en las claves del objeto
-const agentOptions = Object.keys(agentsModels).map(agent => ({
-  label: agent.charAt(0).toUpperCase() + agent.slice(1),
-  value: agent
-}));
+const agentOptions = computed(() => {
+  return Object.keys(agentsModels.value).map(agent => ({
+    label: agent.charAt(0).toUpperCase() + agent.slice(1),
+    value: agent
+  }));
+});
 
 // Computed para obtener los modelos del agente seleccionado
 const modelOptions = computed(() => {
-  const models = agentsModels[props.modelValue.agent] || [];
-  return models.map(model => ({
-    label: model,
-    value: model
-  }));
+  const agentModels = agentsModels.value[props.modelValue.agent] || {};
+  const modelNames = Object.keys(agentModels);
+  return modelNames.map(model => {
+    const modelInfo = agentModels[model];
+    const inputPrice = modelInfo?.input?.toFixed(2) || '0.00';
+    const outputPrice = modelInfo?.output?.toFixed(2) || '0.00';
+    return {
+      label: `${model} (In: $${inputPrice}/1M, Out: $${outputPrice}/1M)`,
+      value: model
+    };
+  });
 });
 
 // Opciones para la colección
@@ -75,7 +93,7 @@ const collectionOptions = [
 
 // Opciones para la clasificación
 const classificationOptions = [
-  { label: '<automática>', value: null },
+  { label: '[automática]', value: 'auto' },
   { label: 'pregunta general', value: 'pregunta general' },
   { label: 'definición', value: 'definición' },
   { label: 'biografía/identidad', value: 'biografía/identidad' },
@@ -102,16 +120,17 @@ const localConfig = computed({
 
 // Watcher para actualizar el modelo cuando cambie el agente
 watch(() => localConfig.value.agent, (newAgent) => {
-  const models = agentsModels[newAgent] || [];
+  const agentModels = agentsModels.value[newAgent] || {};
+  const modelNames = Object.keys(agentModels);
   const currentModel = localConfig.value.model || defaultModel;
-  if (models.length > 0 && !models.includes(currentModel)) {
-    const firstModel = models[0];
+  if (modelNames.length > 0 && !modelNames.includes(currentModel)) {
+    const firstModel = modelNames[0];
     if (firstModel) {
       localConfig.value = { ...localConfig.value, model: firstModel };
     } else {
       localConfig.value = { ...localConfig.value, model: defaultModel };
     }
-  } else if (models.length === 0) {
+  } else if (modelNames.length === 0) {
     localConfig.value = { ...localConfig.value, model: defaultModel };
   }
 });
