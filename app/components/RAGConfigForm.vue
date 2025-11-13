@@ -222,6 +222,22 @@ const getModelOption = (value: string) => {
             </template>
           </Select>
         </div>
+        <div class="space-y-2">
+          <label :for="getId('temperature')" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+            <i class="pi pi-sliders-h text-gray-400 mr-2"></i>
+            {{ t('Temperatura') }}
+            <span class="ml-2 text-gray-500 dark:text-gray-400">({{ localConfig.temperature }})</span>
+          </label>
+          <Slider 
+            :id="getId('temperature')" 
+            v-model="localConfig.temperature" 
+            :min="0"
+            :max="2"
+            :step="0.1"
+            class="w-full"
+            :disabled="disabled"
+          />
+        </div>
 
         <!-- Collection -->
         <div class="space-y-2">
@@ -259,140 +275,136 @@ const getModelOption = (value: string) => {
           />
         </div>
 
-        <!-- Boolean Parameters -->
-        <div class="space-y-3">
-          <div class="flex items-center">
-            <ToggleSwitch 
-              :id="getId('semantic')" 
-              v-model="localConfig.semantic" 
-              :binary="true"
-              :disabled="disabled"
-            />
-            <label :for="getId('semantic')" class="ml-2 text-sm text-gray-700 dark:text-gray-300">
-              {{ t('Buscar en la base de datos semántica') }}
-            </label>
-          </div>
+        <!-- Advanced Parameters Accordion -->
+        <Accordion :activeIndex="null">
+          <AccordionTab>
+            <template #header>
+              <div class="flex items-center space-x-2">
+                <i class="pi pi-sliders-h text-gray-400"></i>
+                <span>{{ t('Parámetros avanzados') }}</span>
+              </div>
+            </template>
+            <div class="space-y-4">
+              <!-- Boolean Parameters -->
+              <div class="space-y-3">
+                <div class="flex items-center">
+                  <ToggleSwitch 
+                    :id="getId('semantic')" 
+                    v-model="localConfig.semantic" 
+                    :binary="true"
+                    :disabled="disabled"
+                  />
+                  <label :for="getId('semantic')" class="ml-2 text-sm text-gray-700 dark:text-gray-300">
+                    {{ t('Buscar en la base de datos semántica') }}
+                  </label>
+                </div>
 
-          <div class="flex items-center">
-            <ToggleSwitch 
-              :id="getId('bm25')" 
-              v-model="localConfig.bm25" 
-              :binary="true"
-              :disabled="disabled"
-            />
-            <label :for="getId('bm25')" class="ml-2 text-sm text-gray-700 dark:text-gray-300">
-              {{ t('Buscar en la base de datos BM25 (texto plano)') }}
-            </label>
-          </div>
+                <div class="flex items-center">
+                  <ToggleSwitch 
+                    :id="getId('bm25')" 
+                    v-model="localConfig.bm25" 
+                    :binary="true"
+                    :disabled="disabled"
+                  />
+                  <label :for="getId('bm25')" class="ml-2 text-sm text-gray-700 dark:text-gray-300">
+                    {{ t('Buscar en la base de datos BM25 (texto plano)') }}
+                  </label>
+                </div>
 
-          <div class="flex items-center">
-            <ToggleSwitch 
-              :id="getId('context')" 
-              v-model="localConfig.context" 
-              :binary="true"
-              :disabled="disabled"
-            />
-            <label :for="getId('context')" class="ml-2 text-sm text-gray-700 dark:text-gray-300">
-              {{ t('Añadir contexto a los resultados') }}
-            </label>
-          </div>
+                <div class="flex items-center">
+                  <ToggleSwitch 
+                    :id="getId('context')" 
+                    v-model="localConfig.context" 
+                    :binary="true"
+                    :disabled="disabled"
+                  />
+                  <label :for="getId('context')" class="ml-2 text-sm text-gray-700 dark:text-gray-300">
+                    {{ t('Añadir contexto a los resultados') }}
+                  </label>
+                </div>
 
-          <div class="flex items-center">
-            <ToggleSwitch 
-              :id="getId('clean_query')" 
-              v-model="localConfig.clean_query" 
-              :binary="true"
-              :disabled="disabled"
-            />
-            <label :for="getId('clean_query')" class="ml-2 text-sm text-gray-700 dark:text-gray-300">
-              {{ t('Limpiar la consulta (sin limpieza no hay clasificación ni traducción)') }}
-            </label>
-          </div>
-        </div>
+                <div class="flex items-center">
+                  <ToggleSwitch 
+                    :id="getId('clean_query')" 
+                    v-model="localConfig.clean_query" 
+                    :binary="true"
+                    :disabled="disabled"
+                  />
+                  <label :for="getId('clean_query')" class="ml-2 text-sm text-gray-700 dark:text-gray-300">
+                    {{ t('Limpiar la consulta (sin limpieza no hay clasificación ni traducción)') }}
+                  </label>
+                </div>
+              </div>
 
-        <!-- Numeric Parameters -->
-        <div class="space-y-3">
-          <div class="space-y-2">
-            <label :for="getId('topN')" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
-              <i class="pi pi-sort-numeric-up text-gray-400 mr-2"></i>
-              {{ t('Número máximo de resultados de búsqueda semántica/BM25') }}
-            </label>
-            <InputNumber 
-              :id="getId('topN')" 
-              v-model="localConfig.topN" 
-              class="w-full"
-              :min="1"
-              :max="100"
-              showButtons
-              :disabled="disabled"
-            />
-          </div>
+              <!-- Numeric Parameters -->
+              <div class="space-y-3">
+                <div class="space-y-2">
+                  <label :for="getId('topN')" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                    <i class="pi pi-sort-numeric-up text-gray-400 mr-2"></i>
+                    {{ t('Número máximo de resultados de búsqueda semántica/BM25') }}
+                  </label>
+                  <InputNumber 
+                    :id="getId('topN')" 
+                    v-model="localConfig.topN" 
+                    class="w-full"
+                    :min="1"
+                    :max="100"
+                    showButtons
+                    :disabled="disabled"
+                  />
+                </div>
 
-          <div class="space-y-2">
-            <label :for="getId('num_queries')" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
-              <i class="pi pi-list text-gray-400 mr-2"></i>
-              {{ t('Número de consultas alternativas a realizar') }}
-            </label>
-            <InputNumber 
-              :id="getId('num_queries')" 
-              v-model="localConfig.num_queries" 
-              class="w-full"
-              :min="1"
-              :max="10"
-              showButtons
-              :disabled="disabled"
-            />
-          </div>
+                <div class="space-y-2">
+                  <label :for="getId('num_queries')" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                    <i class="pi pi-list text-gray-400 mr-2"></i>
+                    {{ t('Número de consultas alternativas a realizar') }}
+                  </label>
+                  <InputNumber 
+                    :id="getId('num_queries')" 
+                    v-model="localConfig.num_queries" 
+                    class="w-full"
+                    :min="1"
+                    :max="10"
+                    showButtons
+                    :disabled="disabled"
+                  />
+                </div>
 
-          <div class="space-y-2">
-            <label :for="getId('use_docs')" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
-              <i class="pi pi-file text-gray-400 mr-2"></i>
-              {{ t('Número de documentos completos a usar') }}
-            </label>
-            <InputNumber 
-              :id="getId('use_docs')" 
-              v-model="localConfig.use_docs" 
-              class="w-full"
-              :min="-1"
-              :max="10"
-              showButtons
-              :disabled="disabled"
-            />
-          </div>
+                <div class="space-y-2">
+                  <label :for="getId('use_docs')" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                    <i class="pi pi-file text-gray-400 mr-2"></i>
+                    {{ t('Número de documentos completos a usar') }}
+                  </label>
+                  <InputNumber 
+                    :id="getId('use_docs')" 
+                    v-model="localConfig.use_docs" 
+                    class="w-full"
+                    :min="-1"
+                    :max="10"
+                    showButtons
+                    :disabled="disabled"
+                  />
+                </div>
 
-          <div class="space-y-2">
-            <label :for="getId('min_count')" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
-              <i class="pi pi-filter text-gray-400 mr-2"></i>
-              {{ t('Número mínimo de apariciones de un documento para ser considerado') }}
-            </label>
-            <InputNumber 
-              :id="getId('min_count')" 
-              v-model="localConfig.min_count" 
-              class="w-full"
-              :min="-1"
-              :max="20"
-              showButtons
-              :disabled="disabled"
-            />
-          </div>
-
-          <div class="space-y-2">
-            <label :for="getId('temperature')" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
-              <i class="pi pi-sliders-h text-gray-400 mr-2"></i>
-              {{ t('Temperatura') }}
-              <span class="ml-2 text-gray-500 dark:text-gray-400">({{ localConfig.temperature }})</span>
-            </label>
-            <Slider 
-              :id="getId('temperature')" 
-              v-model="localConfig.temperature" 
-              :min="0"
-              :max="2"
-              :step="0.1"
-              class="w-full"
-              :disabled="disabled"
-            />
-          </div>
-        </div>
+                <div class="space-y-2">
+                  <label :for="getId('min_count')" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                    <i class="pi pi-filter text-gray-400 mr-2"></i>
+                    {{ t('Número mínimo de apariciones de un documento para ser considerado') }}
+                  </label>
+                  <InputNumber 
+                    :id="getId('min_count')" 
+                    v-model="localConfig.min_count" 
+                    class="w-full"
+                    :min="-1"
+                    :max="20"
+                    showButtons
+                    :disabled="disabled"
+                  />
+                </div>
+              </div>
+            </div>
+          </AccordionTab>
+        </Accordion>
 
         <!-- Notas al pie con enlaces a precios -->
         <div class="mt-6 pt-4 border-t border-gray-200 dark:border-gray-700">
