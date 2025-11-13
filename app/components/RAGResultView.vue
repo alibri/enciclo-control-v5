@@ -2,7 +2,9 @@
 import { formatStringPre } from '~/utils/format';
 import { getPageLink } from '~/utils/openExternal';
 import TestService from '~/services/testService';
-import html2pdf from 'html2pdf.js';
+import { getApiUrl } from '~/utils/api';
+import { useAuthStore } from '~/stores/auth';
+import { storeToRefs } from 'pinia';
 import 'flag-icons/css/flag-icons.min.css';
 
 interface ModelInfo {
@@ -37,6 +39,7 @@ const { showMessage, removeGroup } = useMessages();
 
 const testService = new TestService();
 const printing = ref(false);
+const { session_id } = storeToRefs(useAuthStore());
 
 // Cargar precios de modelos desde archivo JSON
 const { data: agentsModelsData } = useFetch<AgentsModels>('/agents-models.json', {
@@ -188,101 +191,79 @@ const evaluateRAG = async () => {
 
 // Función para generar PDF del componente
 const generarPDF = async () => {
-  // Obtener el contenido del componente
-  printing.value = true;
-  const contenido = document.querySelector('.print-area');
-  
-  if (!contenido) {
-    showMessage('error', t('Error'), t('No se encontró contenido para generar PDF'));
-    printing.value = false;
+  if (!props.result) {
+    showMessage('error', t('Error'), t('No hay resultado para exportar'));
     return;
   }
 
+  printing.value = true;
+  showMessage('info', t('Generando PDF'), t('Por favor espere...'), -1, 'pdf');
+
   try {
-    // Esperar a que las imágenes se carguen completamente
-    const images = contenido.querySelectorAll('img');
-    const imagePromises = Array.from(images).map((img: HTMLImageElement) => {
-      return new Promise((resolve) => {
-        if (img.complete) {
-          resolve(img);
-        } else {
-          img.onload = () => resolve(img);
-          img.onerror = () => resolve(img);
-        }
-      });
-    });
+    // Obtener la URL de la API y el session_id
+    const apiBaseUrl = getApiUrl();
+    const token = session_id.value || useCookie('token').value;
+    
+    if (!token) {
+      throw new Error(t('No se encontró la sesión'));
+    }
 
-    await Promise.all(imagePromises);
-
-    // Configuración para el PDF
-    const opt = {
-      margin: [0.3, 0.3, 0.3, 0.3] as [number, number, number, number], // Márgenes más pequeños: [top, right, bottom, left] en pulgadas
-      filename: `${t('resultado_consulta')}_${props.result?.query?.substring(0, 50) || t('consulta')}_${new Date().toISOString().split('T')[0]}.pdf`,
-      image: { type: 'jpeg' as const, quality: 0.98 },
-      html2canvas: {
-        scale: 2, // Reducido de 3 a 2 para mejor rendimiento y manejo de saltos
-        useCORS: true,
-        letterRendering: true,
-        allowTaint: true,
-        logging: false,
-        // Configuración específica para imágenes
-        onclone: (clonedDoc: Document) => {
-          // Asegurar que las imágenes se muestren en el documento clonado
-          const clonedImages = clonedDoc.querySelectorAll('img');
-          clonedImages.forEach((img: HTMLImageElement) => {
-            img.style.maxWidth = '100%';
-            img.style.height = 'auto';
-            img.style.display = 'block';
-          });
-          
-          // Aplicar estilos para evitar cortes de texto en elementos importantes
-          const elementsToProtect = clonedDoc.querySelectorAll('.print-area > *, .print-area .space-y-6 > *, .print-area .space-y-4 > *');
-          elementsToProtect.forEach((el: Element) => {
-            const htmlEl = el as HTMLElement;
-            htmlEl.style.breakInside = 'avoid';
-            htmlEl.style.orphans = '3';
-            htmlEl.style.widows = '3';
-          });
-          
-          // Proteger párrafos y bloques de texto
-          const textBlocks = clonedDoc.querySelectorAll('p, div.markdown-content, .prose');
-          textBlocks.forEach((el: Element) => {
-            const htmlEl = el as HTMLElement;
-            htmlEl.style.breakInside = 'avoid';
-          });
-        },
-        // Excluir elementos específicos del PDF
-        ignoreElements: (element: Element) => {
-          return element.classList.contains('no-print') ||
-            element.classList.contains('no-pdf') ||
-            element.tagName === 'BUTTON';
-        }
-      },
-      jsPDF: {
-        unit: 'in',
-        format: 'a4',
-        orientation: 'portrait' as const
-      },
-      pagebreak: { 
-        mode: ['avoid-all', 'css', 'legacy'],
-        before: '.page-break-before',
-        after: '.page-break-after',
-        avoid: ['.markdown-content', 'p', 'div.space-y-6 > *', 'div.space-y-4 > *']
-      }
+    // Preparar los datos a enviar (JSON completo del resultado)
+    const data = {
+      session_id: token,
+      data: props.result
     };
 
-    // Mostrar mensaje de carga
-    showMessage('info', t('Generando PDF'), t('Por favor espere...'));
+    // Llamar al endpoint exportchat
+    const response = await fetch(`${apiBaseUrl}/exportchat`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(data)
+    });
 
-    // Generar el PDF
-    await html2pdf().set(opt).from(contenido as HTMLElement).save();
+    if (!response.ok) {
+      // Intentar leer el mensaje de error si es JSON
+      let errorMessage = t('Error al generar el PDF');
+      try {
+        const errorData = await response.json();
+        errorMessage = errorData.message || errorMessage;
+      } catch {
+        errorMessage = `${t('Error')}: ${response.status} ${response.statusText}`;
+      }
+      throw new Error(errorMessage);
+    }
+
+    // Obtener el blob del PDF
+    const blob = await response.blob();
+    
+    // Crear un enlace temporal para descargar el PDF
+    const url = window.URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    
+    // Generar nombre del archivo
+    const query = props.result?.query || t('consulta');
+    const filename = `${t('resultado_consulta')}_${query.substring(0, 50)}_${new Date().toISOString().split('T')[0]}.pdf`;
+    link.setAttribute('download', filename);
+    
+    // Descargar el archivo
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    
+    // Liberar la URL del objeto
+    window.URL.revokeObjectURL(url);
 
     // Mostrar mensaje de éxito
-    showMessage('success', t('Éxito'), t('PDF generado correctamente'));
+    showMessage('success', t('Éxito'), t('PDF generado correctamente'), 3000);
+    removeGroup('pdf');
 
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error generando PDF:', error);
-    showMessage('error', t('Error'), t('No se pudo generar el PDF'));
+    showMessage('error', t('Error'), error?.message || t('No se pudo generar el PDF'), -1);
+    removeGroup('pdf');
   } finally {
     printing.value = false;
   }
@@ -720,8 +701,8 @@ const generarPDF = async () => {
             <div class="space-y-2">
               <div v-for="(q, index) in result.queries" :key="index" 
                    class="p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg border-l-3 border-indigo-500 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
-                <div class="flex items-start space-x-2">
-                  <span class="px-2 py-0.5 bg-indigo-100 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300 rounded text-xs font-semibold mt-0.5">
+                <div class="flex items-center space-x-3">
+                  <span class="flex-shrink-0 w-7 h-7 bg-indigo-600 dark:bg-indigo-500 text-white rounded-full flex items-center justify-center text-sm font-semibold">
                     {{ index + 1 }}
                   </span>
                   <p class="text-gray-700 dark:text-gray-300 flex-1">{{ q }}</p>

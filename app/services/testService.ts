@@ -27,4 +27,8 @@ export default class TestService {
     return await this.api.get('ragtestab', data);
   }
 
+  async exportChat (data: any) {
+    return await this.api.get('exportchat', data);
+  }
+
 };

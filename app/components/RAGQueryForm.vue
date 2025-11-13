@@ -49,11 +49,8 @@ const handleExecute = () => {
       <template #content>
         <div class="space-y-4">
           <div class="space-y-2">
-            <label :for="id" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
-              <i class="pi pi-comment text-gray-400 mr-2"></i>
-              {{ t('Ingrese su pregunta') }}
-            </label>
-            <Textarea 
+            <IftaLabel>
+              <Textarea 
               :id="id" 
               v-model="localQuery" 
               class="w-full" 
@@ -61,6 +58,11 @@ const handleExecute = () => {
               :placeholder="t(placeholder)"
               :disabled="disabled"
             />
+            <label :for="id" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                <i class="pi pi-comment text-gray-400 mr-2"></i>
+                {{ t('Ingrese su pregunta') }}
+              </label>
+            </IftaLabel>
           </div>
           
           <div class="flex justify-end">

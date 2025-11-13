@@ -167,10 +167,7 @@ const getModelOption = (value: string) => {
       <div class="space-y-4">
         <!-- Agent -->
         <div class="space-y-2">
-          <label :for="getId('agent')" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
-            <i class="pi pi-server text-gray-400 mr-2"></i>
-            {{ t('Agente') }}
-          </label>
+          <IftaLabel>
           <Select 
             :id="getId('agent')" 
             v-model="localConfig.agent" 
@@ -181,14 +178,16 @@ const getModelOption = (value: string) => {
             :disabled="disabled"
             :placeholder="t('Seleccione un agente')"
           />
+          <label :for="getId('agent')" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+            <i class="pi pi-server text-gray-400 mr-2"></i>
+            {{ t('Agente') }}
+          </label>
+          </IftaLabel>
         </div>
 
         <!-- Model -->
         <div class="space-y-2">
-          <label :for="getId('model')" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
-            <i class="pi pi-microchip text-gray-400 mr-2"></i>
-            {{ t('Modelo') }}
-          </label>
+          <IftaLabel>
           <Select 
             :id="getId('model')" 
             v-model="localConfig.model" 
@@ -221,6 +220,11 @@ const getModelOption = (value: string) => {
               <span v-else>{{ slotProps.placeholder }}</span>
             </template>
           </Select>
+          <label :for="getId('model')" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+            <i class="pi pi-microchip text-gray-400 mr-2"></i>
+            {{ t('Modelo') }}
+          </label>
+        </IftaLabel>
         </div>
         <div class="space-y-2">
           <label :for="getId('temperature')" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
@@ -241,11 +245,8 @@ const getModelOption = (value: string) => {
 
         <!-- Collection -->
         <div class="space-y-2">
-          <label :for="getId('collection')" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
-            <i class="pi pi-database text-gray-400 mr-2"></i>
-            {{ t('Chunks') }}
-          </label>
-          <Select 
+          <IftaLabel>
+            <Select 
             :id="getId('collection')" 
             v-model="localConfig.collection" 
             :options="collectionOptions"
@@ -255,14 +256,16 @@ const getModelOption = (value: string) => {
             :disabled="disabled"
             :placeholder="t('Seleccione chunks')"
           />
+          <label :for="getId('collection')" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+            <i class="pi pi-database text-gray-400 mr-2"></i>
+            {{ t('Chunks') }}
+          </label>
+          </IftaLabel>
         </div>
 
         <!-- Classification -->
         <div class="space-y-2">
-          <label :for="getId('classification')" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
-            <i class="pi pi-tags text-gray-400 mr-2"></i>
-            {{ t('Clasificación') }}
-          </label>
+          <IftaLabel>
           <Select 
             :id="getId('classification')" 
             v-model="localConfig.classification" 
@@ -273,6 +276,12 @@ const getModelOption = (value: string) => {
             :disabled="disabled"
             :placeholder="t('Seleccione una clasificación')"
           />
+          <label :for="getId('classification')" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+            <i class="pi pi-tags text-gray-400 mr-2"></i>
+            {{ t('Clasificación') }}
+          </label>
+
+        </IftaLabel>
         </div>
 
         <!-- Advanced Parameters Accordion -->
@@ -339,10 +348,7 @@ const getModelOption = (value: string) => {
               <!-- Numeric Parameters -->
               <div class="space-y-3">
                 <div class="space-y-2">
-                  <label :for="getId('topN')" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                    <i class="pi pi-sort-numeric-up text-gray-400 mr-2"></i>
-                    {{ t('Número máximo de resultados de búsqueda semántica/BM25') }}
-                  </label>
+                  <IftaLabel>
                   <InputNumber 
                     :id="getId('topN')" 
                     v-model="localConfig.topN" 
@@ -352,13 +358,15 @@ const getModelOption = (value: string) => {
                     showButtons
                     :disabled="disabled"
                   />
+                  <label :for="getId('topN')" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                    <i class="pi pi-sort-numeric-up text-gray-400 mr-2"></i>
+                    {{ t('Número máximo de resultados de búsqueda semántica/BM25') }}
+                  </label>
+                </IftaLabel>
                 </div>
 
                 <div class="space-y-2">
-                  <label :for="getId('num_queries')" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                    <i class="pi pi-list text-gray-400 mr-2"></i>
-                    {{ t('Número de consultas alternativas a realizar') }}
-                  </label>
+                  <IftaLabel>
                   <InputNumber 
                     :id="getId('num_queries')" 
                     v-model="localConfig.num_queries" 
@@ -368,13 +376,15 @@ const getModelOption = (value: string) => {
                     showButtons
                     :disabled="disabled"
                   />
+                  <label :for="getId('num_queries')" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                    <i class="pi pi-list text-gray-400 mr-2"></i>
+                    {{ t('Número de consultas alternativas a realizar') }}
+                  </label>
+                </IftaLabel>
                 </div>
 
                 <div class="space-y-2">
-                  <label :for="getId('use_docs')" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                    <i class="pi pi-file text-gray-400 mr-2"></i>
-                    {{ t('Número de documentos completos a usar') }}
-                  </label>
+                  <IftaLabel>
                   <InputNumber 
                     :id="getId('use_docs')" 
                     v-model="localConfig.use_docs" 
@@ -384,13 +394,15 @@ const getModelOption = (value: string) => {
                     showButtons
                     :disabled="disabled"
                   />
+                  <label :for="getId('use_docs')" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                    <i class="pi pi-file text-gray-400 mr-2"></i>
+                    {{ t('Número de documentos completos a usar') }}
+                  </label>
+                </IftaLabel>
                 </div>
 
                 <div class="space-y-2">
-                  <label :for="getId('min_count')" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                    <i class="pi pi-filter text-gray-400 mr-2"></i>
-                    {{ t('Número mínimo de apariciones de un documento para ser considerado') }}
-                  </label>
+                  <IftaLabel>
                   <InputNumber 
                     :id="getId('min_count')" 
                     v-model="localConfig.min_count" 
@@ -400,6 +412,11 @@ const getModelOption = (value: string) => {
                     showButtons
                     :disabled="disabled"
                   />
+                  <label :for="getId('min_count')" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                    <i class="pi pi-filter text-gray-400 mr-2"></i>
+                    {{ t('Número mínimo de apariciones de un documento para ser considerado') }}
+                  </label>
+                </IftaLabel>
                 </div>
               </div>
             </div>
@@ -407,8 +424,8 @@ const getModelOption = (value: string) => {
         </Accordion>
 
         <!-- Notas al pie con enlaces a precios -->
-        <div class="mt-6 pt-4 border-t border-gray-200 dark:border-gray-700">
-          <p class="text-xs text-gray-500 dark:text-gray-400">
+        <div class="mt-6 pt-4">
+          <p class="text-xs text-gray-500 dark:text-gray-400 text-center">
             {{ t('Precios de modelos') }}:
             <a 
               href="https://ai.google.dev/gemini-api/docs/pricing" 
