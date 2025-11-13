@@ -94,7 +94,10 @@ const testRAGAB = async () => {
     configAValues.topN === configBValues.topN &&
     configAValues.num_queries === configBValues.num_queries &&
     configAValues.use_docs === configBValues.use_docs &&
-    configAValues.min_count === configBValues.min_count;
+    configAValues.min_count === configBValues.min_count &&
+    configAValues.temperature === configBValues.temperature &&
+    configAValues.collection === configBValues.collection &&
+    configAValues.classification === configBValues.classification;
 
   if (areConfigsEqual) {
     showMessage('error', t('Error'), t('Las configuraciones A y B deben ser diferentes para realizar una comparación'), 5000);
