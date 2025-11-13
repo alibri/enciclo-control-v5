@@ -13,7 +13,7 @@ const result = ref<any>(null);
 // Obtener valores por defecto desde variables de entorno
 const defaultAgent = runtimeConfig.public?.DEFAULT_LLM_AGENT || 'gemini';
 const defaultModel = runtimeConfig.public?.DEFAULT_LLM_MODEL || 'gemini-2.0-flash';
-const defaultCollection = runtimeConfig.public?.COLLECTION_NAME || 'chunks';
+const defaultCollection: string = String(runtimeConfig.public?.COLLECTION_NAME || 'chunks');
 
 // Cargar AGENTS_MODELS para validar el modelo inicial
 const agentsModelsJson = runtimeConfig.public?.AGENTS_MODELS || '{}';

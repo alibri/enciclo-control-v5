@@ -60,7 +60,7 @@ const agentsModels = computed(() => agentsModelsData.value || { openai: {}, gemi
 // Obtener valores por defecto desde variables de entorno
 const defaultAgent = runtimeConfig.public?.DEFAULT_LLM_AGENT || 'gemini';
 const defaultModel = runtimeConfig.public?.DEFAULT_LLM_MODEL || 'gemini-2.0-flash';
-const defaultCollection = runtimeConfig.public?.COLLECTION_NAME || 'chunks';
+const defaultCollection: string = String(runtimeConfig.public?.COLLECTION_NAME || 'chunks');
 
 // Crear opciones para agentes basadas en las claves del objeto
 const agentOptions = computed(() => {
