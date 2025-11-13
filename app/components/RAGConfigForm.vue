@@ -80,7 +80,9 @@ const modelOptions = computed(() => {
     const outputPrice = modelInfo?.output?.toFixed(2) || '0.00';
     return {
       label: `${model} (In: $${inputPrice}/1M, Out: $${outputPrice}/1M)`,
-      value: model
+      value: model,
+      inputPrice,
+      outputPrice
     };
   });
 });
@@ -146,6 +148,11 @@ watch(() => localConfig.value.collection, (newCollection) => {
 const getId = (name: string) => {
   return props.idPrefix ? `${props.idPrefix}${name}` : name;
 };
+
+// Función helper para obtener la opción completa del modelo por su valor
+const getModelOption = (value: string) => {
+  return modelOptions.value.find(option => option.value === value);
+};
 </script>
 
 <template>
@@ -191,7 +198,29 @@ const getId = (name: string) => {
             class="w-full"
             :disabled="disabled"
             :placeholder="t('Seleccione un modelo')"
-          />
+          >
+            <template #option="slotProps">
+              <div>
+                <span class="font-bold">{{ slotProps.option.value }}</span>
+                <span> (</span>
+                <span class="text-green-600 dark:text-green-400">In: ${{ slotProps.option.inputPrice }}/1M</span>
+                <span>, </span>
+                <span class="text-blue-600 dark:text-blue-400">Out: ${{ slotProps.option.outputPrice }}/1M</span>
+                <span>)</span>
+              </div>
+            </template>
+            <template #value="slotProps">
+              <div v-if="slotProps.value">
+                <span class="font-bold">{{ slotProps.value }}</span>
+                <span v-if="getModelOption(slotProps.value)"> (</span>
+                <span v-if="getModelOption(slotProps.value)" class="text-green-600 dark:text-green-400">In: ${{ getModelOption(slotProps.value)?.inputPrice }}/1M</span>
+                <span v-if="getModelOption(slotProps.value)">, </span>
+                <span v-if="getModelOption(slotProps.value)" class="text-blue-600 dark:text-blue-400">Out: ${{ getModelOption(slotProps.value)?.outputPrice }}/1M</span>
+                <span v-if="getModelOption(slotProps.value)">)</span>
+              </div>
+              <span v-else>{{ slotProps.placeholder }}</span>
+            </template>
+          </Select>
         </div>
 
         <!-- Collection -->
