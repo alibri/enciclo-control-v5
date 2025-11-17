@@ -4,6 +4,7 @@
 
 - Añade la comntarios a las evaluaciones de las consultas RAG
 - Añade la visualización de las evaluaciones de las consultas RAG
+- Revisión de estilos y colores modos dark y light
 
 ## 5.0.15
 
