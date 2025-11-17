@@ -305,12 +305,12 @@ const onRowDoubleClick = (event: any) => {
       :header="selectedTestRAG?.query || t('Resultado Test RAG')" :style="{ width: '95vw', maxWidth: '1400px' }" :pt="{
         root: 'flex flex-col',
         content: 'flex-1 overflow-auto p-0',
-        header: 'border-b bg-gradient-to-r from-blue-50 to-indigo-50',
+        header: 'border-b',
         title: 'text-xl font-semibold'
       }">
       <template #header>
         <div class="flex items-center gap-3">
-          <i class="pi pi-code text-2xl text-blue-600 "></i>
+          <i class="pi pi-code text-2xl" style="color: var(--primary-color);"></i>
           <div class="flex-1">
             <h3 class="text-xl font-semibold" style="color: var(--text-color);">
               {{ selectedTestRAG?.query || t('Resultado Test RAG') }}
@@ -340,9 +340,9 @@ const onRowDoubleClick = (event: any) => {
               </div>
             </div>
             <p v-if="selectedTestRAG?.comentario"
-              class="text-sm mt-2 italic border-l-4 border-blue-500 pl-3 bg-blue-50 py-2 rounded-r"
-              style="color: var(--text-color);">
-              <i class="pi pi-comment mr-2 text-blue-600 "></i>
+              class="text-sm mt-2 italic border-l-4 pl-3 py-2 rounded-r"
+              style="background-color: var(--highlight-bg); border-color: var(--primary-color); color: var(--text-color);">
+              <i class="pi pi-comment mr-2" style="color: var(--primary-color);"></i>
               <strong>{{ t('Comentario') }}:</strong> {{ selectedTestRAG.comentario }}
             </p>
           </div>

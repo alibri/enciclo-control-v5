@@ -1025,6 +1025,20 @@ const generarPDF = async () => {
           </div>
         </div>
 
+        <!-- Campo de Comentario -->
+        <div class="flex flex-col space-y-2">
+          <label class="text-sm font-medium flex items-center" style="color: var(--text-color);">
+            <i class="pi pi-comments mr-2 text-purple-600 dark:text-purple-400"></i>{{ t('Comentario') }}
+          </label>
+          <Textarea 
+            v-model="comentario" 
+            :rows="4"
+            :placeholder="t('Escribe tu comentario aquí (opcional)')"
+            class="w-full"
+            :disabled="evaluating"
+          />
+        </div>
+
         <!-- Botón Evaluar -->
         <div class="pt-4 border-t" style="border-color: var(--surface-border);">
           <Button 
