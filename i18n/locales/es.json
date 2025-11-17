@@ -523,6 +523,7 @@
     "Output": "Salida",
     "o": "o",
     "Listado de Test RAG": "Listado de Test RAG",
+    "Listado Test RAG": "Listado Test RAG",
     "Recargar": "Recargar",
     "Resultado Test RAG": "Resultado Test RAG",
     "Consulta": "Consulta",
@@ -531,5 +532,6 @@
     "No hay testRAG disponibles": "No hay testRAG disponibles",
     "Cargando": "Cargando",
     "Obteniendo listado de testRAG...": "Obteniendo listado de testRAG...",
+    "Obteniendo detalles del testRAG...": "Obteniendo detalles del testRAG...",
     "Ver": "Ver"
 }
