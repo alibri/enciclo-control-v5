@@ -67,35 +67,34 @@ const openTestRAG = async (item: any) => {
       const data = response?.data?.result || response?.data?.value;
       if (data?.success && data?.result) {
         const ragData = data.result;
-        
-        // Obtener el resultado parseado o parsearlo si no existe
-        let result = ragData.result_parsed;
-        if (!result && ragData.result) {
+
+        // Convert string to JSON if necessary for result
+        let result = ragData.result;
+        if (typeof result === 'string') {
           try {
-            result = typeof ragData.result === 'string' ? JSON.parse(ragData.result) : ragData.result;
+            result = JSON.parse(result);
           } catch (e) {
-            console.error('Error parsing result:', e);
+            console.error('Error parsing result string:', e);
             result = null;
           }
         }
-        
-        // Obtener la configuración parseada o parsearla si no existe
-        let config = ragData.config_parsed;
-        if (!config && ragData.config) {
+        // Convert string to JSON if necessary for config
+        let config = ragData.config;
+        if (typeof config === 'string') {
           try {
-            config = typeof ragData.config === 'string' ? JSON.parse(ragData.config) : ragData.config;
+            config = JSON.parse(config);
           } catch (e) {
-            console.error('Error parsing config:', e);
+            console.error('Error parsing config string:', e);
             config = null;
           }
         }
-        
-        // Asegurar que el resultado tenga el query y test_id
+
+        // Ensure result has query and test_id
         if (result) {
           result.query = ragData.query || result.query;
           result.test_id = ragData.id;
         }
-        
+
         selectedResult.value = result;
         selectedConfig.value = config;
         selectedTestRAG.value = ragData;

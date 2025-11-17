@@ -122,7 +122,6 @@ const tokenCost = computed(() => {
   let model = props.result.model;
   model = model.split('/')[1];
 
-  console.log(agent, model);
   const modelInfo = agentsModels.value[agent]?.[model];
 
   if (!modelInfo) {
@@ -286,7 +285,6 @@ const generarPDF = async () => {
     </div>
     
     <!-- Main Content Card -->
-    <div class="print-area">
     <Card class="shadow-lg">
       <template #title>
         <div class="flex items-center justify-between">
@@ -529,7 +527,7 @@ const generarPDF = async () => {
               </template>
             </div>
           </div>
-
+          
           <!-- Configuración en 2 columnas -->
           <div class="p-5 rounded-xl shadow-sm border" style="background-color: var(--surface-card); border-color: var(--surface-border);">
             <div class="flex items-center space-x-2 mb-4">
@@ -541,7 +539,8 @@ const generarPDF = async () => {
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <!-- Columna 1 -->
               <div class="space-y-3">
-                <div v-if="result.agent" class="flex items-center justify-between py-2 border-b last:border-0" style="border-color: var(--surface-border);"">
+                
+                <div v-if="result.agent" class="flex items-center justify-between py-2 border-b last:border-0" style="border-color: var(--surface-border);">
                   <span class="text-sm font-medium flex items-center" style="color: var(--text-color-secondary);">
                     <i class="pi pi-server mr-2"></i>{{ t('Agente') }}
                   </span>
@@ -549,7 +548,7 @@ const generarPDF = async () => {
                     {{ result.agent }}
                   </span>
                 </div>
-                <div v-if="result.model" class="flex items-center justify-between py-2 border-b last:border-0" style="border-color: var(--surface-border);"">
+                <div v-if="result.model" class="flex items-center justify-between py-2 border-b last:border-0" style="border-color: var(--surface-border);">
                   <span class="text-sm font-medium flex items-center" style="color: var(--text-color-secondary);">
                     <i class="pi pi-microchip mr-2"></i>{{ t('Modelo') }}
                   </span>
@@ -557,7 +556,7 @@ const generarPDF = async () => {
                     {{ result.model }}
                   </span>
                 </div>
-                <div v-if="result.idioma" class="flex items-center justify-between py-2 border-b last:border-0" style="border-color: var(--surface-border);"">
+                <div v-if="result.idioma" class="flex items-center justify-between py-2 border-b last:border-0" style="border-color: var(--surface-border);">
                   <span class="text-sm font-medium flex items-center" style="color: var(--text-color-secondary);">
                     <i class="pi pi-globe mr-2"></i>{{ t('Idioma') }}
                   </span>
@@ -565,7 +564,7 @@ const generarPDF = async () => {
                     {{ result.idioma }}
                   </span>
                 </div>
-                <div v-if="result.temperature !== undefined && result.temperature !== null" class="flex items-center justify-between py-2 border-b last:border-0" style="border-color: var(--surface-border);"">
+                <div v-if="result.temperature !== undefined && result.temperature !== null" class="flex items-center justify-between py-2 border-b last:border-0" style="border-color: var(--surface-border);">
                   <span class="text-sm font-medium flex items-center" style="color: var(--text-color-secondary);">
                     <i class="pi pi-sliders-h mr-2"></i>{{ t('Temperature') }}
                   </span>
@@ -573,7 +572,7 @@ const generarPDF = async () => {
                     {{ result.temperature }}
                   </span>
                 </div>
-                <div v-if="result.semantic !== undefined && result.semantic !== null" class="flex items-center justify-between py-2 border-b last:border-0" style="border-color: var(--surface-border);"">
+                <div v-if="result.semantic !== undefined && result.semantic !== null" class="flex items-center justify-between py-2 border-b last:border-0" style="border-color: var(--surface-border);">
                   <span class="text-sm font-medium flex items-center" style="color: var(--text-color-secondary);">
                     <i class="pi pi-search mr-2"></i>{{ t('Semantic') }}
                   </span>
@@ -581,7 +580,7 @@ const generarPDF = async () => {
                     {{ result.semantic ? t('Sí') : t('No') }}
                   </span>
                 </div>
-                <div v-if="result.bm25 !== undefined && result.bm25 !== null" class="flex items-center justify-between py-2 border-b last:border-0" style="border-color: var(--surface-border);"">
+                <div v-if="result.bm25 !== undefined && result.bm25 !== null" class="flex items-center justify-between py-2 border-b last:border-0" style="border-color: var(--surface-border);">
                   <span class="text-sm font-medium flex items-center" style="color: var(--text-color-secondary);">
                     <i class="pi pi-list mr-2"></i>{{ t('BM25') }}
                   </span>
@@ -600,7 +599,7 @@ const generarPDF = async () => {
               </div>
               <!-- Columna 2 -->
               <div class="space-y-3">
-                <div v-if="result.context !== undefined && result.context !== null" class="flex items-center justify-between py-2 border-b last:border-0" style="border-color: var(--surface-border);"">
+                <div v-if="result.context !== undefined && result.context !== null" class="flex items-center justify-between py-2 border-b last:border-0" style="border-color: var(--surface-border);">
                   <span class="text-sm font-medium flex items-center" style="color: var(--text-color-secondary);">
                     <i class="pi pi-book mr-2"></i>{{ t('Context') }}
                   </span>
@@ -608,7 +607,7 @@ const generarPDF = async () => {
                     {{ result.context ? t('Sí') : t('No') }}
                   </span>
                 </div>
-                <div v-if="result.num_queries !== undefined && result.num_queries !== null" class="flex items-center justify-between py-2 border-b last:border-0" style="border-color: var(--surface-border);"">
+                <div v-if="result.num_queries !== undefined && result.num_queries !== null" class="flex items-center justify-between py-2 border-b last:border-0" style="border-color: var(--surface-border);">
                   <span class="text-sm font-medium flex items-center" style="color: var(--text-color-secondary);">
                     <i class="pi pi-question-circle mr-2"></i>{{ t('Número de Consultas') }}
                   </span>
@@ -616,7 +615,7 @@ const generarPDF = async () => {
                     {{ result.num_queries }}
                   </span>
                 </div>
-                <div v-if="result.filter !== undefined && result.filter !== null" class="flex items-center justify-between py-2 border-b last:border-0" style="border-color: var(--surface-border);"">
+                <div v-if="result.filter !== undefined && result.filter !== null" class="flex items-center justify-between py-2 border-b last:border-0" style="border-color: var(--surface-border);">
                   <span class="text-sm font-medium flex items-center" style="color: var(--text-color-secondary);">
                     <i class="pi pi-filter mr-2"></i>{{ t('Filtro') }}
                   </span>
@@ -624,7 +623,7 @@ const generarPDF = async () => {
                     {{ result.filter || t('Ninguno') }}
                   </span>
                 </div>
-                <div v-if="result.min_count !== undefined && result.min_count !== null" class="flex items-center justify-between py-2 border-b last:border-0" style="border-color: var(--surface-border);"">
+                <div v-if="result.min_count !== undefined && result.min_count !== null" class="flex items-center justify-between py-2 border-b last:border-0" style="border-color: var(--surface-border);">
                   <span class="text-sm font-medium flex items-center" style="color: var(--text-color-secondary);">
                     <i class="pi pi-sort-amount-down mr-2"></i>{{ t('Min Count') }}
                   </span>
@@ -632,7 +631,7 @@ const generarPDF = async () => {
                     {{ result.min_count }}
                   </span>
                 </div>
-                <div v-if="result.use_docs !== undefined && result.use_docs !== null" class="flex items-center justify-between py-2 border-b last:border-0" style="border-color: var(--surface-border);"">
+                <div v-if="result.use_docs !== undefined && result.use_docs !== null" class="flex items-center justify-between py-2 border-b last:border-0" style="border-color: var(--surface-border);">
                   <span class="text-sm font-medium flex items-center" style="color: var(--text-color-secondary);">
                     <i class="pi pi-file-edit mr-2"></i>{{ t('Use Docs') }}
                   </span>
@@ -640,7 +639,7 @@ const generarPDF = async () => {
                     {{ result.use_docs }}
                   </span>
                 </div>
-                <div v-if="result.embedding" class="flex items-center justify-between py-2 border-b last:border-0" style="border-color: var(--surface-border);"">
+                <div v-if="result.embedding" class="flex items-center justify-between py-2 border-b last:border-0" style="border-color: var(--surface-border);">
                   <span class="text-sm font-medium flex items-center" style="color: var(--text-color-secondary);">
                     <i class="pi pi-code mr-2"></i>{{ t('Embedding') }}
                   </span>
@@ -648,7 +647,7 @@ const generarPDF = async () => {
                     {{ result.embedding }}
                   </span>
                 </div>
-                <div v-if="result.clean_query !== undefined && result.clean_query !== null" class="flex items-center justify-between py-2 border-b last:border-0" style="border-color: var(--surface-border);"">
+                <div v-if="result.clean_query !== undefined && result.clean_query !== null" class="flex items-center justify-between py-2 border-b last:border-0" style="border-color: var(--surface-border);">
                   <span class="text-sm font-medium flex items-center" style="color: var(--text-color-secondary);">
                     <i class="pi pi-filter-slash mr-2"></i>{{ t('Clean Query') }}
                   </span>
@@ -1019,20 +1018,6 @@ const generarPDF = async () => {
                 </div>
               </div>
 
-              <!-- Comentario -->
-              <div class="flex flex-col space-y-2">
-                <label class="text-sm font-medium  flex items-center">
-                  <i class="pi pi-pencil mr-2 text-green-600"></i>{{ t('Comentario') }} <span class="text-xs  ml-2">({{ t('Opcional') }})</span>
-                </label>
-                <Textarea 
-                  v-model="comentario" 
-                  class="w-full" 
-                  :rows="3"
-                  :placeholder="t('Añade un comentario sobre la respuesta...')"
-                  :disabled="evaluating"
-                />
-              </div>
-
               <!-- Botón Evaluar -->
               <div class="pt-4 border-t ">
                 <Button 
@@ -1065,7 +1050,6 @@ const generarPDF = async () => {
         </div>
       </template>
     </Card>
-    </div>
   </div>
 </template>
 

@@ -521,5 +521,15 @@
     "Coste Total": "Coste Total",
     "Input": "Entrada",
     "Output": "Salida",
-    "o": "o"
+    "o": "o",
+    "Listado de Test RAG": "Listado de Test RAG",
+    "Recargar": "Recargar",
+    "Resultado Test RAG": "Resultado Test RAG",
+    "Consulta": "Consulta",
+    "Rating Respuesta": "Rating Respuesta",
+    "Rating Velocidad": "Rating Velocidad",
+    "No hay testRAG disponibles": "No hay testRAG disponibles",
+    "Cargando": "Cargando",
+    "Obteniendo listado de testRAG...": "Obteniendo listado de testRAG...",
+    "Ver": "Ver"
 }
