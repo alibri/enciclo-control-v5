@@ -374,7 +374,7 @@ const generarPDF = async () => {
             {{ result.porcentaje_asignacion }}%
           </span>
         </div>
-        <div v-if="result.clasificacion_top3 && result.clasificacion_top3.length > 0" class="md:col-span-3 p-4 rounded-lg border-l-4" style="background-color: var(--highlight-bg); border-color: var(--primary-color);">
+        <div v-if="result.clasificacion_top3 && result.clasificacion_top3.length > 0" class="md:col-span-3 p-4 rounded-lg border-l-4 border-1" style="background-color: var(--highlight-bg); border-color: var(--primary-color);">
           <div class="flex items-start space-x-2 mb-3">
             <i class="pi pi-sort-amount-down mt-0.5" style="color: var(--primary-color);"></i>
             <h4 class="text-sm font-semibold" style="color: var(--text-color);">{{ t('Top 3 Clasificaciones') }}</h4>
@@ -394,7 +394,7 @@ const generarPDF = async () => {
             </div>
           </div>
         </div>
-        <div v-if="result.razonamiento_breve" class="md:col-span-3 p-3 rounded-lg border-l-4" style="background-color: var(--highlight-bg); border-color: var(--primary-color);">
+        <div v-if="result.razonamiento_breve" class="md:col-span-3 p-3 rounded-lg border-l-4 border-1" style="background-color: var(--highlight-bg); border-color: var(--primary-color);">
           <div class="flex items-start space-x-2">
             <i class="pi pi-comments mt-0.5" style="color: var(--primary-color);"></i>
             <div class="flex-1">
@@ -412,7 +412,7 @@ const generarPDF = async () => {
 
     <!-- Titular y Contenido Principal -->
     <div class="space-y-4">
-      <div v-if="result.query" class="p-5 rounded-xl border-l-4" style="background-color: var(--highlight-bg); border-color: var(--primary-color);">
+      <div v-if="result.query" class="p-5 rounded-xl border-l-4 border-1" style="background-color: var(--highlight-bg); border-color: var(--primary-color);">
         <div class="flex items-start space-x-3">
           <i class="pi pi-bookmark text-xl mt-1" style="color: var(--primary-color);"></i>
           <div class="flex-1">
@@ -473,7 +473,7 @@ const generarPDF = async () => {
       <!-- Sabías que -->
       <div v-if="result.sabias || (result.translations?.sabias && availableLanguages.length > 0)" class="space-y-4">
         <!-- Sabías que Principal -->
-        <div v-if="result.sabias && result.sabias.length > 0" class="p-5 rounded-xl border-l-4" style="background-color: var(--highlight-bg); border-color: var(--primary-color);">
+        <div v-if="result.sabias && result.sabias.length > 0" class="p-5 rounded-xl border-l-4 border-1" style="background-color: var(--highlight-bg); border-color: var(--primary-color);">
           <div class="flex items-start space-x-3">
             <i class="pi pi-lightbulb text-xl mt-1" style="color: var(--primary-color);"></i>
             <div class="flex-1">
@@ -503,7 +503,7 @@ const generarPDF = async () => {
         <!-- Traducciones de Sabías que -->
         <template v-for="lang in availableLanguages" :key="lang">
           <div v-if="result.translations?.sabias?.[lang]"
-               class="p-5 rounded-xl border-l-4" style="background-color: var(--highlight-bg); border-color: var(--primary-color);">
+               class="p-5 rounded-xl border-l-4 border-1" style="background-color: var(--highlight-bg); border-color: var(--primary-color);">
           <div class="flex items-start space-x-3">
             <i class="pi pi-lightbulb text-xl mt-1" style="color: var(--primary-color);"></i>
             <div class="flex-1">
@@ -707,7 +707,7 @@ const generarPDF = async () => {
       </div>
       <div class="space-y-2">
         <div v-for="(q, index) in result.queries" :key="index" 
-             class="p-3 rounded-lg border-l-3 border-indigo-500 dark:border-indigo-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+             class="p-3 rounded-lg border-l-3 border-1 border-indigo-500 dark:border-indigo-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
           <div class="flex items-center space-x-3">
             <span class="flex-shrink-0 w-7 h-7 bg-indigo-600 dark:bg-indigo-500 text-white rounded-full flex items-center justify-center text-sm font-semibold">
               {{ index + 1 }}
@@ -734,7 +734,7 @@ const generarPDF = async () => {
       </div>
       <div class="space-y-4">
         <div v-for="(source, index) in result.sources" :key="index" 
-             class="p-4 rounded-lg border-l-4 border-teal-500 dark:border-teal-400 hover:shadow-md transition-all">
+             class="p-4 rounded-lg border-l-4 border-1 border-teal-500 dark:border-teal-400 hover:shadow-md transition-all">
           <div v-if="source.title" class="mb-2">
             <a 
               v-if="source.collection && (source.friendly || source.title)"
@@ -774,7 +774,7 @@ const generarPDF = async () => {
       </div>
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div v-for="(item, index) in result.related" :key="index" 
-             class="p-4 rounded-lg border-l-4 border-indigo-500 dark:border-indigo-400 hover:shadow-md transition-all">
+             class="p-4 rounded-lg border-l-4 border-1 border-indigo-500 dark:border-indigo-400 hover:shadow-md transition-all">
           <div class="flex items-start gap-3">
             <div v-if="item.image" class="flex-shrink-0">
               <img :src="item.image" :alt="item.title" class="w-20 h-20 object-cover rounded-lg border" style="border-color: var(--surface-border);" />
@@ -836,7 +836,7 @@ const generarPDF = async () => {
           </template>
           <div class="space-y-3 pt-2">
             <div v-for="(doc, index) in result.docs" :key="index" 
-                 class="p-4 rounded-lg border-l-4 border-cyan-500 dark:border-cyan-400 hover:shadow-md transition-all">
+                 class="p-4 rounded-lg border-l-4 border-1 border-cyan-500 dark:border-cyan-400 hover:shadow-md transition-all">
               <div class="flex items-start justify-between mb-2">
                 <div class="flex-1">
                   <div v-if="doc.title" class="mb-1">
