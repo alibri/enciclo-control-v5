@@ -179,14 +179,14 @@ const onUploadError = (error: string) => {
 </script>
 
 <template>
-  <div class="min-h-screen bg-gray-50 dark:bg-gray-900 p-4">
+  <div class="min-h-screen p-4" style="background-color: var(--surface-ground);">
     <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between mb-6">
       <div class="mb-4 lg:mb-0">
-        <h2 class="text-2xl font-bold text-gray-800 dark:text-gray-200 mb-2">
+        <h2 class="text-2xl font-bold mb-2" style="color: var(--text-color);">
           <i class="pi pi-file-o mr-2 text-blue-500"></i>
           {{ t('Repositorio de Documentos') }}
         </h2>
-        <p class="text-gray-600 text-sm">{{ t('Gestión y seguimiento de documentos') }}</p>
+        <p class="text-sm" style="color: var(--text-color-secondary);">{{ t('Gestión y seguimiento de documentos') }}</p>
       </div>
       <div class="flex gap-2">
         <Button
@@ -242,13 +242,13 @@ const onUploadError = (error: string) => {
           @filter="onFilter($event)"
         >
           <template #header>
-            <div class="flex flex-wrap justify-between items-center gap-4 p-4 bg-gray-50 dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
+            <div class="flex flex-wrap justify-between items-center gap-4 p-4 border-b" style="background-color: var(--surface-card); border-color: var(--surface-border);">
               <div class="flex items-center gap-2">
                 <i class="pi pi-table text-blue-500"></i>
-                <span class="font-semibold text-gray-700">{{ t('Lista de Documentos') }}</span>
+                <span class="font-semibold" style="color: var(--text-color);">{{ t('Lista de Documentos') }}</span>
               </div>
               <div class="flex items-center gap-2">
-                <span class="text-sm text-gray-500">{{ formatIntNumber(totalRecords) }} {{ t('registros') }}</span>
+                <span class="text-sm" style="color: var(--text-color-secondary);">{{ formatIntNumber(totalRecords) }} {{ t('registros') }}</span>
               </div>
             </div>
             <div class="flex justify-between items-center mt-2">
@@ -267,10 +267,10 @@ const onUploadError = (error: string) => {
             </div>
           </template>
           <template #empty>
-            <div class="text-center text-gray-500 py-8">{{ t('No se han encontrado datos.') }}</div>
+            <div class="text-center py-8" style="color: var(--text-color-secondary);">{{ t('No se han encontrado datos.') }}</div>
           </template>
           <template #loading>
-            <div class="text-center text-gray-600 py-8">{{ t('Cargando datos..') }} <i class="pi pi-spin pi-spinner" style="font-size: 2rem" /></div>
+            <div class="text-center py-8" style="color: var(--text-color-secondary);">{{ t('Cargando datos..') }} <i class="pi pi-spin pi-spinner" style="font-size: 2rem" /></div>
           </template>
           <Column header="#">
             <template #body="slotProps">              

@@ -42,21 +42,21 @@ onMounted(() => {
     <div class="card">
       <div class="grid p-1">
         <div class="col-span-12 lg:col-span-12 xl:col-span-12">
-          <div class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 shadow-sm mb-4">
+          <div class="rounded-lg border shadow-sm mb-4" style="background-color: var(--surface-card); border-color: var(--surface-border);">
             <div class="flex items-center justify-between p-6">
               <div class="flex items-center gap-4">
-                <div class="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center">
-                  <i v-if="isGroup" class="pi pi-users text-blue-600 dark:text-blue-400 text-xl"></i>
-                  <i v-else class="pi pi-user text-blue-600 dark:text-blue-400 text-xl"></i>
+                <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
+                  <i v-if="isGroup" class="pi pi-users text-blue-600 text-xl"></i>
+                  <i v-else class="pi pi-user text-blue-600 text-xl"></i>
                 </div>
                 <div>
-                  <h1 class="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-1">
+                  <h1 class="text-2xl font-bold mb-1" style="color: var(--text-color);">
                     <span v-if="isGroup">{{ t('Sesiones de Grupo') }}</span>
                     <span v-else>{{ t('Detalles de Sesión') }}</span>
                   </h1>
                   <div class="flex items-center gap-2">
-                    <span class="text-sm text-gray-500 dark:text-gray-400">{{ t('ID') }}:</span>
-                    <span class="px-3 py-1 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 rounded-full text-sm font-mono font-medium">
+                    <span class="text-sm" style="color: var(--text-color-secondary);">{{ t('ID') }}:</span>
+                    <span class="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm font-mono font-medium">
                       {{ description }}
                     </span>
                   </div>
@@ -64,8 +64,8 @@ onMounted(() => {
               </div>
               <div class="flex items-center gap-3">
                 <div class="text-right">
-                  <p class="text-xs text-gray-500 dark:text-gray-400 mb-1">{{ t('Última actualización') }}</p>
-                  <p class="text-sm text-gray-700 dark:text-gray-300">{{ new Date().toLocaleTimeString() }}</p>
+                  <p class="text-xs mb-1" style="color: var(--text-color-secondary);">{{ t('Última actualización') }}</p>
+                  <p class="text-sm" style="color: var(--text-color-secondary);">{{ new Date().toLocaleTimeString() }}</p>
                 </div>
                 <Button 
                   icon="pi pi-refresh" 
@@ -99,7 +99,7 @@ onMounted(() => {
               <div class="flex justify-between mb-3">
                 <div>
                   <span class="block text-gray-500 font-medium mb-3">{{ t('Páginas Vistas') }}</span>
-                  <div class="text-gray-900 dark:text-gray-100 font-medium text-xl">
+                  <div class="font-medium text-xl" style="color: var(--text-color);">
                     {{ pageslength }}
                   </div>
                 </div>
@@ -118,7 +118,7 @@ onMounted(() => {
               <div class="flex justify-between">
                 <div>
                   <span class="block text-gray-500 font-medium mb-3">{{ t('Total Consultas') }}</span>
-                  <div class="text-gray-900 dark:text-gray-100 font-medium text-xl">
+                  <div class="font-medium text-xl" style="color: var(--text-color);">
                     {{ querieslength }}
                   </div>
                 </div>
@@ -137,7 +137,7 @@ onMounted(() => {
               <div class="flex justify-between">
                 <div>
                   <span class="block text-gray-500 font-medium mb-3">{{ t('Total Impresiones') }}</span>
-                  <div class="text-gray-900 dark:text-gray-100 font-medium text-xl">
+                  <div class="font-medium text-xl" style="color: var(--text-color);">
                     {{ printslength }}
                   </div>
                 </div>

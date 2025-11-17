@@ -34,10 +34,10 @@ const saveWiki = async () => {
 </script>
 
 <template>
-  <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
+  <div class="rounded-lg shadow-sm border" style="border-color: var(--surface-border); background-color: var(--surface-card);">
     <!-- Header con botón de guardar -->
-    <div class="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-700">
-      <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200">
+    <div class="flex items-center justify-between p-4 border-b" style="border-color: var(--surface-border); background-color: var(--surface-hover);">
+      <h3 class="text-lg font-semibold" style="color: var(--text-color);">
         <i class="pi pi-file-edit text-blue-600 mr-2"></i>
         {{ t('Editor de Wiki') }}
       </h3>
@@ -55,39 +55,40 @@ const saveWiki = async () => {
     <!-- Área de edición -->
     <div class="p-4">
       <div class="space-y-3">
-        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+        <label class="block text-sm font-medium" style="color: var(--text-color);">
           {{ t('Contenido Wiki') }}
         </label>
         <textarea
           v-model="wiki"
           rows="20"
-          class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-vertical font-mono text-sm leading-relaxed bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+          class="w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-vertical font-mono text-sm leading-relaxed"
+          style="border-color: var(--surface-border); background-color: var(--surface-card); color: var(--text-color);"
           :placeholder="t('Escribe el contenido wiki aquí...')"
         />
       </div>
     </div>
     
     <!-- Footer con contadores -->
-    <div class="px-4 py-3 bg-gray-50 dark:bg-gray-700 border-t border-gray-200 dark:border-gray-600 rounded-b-lg">
-      <div class="flex items-center justify-between text-sm text-gray-600 dark:text-gray-400">
+    <div class="px-4 py-3 border-t rounded-b-lg" style="border-color: var(--surface-border); background-color: var(--surface-hover);">
+      <div class="flex items-center justify-between text-sm" style="color: var(--text-color-secondary);">
         <div class="flex items-center space-x-4">
           <div class="flex items-center space-x-1">
-            <i class="pi pi-file text-gray-400 dark:text-gray-500"></i>
+            <i class="pi pi-file text-gray-400 "></i>
             <span class="font-medium">{{ formatIntNumber(characterCount) }}</span>
-            <span class="text-gray-500 dark:text-gray-400">{{ t('caracteres') }}</span>
+            <span style="color: var(--text-color-secondary);">{{ t('caracteres') }}</span>
           </div>
           <div class="flex items-center space-x-1">
-            <i class="pi pi-align-left text-gray-400 dark:text-gray-500"></i>
+            <i class="pi pi-align-left text-gray-400 "></i>
             <span class="font-medium">{{ formatIntNumber(wordCount) }}</span>
-            <span class="text-gray-500 dark:text-gray-400">{{ t('palabras') }}</span>
+            <span style="color: var(--text-color-secondary);">{{ t('palabras') }}</span>
           </div>
           <div class="flex items-center space-x-1">
-            <i class="pi pi-list text-gray-400 dark:text-gray-500"></i>
+            <i class="pi pi-list text-gray-400 "></i>
             <span class="font-medium">{{ formatIntNumber(lineCount) }}</span>
-            <span class="text-gray-500 dark:text-gray-400">{{ t('líneas') }}</span>
+            <span style="color: var(--text-color-secondary);">{{ t('líneas') }}</span>
           </div>
         </div>
-        <div class="text-xs text-gray-500 dark:text-gray-400">
+        <div class="text-xs" style="color: var(--text-color-secondary);">
           {{ t('Actualizado en tiempo real') }}
         </div>
       </div>

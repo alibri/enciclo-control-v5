@@ -76,14 +76,14 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="min-h-screen bg-gray-50 dark:bg-gray-900 p-4">
+  <div class="min-h-screen p-4" style="background-color: var(--surface-ground);">
     <!-- Header mejorado -->
     <div class="flex justify-between items-center mb-6">
       <div>
-        <h2 class="text-2xl font-bold text-gray-800 dark:text-gray-200 mb-2">
+        <h2 class="text-2xl font-bold mb-2" style="color: var(--text-color);">
           <i class="pi pi-print mr-2 text-blue-500"></i>
           {{ t('Impresiones') }}</h2>
-        <p class="text-gray-600 text-sm">{{ t('Registro de páginas impresas por los usuarios') }}</p>
+        <p class="text-sm" style="color: var(--text-color-secondary);">{{ t('Registro de páginas impresas por los usuarios') }}</p>
       </div>
       <div class="flex gap-2">
         <Button
@@ -102,7 +102,7 @@ onMounted(() => {
     </div>
 
     <!-- Tabla mejorada -->
-    <div class="bg-white rounded-lg shadow-sm border border-gray-200">
+    <div class="rounded-lg shadow-sm border" style="background-color: var(--surface-card); border-color: var(--surface-border);">
       <DataTable
         ref="dt"
         v-model:filters="filters"
@@ -130,13 +130,13 @@ onMounted(() => {
       >
         <!-- Header de la tabla -->
         <template #header>
-          <div class="flex flex-wrap justify-between items-center gap-4 p-4 bg-gray-50 dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
+          <div class="flex flex-wrap justify-between items-center gap-4 p-4 border-b" style="background-color: var(--surface-card); border-color: var(--surface-border);">
             <div class="flex items-center gap-2">
               <i class="pi pi-table text-blue-500"></i>
-              <span class="font-semibold text-gray-700">{{ t('Lista de Impresiones') }}</span>
+              <span class="font-semibold" style="color: var(--text-color);">{{ t('Lista de Impresiones') }}</span>
             </div>
             <div class="flex items-center gap-2">
-              <span class="text-sm text-gray-500">{{ totalRecords }} {{ t('registros') }}</span>
+              <span class="text-sm" style="color: var(--text-color-secondary);">{{ totalRecords }} {{ t('registros') }}</span>
             </div>
           </div>
         </template>
@@ -145,14 +145,14 @@ onMounted(() => {
         <template #empty>
           <div class="text-center py-8">
             <i class="pi pi-print text-4xl text-gray-300 mb-4"></i>
-            <p class="text-gray-500 text-lg">{{ t('No se han encontrado datos.') }}</p>
+            <p class="text-lg" style="color: var(--text-color-secondary);">{{ t('No se han encontrado datos.') }}</p>
           </div>
         </template>
         
         <template #loading>
           <div class="text-center py-8">
             <i class="pi pi-spin pi-spinner text-2xl text-blue-500 mb-2"></i>
-            <p class="text-gray-600">{{ t('Cargando datos...') }}</p>
+            <p style="color: var(--text-color-secondary);">{{ t('Cargando datos...') }}</p>
           </div>
         </template>
 
@@ -218,7 +218,7 @@ onMounted(() => {
             <div class="flex items-center gap-2">
               <i class="pi pi-calendar text-gray-400"></i>
               <div class="text-sm">
-                <div class="text-gray-700">{{ formatDateTime(slotProps.data.date) }}</div>
+                <div style="color: var(--text-color);">{{ formatDateTime(slotProps.data.date) }}</div>
               </div>
             </div>
           </template>
@@ -230,7 +230,7 @@ onMounted(() => {
             <div class="space-y-1">
               <div class="flex items-center gap-2 text-sm">
                 <i class="pi pi-map-marker text-red-500"></i>
-                <span class="text-gray-700">{{ slotProps.data.glc_country_name }}</span>
+                <span style="color: var(--text-color);">{{ slotProps.data.glc_country_name }}</span>
               </div>
               <div class="flex items-center gap-2 text-xs text-gray-500">
                 <i class="pi pi-building text-gray-400"></i>

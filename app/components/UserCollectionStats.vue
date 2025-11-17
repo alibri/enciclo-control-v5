@@ -293,7 +293,7 @@ const generarPDF = async () => {
     </div>
       <div class="flex justify-center items-center my-6">
         <h1
-          class="text-3xl font-bold text-blue-600 dark:text-blue-400 tracking-tight transition-all duration-300">
+          class="text-3xl font-bold text-blue-600  tracking-tight transition-all duration-300">
           <span v-if="printing">{{ user }} - </span>
           {{ collection }}
         </h1>
@@ -310,7 +310,7 @@ const generarPDF = async () => {
 
       <div class="grid grid-cols-12 p-1 gap-4">
         <div class="col-span-12">
-          <div :class="printing ? 'chart-container' : 'rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800'">
+          <div :class="printing ? 'chart-container' : 'rounded-lg border'" :style="!printing ? 'border-color: var(--surface-border); background-color: var(--surface-card);' : ''">
             <div :class="printing ? '' : 'h-96'">
               <Bar :data="chartData" :options="chartOptions" />
             </div>
@@ -324,83 +324,82 @@ const generarPDF = async () => {
             <i class="pi pi-file-excel mr-2"></i> {{ t('Exportar EXCEL') }}
         </a>
       </div>
-          <table class="min-w-full border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden bg-white dark:bg-gray-800">
-            <thead class="bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-700 dark:to-gray-600">
+          <table class="min-w-full border rounded-lg overflow-hidden" style="border-color: var(--surface-border); background-color: var(--surface-card);">
+            <thead class="bg-gradient-to-r from-gray-50 to-gray-100 ">
               <tr>
                 <th
-                  class="px-6 py-4 text-left text-xs font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wider border-b border-gray-200 dark:border-gray-600">
+                  class="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider border-b" style="color: var(--text-color); border-color: var(--surface-border);">
                   {{ t('Mes') }}
                 </th>
                 <th v-if="collection !== 'authoritas'"
-                  class="px-6 py-4 text-center text-xs font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wider border-b border-gray-200 dark:border-gray-600">
+                  class="px-6 py-4 text-center text-xs font-semibold uppercase tracking-wider border-b" style="color: var(--text-color); border-color: var(--surface-border);">
                   {{ t('Sesiones') }}
                 </th>
                 <th v-if="collection !== 'authoritas'"
-                  class="px-6 py-4 text-center text-xs font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wider border-b border-gray-200 dark:border-gray-600">
+                  class="px-6 py-4 text-center text-xs font-semibold uppercase tracking-wider border-b" style="color: var(--text-color); border-color: var(--surface-border);">
                   {{ t('Páginas') }}
                 </th>
                 <th v-if="collection !== 'authoritas'"
-                  class="px-6 py-4 text-center text-xs font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wider border-b border-gray-200 dark:border-gray-600">
+                  class="px-6 py-4 text-center text-xs font-semibold uppercase tracking-wider border-b" style="color: var(--text-color); border-color: var(--surface-border);">
                   {{ t('Tiempo') }}
                 </th>
                 <th v-if="collection === 'authoritas'"
-                  class="px-6 py-4 text-center text-xs font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wider border-b border-gray-200 dark:border-gray-600">
+                  class="px-6 py-4 text-center text-xs font-semibold uppercase tracking-wider border-b" style="color: var(--text-color); border-color: var(--surface-border);">
                   {{ t('Pregúntame') }}
                 </th>
               </tr>
             </thead>
-            <tbody class="divide-y divide-gray-200 dark:divide-gray-600">
+            <tbody class="divide-y divide-gray-200 ">
               <tr v-for="(stats, month, index) in sortedUserPageStats" :key="String(month)" :class="[
                 'transition-colors duration-200 ease-in-out',
-                'hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:shadow-sm',
-                index % 2 === 0 ? 'bg-white dark:bg-gray-800' : 'bg-gray-50 dark:bg-gray-700'
+                'hover:bg-blue-50 hover:shadow-sm'
               ]">
-                <td class="px-6 py-4 whitespace-nowrap text-sm font-semibold text-gray-900 dark:text-gray-100">
+                <td class="px-6 py-4 whitespace-nowrap text-sm font-semibold" style="color: var(--text-color);">
                 {{ yearSelected }} - {{ formatMonthName(Number(month)) }}
                 </td>
-                <td v-if="collection !== 'authoritas'" class="px-6 py-4 whitespace-nowrap text-sm text-gray-700 dark:text-gray-300 text-center">
+                <td v-if="collection !== 'authoritas'" class="px-6 py-4 whitespace-nowrap text-sm text-center" style="color: var(--text-color-secondary);">
                   <span
-                    class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200">
+                    class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
                     {{ formatIntNumber(stats.logins) }}
                   </span>
                 </td>
-                <td v-if="collection !== 'authoritas'" class="px-6 py-4 whitespace-nowrap text-sm text-gray-700 dark:text-gray-300 text-center">
+                <td v-if="collection !== 'authoritas'" class="px-6 py-4 whitespace-nowrap text-sm text-center" style="color: var(--text-color-secondary);">
                   <span
-                    class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200">
+                    class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
                     {{ formatIntNumber(stats.pages) }}
                   </span>
                 </td>
-                <td v-if="collection !== 'authoritas'" class="px-6 py-4 whitespace-nowrap text-sm text-gray-700 dark:text-gray-300 text-center font-mono">
+                <td v-if="collection !== 'authoritas'" class="px-6 py-4 whitespace-nowrap text-sm text-center font-mono" style="color: var(--text-color-secondary);">
                   {{ stats.ts }}
                 </td>
-                <td v-if="collection === 'authoritas'" class="px-6 py-4 whitespace-nowrap text-sm text-gray-700 dark:text-gray-300 text-center">
+                <td v-if="collection === 'authoritas'" class="px-6 py-4 whitespace-nowrap text-sm text-center" style="color: var(--text-color-secondary);">
                   <span
-                    class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-100 dark:bg-purple-900 text-purple-800 dark:text-purple-200">
+                    class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-100 text-purple-800">
                     {{ formatIntNumber(stats.preguntas) }}
                   </span>
                 </td>
               </tr>
             </tbody>
             <tfoot>
-              <tr class="bg-gray-100 dark:bg-gray-600 font-bold">
-                <td class="px-6 py-4 text-sm text-gray-900 dark:text-gray-100 text-right">
+              <tr class="font-bold" style="background-color: var(--surface-hover);">
+                <td class="px-6 py-4 text-sm text-right" style="color: var(--text-color);">
                   {{ t('Totales') }}
                 </td>
-                <td v-if="collection !== 'authoritas'" class="px-6 py-4 text-sm text-blue-800 dark:text-blue-200 text-center">
+                <td v-if="collection !== 'authoritas'" class="px-6 py-4 text-sm text-blue-800 text-center">
                   {{
                     formatIntNumber(
                       Object.values(sortedUserPageStats || {}).reduce((acc, stats) => acc + (stats.logins || 0), 0)
                     )
                   }}
                 </td>
-                <td v-if="collection !== 'authoritas'" class="px-6 py-4 text-sm text-green-800 dark:text-green-200 text-center">
+                <td v-if="collection !== 'authoritas'" class="px-6 py-4 text-sm text-green-800 text-center">
                   {{
                     formatIntNumber(
                       Object.values(sortedUserPageStats || {}).reduce((acc, stats) => acc + (stats.pages || 0), 0)
                     )
                   }}
                 </td>
-                <td v-if="collection !== 'authoritas'" class="px-6 py-4 text-sm text-gray-700 dark:text-gray-300 text-center font-mono">
+                <td v-if="collection !== 'authoritas'" class="px-6 py-4 text-sm text-center font-mono" style="color: var(--text-color-secondary);">
                   {{
                     (() => {
                       // Sumar los tiempos en formato HH:MM:SS
@@ -416,7 +415,7 @@ const generarPDF = async () => {
                     })()
                   }}
                 </td>
-                <td v-if="collection === 'authoritas'" class="px-6 py-4 text-sm text-purple-800 dark:text-purple-200 text-center">
+                <td v-if="collection === 'authoritas'" class="px-6 py-4 text-sm text-purple-800 text-center">
                   {{
                     formatIntNumber(
                       Object.values(sortedUserPageStats || {}).reduce((acc, stats) => acc + (stats.preguntas || 0), 0)
@@ -429,10 +428,10 @@ const generarPDF = async () => {
         </div>
       </div>
     </div>
-    <div v-else-if="loading" class="text-gray-500 dark:text-gray-400 text-center py-8">
+    <div v-else-if="loading" class="text-center py-8" style="color: var(--text-color-secondary);">
       {{ t('Cargando...') }}
     </div>
-    <div v-else class="text-gray-500 dark:text-gray-400 text-center py-8">
+    <div v-else class="text-center py-8" style="color: var(--text-color-secondary);">
       No hay datos disponibles
     </div>
   </div>

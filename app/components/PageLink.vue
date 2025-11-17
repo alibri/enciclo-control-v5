@@ -22,7 +22,7 @@ const openEditor = async () => {
 </script>
 
 <template>
-  <div class="flex items-center gap-2 p-2 border border-gray-200 dark:border-gray-700 hover:shadow-md transition-all duration-200">
+  <div class="flex items-center gap-2 p-2 border hover:shadow-md transition-all duration-200" style="border-color: var(--surface-border);">
     <!-- Botón para abrir página externa -->
     <Button
       icon="pi pi-external-link"
@@ -49,7 +49,8 @@ const openEditor = async () => {
     
     <!-- Título de la página como enlace principal -->
     <button
-      class="flex-1 text-left font-semibold text-gray-800 dark:text-gray-200 hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-200 border-b border-dotted border-gray-300 dark:border-gray-600 hover:border-blue-500 dark:hover:border-blue-400 pb-1"
+      class="flex-1 text-left font-semibold hover:text-blue-600 transition-colors duration-200 border-b border-dotted hover:border-blue-500 pb-1"
+      style="color: var(--text-color); border-color: var(--surface-border);"
       @click="pageStore.loadPage(page.collection, page.title)"
       :aria-label="`Cargar página ${page.title}`"
     >

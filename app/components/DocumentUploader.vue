@@ -147,20 +147,20 @@ const onTemplatedUpload = async (event: any) => {
                     <ProgressBar v-show="uploading" :value="totalSizePercent" :showValue="false" :class="['md:w-80 h-4 w-full md:ml-auto', { 'exceeded-progress-bar': totalSizePercent > 100 }]"
                         ><span class="whitespace-nowrap">{{ formatSize(totalSize) }}</span></ProgressBar
                     >
-                    <span class="text-sm text-gray-600">{{ t('Subiendo...') }}</span>
+                    <span class="text-sm" style="color: var(--text-color-secondary);">{{ t('Subiendo...') }}</span>
                 </div>
             </div>
         </template>
         <template #content="{ files, removeFileCallback }">
           <BlockUI :blocked="uploading">
             <div v-if="files.length > 0">
-                <h5 class="text-lg font-semibold text-gray-700 mb-4">{{ t('Pendientes') }}</h5>
+                <h5 class="text-lg font-semibold mb-4" style="color: var(--text-color);">{{ t('Pendientes') }}</h5>
                 <div class="flex flex-wrap p-0 sm:p-5 gap-5">
-                    <div v-for="(file, index) of files" :key="file.name + file.type + file.size" class=" shadow-sm border border-gray-200 m-0 px-6 py-4 flex flex-col items-center gap-3">
+                    <div v-for="(file, index) of files" :key="file.name + file.type + file.size" class="shadow-sm border m-0 px-6 py-4 flex flex-col items-center gap-3" style="border-color: var(--surface-border); background-color: var(--surface-card);">
                         <div v-tooltip.top="file.name">
-                            <i :class="formatFileIcon(file.name.split('.').pop() || '')"></i> <span class="ml-2 text-xs text-gray-500">({{ file.name.split('.').pop() || 'sin extensión' }})</span>
+                            <i :class="formatFileIcon(file.name.split('.').pop() || '')"></i> <span class="ml-2 text-xs" style="color: var(--text-color-secondary);">({{ file.name.split('.').pop() || 'sin extensión' }})</span>
                         </div>
-                        <div class="text-sm text-gray-700">{{ formatSize(file.size) }}</div>
+                        <div class="text-sm" style="color: var(--text-color);">{{ formatSize(file.size) }}</div>
                         <Badge :value="t('Pendiente')" severity="warning" />
                         <Button icon="pi pi-times" @click="onRemoveTemplatingFile(file, removeFileCallback, index)" outlined rounded  severity="danger" />
                     </div>
@@ -171,8 +171,8 @@ const onTemplatedUpload = async (event: any) => {
         <template #empty>
           <BlockUI :blocked="uploading">
             <div class="flex items-center justify-center flex-col">
-                <i class="pi pi-cloud-upload border-2 border-gray-300 rounded-full p-5 text-8xl text-gray-400" />
-                <p class="mt-4 mb-0 text-gray-600">{{ t('Arrastre y suelte los archivos aquí para cargarlos.') }}</p>
+                <i class="pi pi-cloud-upload border-2 rounded-full p-5 text-8xl text-gray-400" style="border-color: var(--surface-border);" />
+                <p class="mt-4 mb-0" style="color: var(--text-color-secondary);">{{ t('Arrastre y suelte los archivos aquí para cargarlos.') }}</p>
             </div>
           </BlockUI>
         </template>

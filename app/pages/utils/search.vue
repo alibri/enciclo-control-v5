@@ -94,12 +94,12 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="min-h-screen bg-gray-50 dark:bg-gray-900 p-4">
+  <div class="min-h-screen p-4" style="background-color: var(--surface-ground);">
     <!-- Header Section -->
     <div class="mb-6">
       <div class="flex items-center justify-between">
         <div class="flex items-center space-x-3">
-          <h2 class="text-3xl font-bold text-gray-900">
+          <h2 class="text-3xl font-bold" style="color: var(--text-color);">
             <i class="pi pi-search mr-2 text-blue-500"></i>
             {{ t('Búsqueda') }}</h2>
           <Badge v-if="data.length > 0" :value="formatIntNumber(data.length)" severity="info" />
@@ -139,7 +139,7 @@ onMounted(() => {
           <template #content>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div class="space-y-2">
-                <label for="collections" class="block text-sm font-medium text-gray-700">
+                <label for="collections" class="block text-sm font-medium" style="color: var(--text-color);">
                   {{ t('Colecciones') }}
                 </label>
                 <MultiSelect 
@@ -155,7 +155,7 @@ onMounted(() => {
               </div>
               
               <div class="space-y-2">
-                <label for="type" class="block text-sm font-medium text-gray-700">
+                <label for="type" class="block text-sm font-medium" style="color: var(--text-color);">
                   {{ t('Tipo de búsqueda') }}
                 </label>
                 <MultiSelect 
@@ -170,7 +170,7 @@ onMounted(() => {
               </div>
               
               <div class="space-y-2">
-                <label for="keyword" class="block text-sm font-medium text-gray-700">
+                <label for="keyword" class="block text-sm font-medium" style="color: var(--text-color);">
                   {{ t('Texto de búsqueda') }}
                 </label>
                 <InputGroup id="keyword" class="w-full">
@@ -208,7 +208,7 @@ onMounted(() => {
           <template #content>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div class="space-y-2">
-                <label for="collections-query" class="block text-sm font-medium text-gray-700">
+                <label for="collections-query" class="block text-sm font-medium" style="color: var(--text-color);">
                   {{ t('Colecciones') }}
                 </label>
                 <MultiSelect 
@@ -223,7 +223,7 @@ onMounted(() => {
               </div>
               
               <div class="space-y-2">
-                <label for="consultas" class="block text-sm font-medium text-gray-700">
+                <label for="consultas" class="block text-sm font-medium" style="color: var(--text-color);">
                   {{ t('Consultas predefinidas') }}
                 </label>
                 <InputGroup id="consultas" class="w-full">
@@ -321,7 +321,7 @@ onMounted(() => {
               
               <Column field="alias" :header="t('Alias')" :sortable="true">
                 <template #body="slotProps">
-                  <span class="text-sm text-gray-600">{{ slotProps.data.alias }}</span>
+                  <span class="text-sm" style="color: var(--text-color-secondary);">{{ slotProps.data.alias }}</span>
                 </template>
               </Column>
               
@@ -335,7 +335,7 @@ onMounted(() => {
                 <template #body="slotProps">
                   <div class="flex items-center space-x-2">
                     <i class="pi pi-clock text-gray-400"></i>
-                    <span class="text-sm text-gray-600">{{ formatDateTime(slotProps.data.touched) }}</span>
+                    <span class="text-sm" style="color: var(--text-color-secondary);">{{ formatDateTime(slotProps.data.touched) }}</span>
                   </div>
                 </template>
               </Column>

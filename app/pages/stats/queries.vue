@@ -73,14 +73,14 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="min-h-screen bg-gray-50 dark:bg-gray-900 p-4">
+  <div class="min-h-screen p-4" style="background-color: var(--surface-ground);">
     <!-- Header mejorado -->
     <div class="flex justify-between items-center mb-6">
       <div>
-        <h2 class="text-2xl font-bold text-gray-800 dark:text-gray-200 mb-2">
+        <h2 class="text-2xl font-bold mb-2" style="color: var(--text-color);">
           <i class="pi pi-search mr-2 text-blue-500"></i>
           {{ t('Consultas') }}</h2>
-        <p class="text-gray-600 text-sm">{{ t('Historial de búsquedas y consultas realizadas por los usuarios') }}</p>
+        <p class="text-sm" style="color: var(--text-color-secondary);">{{ t('Historial de búsquedas y consultas realizadas por los usuarios') }}</p>
       </div>
       <div class="flex gap-2">
         <Button
@@ -127,7 +127,7 @@ onMounted(() => {
       >
         <!-- Header de la tabla -->
         <template #header>
-          <div class="flex flex-wrap justify-between items-center gap-4 p-4 bg-gray-50 dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
+          <div class="flex flex-wrap justify-between items-center gap-4 p-4 border-b" style="background-color: var(--surface-card); border-color: var(--surface-border);">
             <div class="flex items-center gap-2">
               <i class="pi pi-table text-blue-500"></i>
               <span class="font-semibold text-gray-700">{{ t('Lista de Consultas') }}</span>

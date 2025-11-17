@@ -52,25 +52,25 @@ onUnmounted(() => {
   <div class="card">
     <div class="grid grid-cols-12 gap-8">
       <div class="col-span-12 lg:col-span-6 xl:col-span-6">
-        <div class="border border-gray-200 dark:border-gray-700 rounded-lg p-6 mb-0 bg-white dark:bg-gray-800">
+        <div class="border rounded-lg p-6 mb-0" style="border-color: var(--surface-border); background-color: var(--surface-card);">
           <div class="flex justify-between mb-3">
             <div>
-              <span class="block text-gray-500 dark:text-gray-400 font-medium mb-3">{{ t('Sesiones Activas') }}</span>
-              <div class="text-gray-900 dark:text-gray-100 font-medium text-xl">
+              <span class="block font-medium mb-3" style="color: var(--text-color-secondary);">{{ t('Sesiones Activas') }}</span>
+              <div class="font-medium text-xl" style="color: var(--text-color);">
                 {{ sessions.length }}
               </div>
             </div>
-            <div class="flex items-center justify-center bg-cyan-100 dark:bg-cyan-900 rounded-full"
-              style="width: 2.5rem; height: 2.5rem">
-              <i class="pi pi-star text-cyan-500 dark:text-cyan-400 text-xl" />
+            <div class="flex items-center justify-center rounded-full"
+              style="width: 2.5rem; height: 2.5rem; background-color: var(--highlight-bg);">
+              <i class="pi pi-star text-xl" style="color: var(--primary-color);" />
             </div>
           </div>
         </div>
       </div>
 
       <div class="col-span-12 lg:col-span-6 xl:col-span-6">
-        <div class="border border-gray-200 dark:border-gray-700 rounded-lg p-6 bg-white dark:bg-gray-800">
-          <h5 class="text-gray-900 dark:text-gray-100">{{ t('Sesiones Activas') }}</h5>
+        <div class="border rounded-lg p-6" style="border-color: var(--surface-border); background-color: var(--surface-card);">
+          <h5 style="color: var(--text-color);">{{ t('Sesiones Activas') }}</h5>
           <SimpleSessionsDataTable :value="sessions" :rows="5" :show-user="true" :show-end="true" />
         </div>
       </div>
@@ -83,7 +83,7 @@ onUnmounted(() => {
         <div class="col-span-12 flex justify-center items-center print:hidden">
           <div class="w-full max-w-md">
             <InputGroup>
-              <DatePicker v-model="dates" selection-mode="range" :manual-input="true" :placeholder="t('Periodo')" />
+              <DatePicker v-model="dates" selection-mode="range" :manual-input="true" update-model-type="date" :placeholder="t('Periodo')" />
               <Button icon="pi pi-refresh" severity="success" @click="loadData()" />
             </InputGroup>
           </div>

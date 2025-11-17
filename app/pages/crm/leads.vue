@@ -100,7 +100,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="card bg-white dark:bg-gray-800">
+  <div class="card" style="background-color: var(--surface-card);">
     <Dialog v-model:visible="showEnviarMensaje" modal :header="t('Enviar mensaje')" :style="{ width: '50rem' }">
       <span class="p-text-secondary block mb-5">{{ t('Selecciona el mensaje y el estado') }}</span>
       <div class="flex align-items-center gap-3 mb-3">
@@ -150,7 +150,7 @@ onMounted(() => {
       </div>
     </Dialog>
 
-    <h2 class="text-gray-900 dark:text-gray-100">{{ t('Consultas') }}</h2>
+    <h2 style="color: var(--text-color);">{{ t('Consultas') }}</h2>
     <div class="grid p-1">
       <div class="col-span-12">
         <DataTable

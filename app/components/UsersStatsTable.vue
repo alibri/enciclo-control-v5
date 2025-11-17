@@ -22,56 +22,56 @@ defineProps({
 </script>
 
 <template>
-  <div class=" shadow-md p-6">
+  <div class="shadow-md p-6" style="background-color: var(--surface-card);">
     <ul class="list-none p-0 m-0">
-      <li class="flex items-center py-3 px-2 border-t border-gray-200 flex-wrap">
-        <div class="text-gray-400 flex-grow font-medium font-bold">
+      <li class="flex items-center py-3 px-2 border-t flex-wrap" style="border-color: var(--surface-border);">
+        <div class="flex-grow font-medium font-bold" style="color: var(--text-color-secondary);">
           {{ t('Usuario') }}
         </div>
-        <div class="text-gray-400 w-50 md:order-0 order-1 font-medium font-bold text-center">
+        <div class="w-50 md:order-0 order-1 font-medium font-bold text-center" style="color: var(--text-color-secondary);">
           {{ t('Logins') }}
         </div>
-        <div class="text-gray-400 w-50 md:order-0 order-1 font-medium font-bold text-center">
+        <div class="w-50 md:order-0 order-1 font-medium font-bold text-center" style="color: var(--text-color-secondary);">
           {{ t('Páginas') }}
         </div>
-        <div class="text-gray-400 w-50 md:order-0 order-1 font-medium font-bold text-center">
+        <div class="w-50 md:order-0 order-1 font-medium font-bold text-center" style="color: var(--text-color-secondary);">
           {{ t('Pergúntame') }}
         </div>
-        <div class="text-gray-400 w-50 md:order-0 order-1 font-medium font-bold text-center">
+        <div class="w-50 md:order-0 order-1 font-medium font-bold text-center" style="color: var(--text-color-secondary);">
           {{ t('Tiempo Total') }}
         </div>
-        <div class="text-gray-400 w-50 md:order-0 order-1 font-medium font-bold text-center">
+        <div class="w-50 md:order-0 order-1 font-medium font-bold text-center" style="color: var(--text-color-secondary);">
           {{ t('Min. Inicio') }}
         </div>
-        <div class="text-gray-400 w-full md:w-32 md:order-0 order-1 font-medium font-bold text-center">
+        <div class="w-full md:w-32 md:order-0 order-1 font-medium font-bold text-center" style="color: var(--text-color-secondary);">
           {{ t('Max. Final') }}
         </div>
       </li>
       
       <span v-if="value && value.length > 0">
         <template v-for="item in value" :key="item">
-          <li class="flex items-center py-3 px-2 border-t border-gray-200 flex-wrap">
-            <div class="text-gray-500 flex-grow font-medium font-bold">
-              <NuxtLink :to="'/users/'+item.user" class="text-red-500 border-none border-b border-dotted">
+          <li class="flex items-center py-3 px-2 border-t flex-wrap" style="border-color: var(--surface-border);">
+            <div class="flex-grow font-medium font-bold" style="color: var(--text-color-secondary);">
+              <NuxtLink :to="'/users/'+item.user" class="border-none border-b border-dotted" style="color: var(--primary-color); border-color: var(--surface-border);">
                 {{ item.user }}
               </NuxtLink>
             </div>
-            <div class="text-gray-900 w-50 md:order-0 order-1 text-gray-300 text-center">
+            <div class="w-50 md:order-0 order-1 text-center" style="color: var(--text-color);">
               {{ item.logins }}
             </div>
-            <div class="text-gray-900 w-50 md:order-0 order-1 text-blue-400 text-center">
+            <div class="w-50 md:order-0 order-1 text-center" style="color: var(--primary-color);">
               {{ item.pages }}
             </div>
-            <div class="text-gray-900 w-50 md:order-0 order-1 text-yellow-400 text-center">
+            <div class="w-50 md:order-0 order-1 text-center" style="color: var(--text-color);">
               {{ item.chats }}
             </div>
-            <div class="text-gray-900 w-50 md:order-0 order-1 text-blue-500 text-center">
+            <div class="w-50 md:order-0 order-1 text-center" style="color: var(--primary-color);">
               {{ formatSegundosAHora(item.ts) }}
             </div>
-            <div class="text-gray-900 w-50 md:order-0 order-1 text-green-400 text-center">
+            <div class="w-50 md:order-0 order-1 text-center" style="color: var(--text-color-secondary);">
               {{ formatDateTime(Number(item.min)) }}
             </div>
-            <div class="text-gray-900 w-full md:w-32 md:order-0 order-1 text-green-400 text-center">
+            <div class="w-full md:w-32 md:order-0 order-1 text-center" style="color: var(--text-color-secondary);">
               {{ formatDateTime(Number(item.max)) }}
             </div>
           </li>

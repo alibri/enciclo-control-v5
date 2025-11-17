@@ -234,11 +234,11 @@ const canEvaluateAB = computed(() => {
 </script>
 
 <template>
-  <div class="min-h-screen bg-gray-50 dark:bg-gray-900 p-4">
+  <div class="min-h-screen p-4" style="background-color: var(--surface-ground);">
     <!-- Header Section -->
     <div class="mb-6">
       <div class="flex items-center space-x-3">
-        <h2 class="text-3xl font-bold text-gray-900 dark:text-gray-100">
+        <h2 class="text-3xl font-bold" style="color: var(--text-color);">
           <i class="pi pi-code mr-2 text-blue-500"></i>
           {{ t('Test RAG A/B') }}
         </h2>
@@ -290,8 +290,8 @@ const canEvaluateAB = computed(() => {
           </div>
         </template>
         <template #content>
-          <div class="bg-red-50 dark:bg-red-900/20 p-4 rounded-lg">
-            <p class="text-red-700 dark:text-red-300">{{ resultA.error }}</p>
+          <div class="bg-red-50  p-4 rounded-lg">
+            <p class="text-red-700">{{ resultA.error }}</p>
           </div>
         </template>
       </Card>
@@ -308,8 +308,8 @@ const canEvaluateAB = computed(() => {
           </div>
         </template>
         <template #content>
-          <div class="bg-red-50 dark:bg-red-900/20 p-4 rounded-lg">
-            <p class="text-red-700 dark:text-red-300">{{ resultB.error }}</p>
+          <div class="bg-red-50  p-4 rounded-lg">
+            <p class="text-red-700">{{ resultB.error }}</p>
           </div>
         </template>
       </Card>
@@ -320,13 +320,13 @@ const canEvaluateAB = computed(() => {
       <Card>
         <template #content>
           <div v-if="abEvaluated" class="text-center py-6">
-            <div class="flex items-center justify-center space-x-2 text-green-600 dark:text-green-400">
+            <div class="flex items-center justify-center space-x-2 text-green-600">
               <i class="pi pi-check-circle text-2xl"></i>
               <span class="text-lg font-semibold">{{ t('Test A/B evaluado') }}</span>
             </div>
           </div>
           <div v-else-if="canEvaluateAB" class="text-center py-6 space-y-4">
-            <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">
+            <h3 class="text-lg font-semibold mb-4" style="color: var(--text-color);">
               {{ t('¿Cuál respuesta es mejor?') }}
             </h3>
             <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
@@ -340,7 +340,7 @@ const canEvaluateAB = computed(() => {
                 severity="success"
                 size="large"
               />
-              <span class="text-gray-500 dark:text-gray-400 font-medium">{{ t('o') }}</span>
+              <span class="font-medium" style="color: var(--text-color-secondary);">{{ t('o') }}</span>
               <Button
                 :label="t('Elegir Respuesta B')"
                 icon="pi pi-check"
@@ -354,7 +354,7 @@ const canEvaluateAB = computed(() => {
             </div>
           </div>
           <div v-else-if="!resultA.evaluationId || !resultB.evaluationId" class="text-center py-6">
-            <p class="text-gray-500 dark:text-gray-400">
+            <p class="">
               {{ t('Evalúa ambas respuestas para poder compararlas') }}
             </p>
           </div>
@@ -368,8 +368,8 @@ const canEvaluateAB = computed(() => {
         <template #content>
           <div class="text-center py-12">
             <i class="pi pi-info-circle text-4xl text-gray-400 mb-4"></i>
-            <h3 class="text-lg font-medium text-gray-900 dark:text-gray-100 mb-2">{{ t('Listo para probar') }}</h3>
-            <p class="text-gray-500 dark:text-gray-400">{{ t('Ingrese una pregunta y configure los parámetros A y B para comenzar') }}</p>
+            <h3 class="text-lg font-medium mb-2" style="color: var(--text-color);">{{ t('Listo para probar') }}</h3>
+            <p style="color: var(--text-color-secondary);">{{ t('Ingrese una pregunta y configure los parámetros A y B para comenzar') }}</p>
           </div>
         </template>
       </Card>
@@ -381,8 +381,8 @@ const canEvaluateAB = computed(() => {
         <template #content>
           <div class="text-center py-12">
             <i class="pi pi-spin pi-spinner text-4xl text-blue-500 mb-4"></i>
-            <h3 class="text-lg font-medium text-gray-900 dark:text-gray-100 mb-2">{{ t('Ejecutando consultas en paralelo...') }}</h3>
-            <p class="text-gray-500 dark:text-gray-400">{{ t('Por favor espere mientras se procesan ambas consultas RAG') }}</p>
+            <h3 class="text-lg font-medium mb-2" style="color: var(--text-color);">{{ t('Ejecutando consultas en paralelo...') }}</h3>
+            <p style="color: var(--text-color-secondary);">{{ t('Por favor espere mientras se procesan ambas consultas RAG') }}</p>
           </div>
         </template>
       </Card>

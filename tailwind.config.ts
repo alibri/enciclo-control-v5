@@ -1,8 +1,8 @@
 /** @type {import('tailwindcss').Config} */
-import PrimeUI from 'tailwindcss-primeui';
-
+// Nota: En Tailwind CSS v4, la configuración de darkMode se hace en el CSS con @custom-variant
+// El plugin tailwindcss-primeui se importa en tailwind.css con @import
 export default {
-    darkMode: ['selector', '.p-dark'],
+    // darkMode se configura en tailwind.css con @custom-variant para Tailwind v4
     content: [
       './app/**/*.{vue,js,ts,jsx,tsx}',
       './components/**/*.{vue,js,ts,jsx,tsx}',
@@ -12,7 +12,7 @@ export default {
       './nuxt.config.{js,ts}',
       './app.vue'
     ],
-    plugins: [require('tailwindcss-primeui')],
+    // plugins se configura en tailwind.css con @import para Tailwind v4
     theme: {
         screens: {
             sm: '576px',

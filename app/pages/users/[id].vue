@@ -36,7 +36,7 @@ onMounted(() => {
 <template>
   <div class="card">
     <div v-if="isGroup" class="col-span-11">
-      <h2>{{ t('Estadísticas grupo') }} <span class="text-blue-500">{{ description }}</span></h2>
+      <h2 style="color: var(--text-color);">{{ t('Estadísticas grupo') }} <span style="color: var(--primary-color);">{{ description }}</span></h2>
       <div class="grid p-1 noprint">
         <div class="col-span-12 lg:col-span-12 xl:col-span-12">
           <div class="surface-section">
@@ -46,7 +46,7 @@ onMounted(() => {
       </div>
     </div>
     <div v-else class="col-span-11">
-      <h2>{{ t('Estadísticas usuario') }} <span class="text-blue-500">{{ description }}</span></h2>
+      <h2 style="color: var(--text-color);">{{ t('Estadísticas usuario') }} <span style="color: var(--primary-color);">{{ description }}</span></h2>
       <div class="grid p-1 noprint">
         <UserInfoTable :user="(stats as any)?.user" />
       </div>
@@ -57,7 +57,7 @@ onMounted(() => {
       <div class="col-span-12 flex justify-center items-center print:hidden">
         <div class="w-full max-w-md">
           <InputGroup>
-            <DatePicker v-model="dates" selection-mode="range" :manual-input="true" :placeholder="t('Periodo')" />
+            <DatePicker v-model="dates" selection-mode="range" :manual-input="true" update-model-type="date" :placeholder="t('Periodo')" />
             <Button icon="pi pi-refresh" severity="success" @click="loadData()" />
           </InputGroup>
         </div>

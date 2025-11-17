@@ -1,0 +1,146 @@
+# Reglas para Modo Dark/Light en PrimeVue + Tailwind CSS
+
+## Principio Fundamental
+
+NUNCA uses clases Tailwind con colores hardcodeados que incluyan variantes `dark:`. En su lugar, usa siempre las variables CSS de PrimeVue que se adaptan automáticamente al modo activo.
+
+## Variables CSS Disponibles
+
+### Colores de Texto
+- `var(--text-color)` - Color principal del texto
+- `var(--text-color-secondary)` - Color secundario del texto (textos menos importantes, placeholders, etc.)
+
+### Fondos
+- `var(--surface-ground)` - Fondo principal de la página
+- `var(--surface-card)` - Fondo de tarjetas y contenedores
+- `var(--surface-hover)` - Fondo para estados hover y elementos destacados
+
+### Bordes
+- `var(--surface-border)` - Color de bordes
+
+### Colores Especiales
+- `var(--primary-color)` - Color primario del tema
+- `var(--highlight-bg)` - Fondo para elementos destacados
+
+## Reglas de Implementación
+
+### Textos
+❌ INCORRECTO: `class="text-gray-900 dark:text-gray-100"`
+✅ CORRECTO: `style="color: var(--text-color);"`
+
+❌ INCORRECTO: `class="text-gray-600 dark:text-gray-400"`
+✅ CORRECTO: `style="color: var(--text-color-secondary);"`
+
+### Fondos
+❌ INCORRECTO: `class="bg-white dark:bg-gray-800"`
+✅ CORRECTO: `style="background-color: var(--surface-card);"`
+
+❌ INCORRECTO: `class="bg-gray-50 dark:bg-gray-900"`
+✅ CORRECTO: `style="background-color: var(--surface-ground);"`
+
+❌ INCORRECTO: `class="bg-gray-100 dark:bg-gray-700"`
+✅ CORRECTO: `style="background-color: var(--surface-hover);"`
+
+### Bordes
+❌ INCORRECTO: `class="border border-gray-200 dark:border-gray-700"`
+✅ CORRECTO: `class="border" style="border-color: var(--surface-border);"`
+
+### Estados Hover
+❌ INCORRECTO: `class="hover:bg-gray-50 dark:hover:bg-gray-700"`
+✅ CORRECTO: Usa `var(--surface-hover)` directamente o clases sin variantes dark:
+
+### Estilos en <style scoped>
+❌ INCORRECTO:
+```css
+:deep(.p-datatable-tbody > tr) {
+  border-bottom: 1px solid #f1f5f9;
+  background-color: #f8fafc;
+  color: #475569;
+}
+```
+
+✅ CORRECTO:
+```css
+:deep(.p-datatable-tbody > tr) {
+  border-bottom: 1px solid var(--surface-border);
+  background-color: var(--surface-card);
+  color: var(--text-color);
+}
+```
+
+### Scrollbars
+❌ INCORRECTO:
+```css
+.table-container::-webkit-scrollbar-track {
+  background: #f1f5f9;
+}
+.table-container::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+}
+```
+
+✅ CORRECTO:
+```css
+.table-container::-webkit-scrollbar-track {
+  background: var(--surface-ground);
+}
+.table-container::-webkit-scrollbar-thumb {
+  background: var(--surface-border);
+}
+```
+
+### Box Shadows con Colores Primarios
+❌ INCORRECTO: `box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);`
+✅ CORRECTO: `box-shadow: 0 0 0 3px color-mix(in srgb, var(--primary-color) 10%, transparent);`
+
+## Excepciones
+
+Los badges que representan estados específicos (éxito, error, advertencia) pueden mantener sus colores específicos SIN variantes `dark:`:
+- ✅ `class="bg-green-100 text-green-800"` - Badge de éxito
+- ✅ `class="bg-red-100 text-red-800"` - Badge de error
+- ✅ `class="bg-yellow-100 text-yellow-800"` - Badge de advertencia
+
+## Checklist al Crear Componentes
+
+- [ ] Eliminar todas las clases `dark:*`
+- [ ] Reemplazar `text-gray-*` por `style="color: var(--text-color);"` o `var(--text-color-secondary);"`
+- [ ] Reemplazar `bg-gray-*` por `style="background-color: var(--surface-*);"`
+- [ ] Reemplazar `border-gray-*` por `style="border-color: var(--surface-border);"`
+- [ ] Actualizar estilos en `<style scoped>` para usar variables CSS
+- [ ] Probar en modo claro y oscuro
+
+## Ejemplo de Componente Correcto
+
+```vue
+<template>
+  <div class="min-h-screen p-4" style="background-color: var(--surface-ground);">
+    <h2 class="text-2xl font-bold mb-2" style="color: var(--text-color);">
+      Título
+    </h2>
+    <p class="text-sm" style="color: var(--text-color-secondary);">
+      Descripción
+    </p>
+    <div class="border rounded-lg p-6" style="background-color: var(--surface-card); border-color: var(--surface-border);">
+      Contenido
+    </div>
+  </div>
+</template>
+
+<style scoped>
+:deep(.p-datatable-tbody > tr) {
+  border-bottom: 1px solid var(--surface-border);
+}
+:deep(.p-datatable-tbody > tr:hover) {
+  background-color: var(--surface-hover) !important;
+}
+</style>
+```
+
+## Notas Importantes
+
+1. NUNCA mezcles clases Tailwind con variantes `dark:` y variables CSS. Usa solo variables CSS.
+2. Los colores de estado (verde para éxito, rojo para error) pueden mantenerse específicos.
+3. Siempre prueba en ambos modos (claro y oscuro).
+4. Usa `:deep()` en `<style scoped>` cuando necesites estilizar componentes hijos de PrimeVue.
+5. Prefiere estilos inline con `style=""` para colores dinámicos, y clases Tailwind solo para layout y espaciado.
+

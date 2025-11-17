@@ -107,7 +107,7 @@ onMounted(() => {
 
 <template>
   <ConfirmDialog />
-  <div class="min-h-screen bg-gray-50 dark:bg-gray-900 p-4">
+  <div class="min-h-screen p-4" style="background-color: var(--surface-ground);">
     <!-- Header Section -->
     <div class="mb-6">
       <div class="flex items-center justify-between">
@@ -254,7 +254,7 @@ onMounted(() => {
                     </div>
                     
                     <!-- Image Preview -->
-                    <div v-if="editData.metaImage" class="border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg p-4 bg-gray-50 dark:bg-gray-800">
+                    <div v-if="editData.metaImage" class="border-2 border-dashed rounded-lg p-4" style="border-color: var(--surface-border); background-color: var(--surface-card);">
                       <div class="text-center">
                         <p class="text-sm text-gray-600 mb-3">{{ t('Vista previa') }}</p>
                         <div class="inline-block border border-gray-200 rounded-lg p-2 bg-white shadow-sm">
@@ -269,7 +269,7 @@ onMounted(() => {
                       </div>
                     </div>
                     
-                    <div v-else class="border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg p-8 text-center bg-gray-50 dark:bg-gray-800">
+                    <div v-else class="border-2 border-dashed rounded-lg p-8 text-center" style="border-color: var(--surface-border); background-color: var(--surface-card);">
                       <i class="pi pi-image text-4xl text-gray-400 mb-2"></i>
                       <p class="text-gray-500">{{ t('No hay imagen seleccionada') }}</p>
                     </div>

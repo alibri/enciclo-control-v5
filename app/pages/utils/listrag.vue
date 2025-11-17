@@ -139,12 +139,12 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="min-h-screen bg-gray-50 dark:bg-gray-900 p-4">
+  <div class="min-h-screen p-4" style="background-color: var(--surface-ground);">
     <!-- Header Section -->
     <div class="mb-6">
       <div class="flex items-center justify-between">
         <div class="flex items-center space-x-3">
-          <h2 class="text-3xl font-bold text-gray-900 dark:text-gray-100">
+          <h2 class="text-3xl font-bold" style="color: var(--text-color);">
             <i class="pi pi-list mr-2 text-blue-500"></i>
             {{ t('Listado de Test RAG') }}
           </h2>
@@ -175,9 +175,9 @@ onMounted(() => {
           responsiveLayout="scroll"
           class="p-datatable-sm"
           :pt="{
-            root: 'border border-gray-200 dark:border-gray-700 rounded-lg',
-            header: 'bg-gray-50 dark:bg-gray-800',
-            bodyRow: 'hover:bg-gray-50 dark:hover:bg-gray-800 cursor-pointer'
+            root: 'border rounded-lg',
+            header: '',
+            bodyRow: 'hover:bg-gray-50 cursor-pointer'
           }"
         >
           <Column field="id" :header="t('ID')" :sortable="true" style="width: 80px">
@@ -189,7 +189,7 @@ onMounted(() => {
           <Column field="query" :header="t('Consulta')" :sortable="true">
             <template #body="{ data }">
               <div class="max-w-md">
-                <p class="text-sm text-gray-900 dark:text-gray-100 font-medium">
+                <p class="text-sm font-medium" style="color: var(--text-color);">
                   {{ truncateText(data.query, 80) }}
                 </p>
               </div>
@@ -206,9 +206,9 @@ onMounted(() => {
             <template #body="{ data }">
               <div v-if="data.rating_respuesta !== null && data.rating_respuesta !== undefined" class="flex items-center space-x-2">
                 <Rating :modelValue="data.rating_respuesta" :readonly="true" :cancel="false" />
-                <span class="text-sm text-gray-600 dark:text-gray-400">({{ data.rating_respuesta }})</span>
+                <span class="text-sm" style="color: var(--text-color-secondary);">({{ data.rating_respuesta }})</span>
               </div>
-              <span v-else class="text-sm text-gray-400">-</span>
+              <span v-else class="text-sm" style="color: var(--text-color-secondary);">-</span>
             </template>
           </Column>
 
@@ -216,26 +216,26 @@ onMounted(() => {
             <template #body="{ data }">
               <div v-if="data.rating_velocidad !== null && data.rating_velocidad !== undefined" class="flex items-center space-x-2">
                 <Rating :modelValue="data.rating_velocidad" :readonly="true" :cancel="false" />
-                <span class="text-sm text-gray-600 dark:text-gray-400">({{ data.rating_velocidad }})</span>
+                <span class="text-sm" style="color: var(--text-color-secondary);">({{ data.rating_velocidad }})</span>
               </div>
-              <span v-else class="text-sm text-gray-400">-</span>
+              <span v-else class="text-sm" style="color: var(--text-color-secondary);">-</span>
             </template>
           </Column>
 
           <Column field="comentario" :header="t('Comentario')" :sortable="false" style="width: 250px">
             <template #body="{ data }">
               <div v-if="data.comentario" class="max-w-xs">
-                <p class="text-sm text-gray-700 dark:text-gray-300 italic">
+                <p class="text-sm italic" style="color: var(--text-color-secondary);">
                   {{ truncateText(data.comentario, 60) }}
                 </p>
               </div>
-              <span v-else class="text-sm text-gray-400">-</span>
+              <span v-else class="text-sm" style="color: var(--text-color-secondary);">-</span>
             </template>
           </Column>
 
           <Column field="created_at" :header="t('Fecha')" :sortable="true" style="width: 180px">
             <template #body="{ data }">
-              <span class="text-sm text-gray-600 dark:text-gray-400">{{ formatDate(data.created_at) }}</span>
+              <span class="text-sm" style="color: var(--text-color-secondary);">{{ formatDate(data.created_at) }}</span>
             </template>
           </Column>
 
@@ -253,15 +253,15 @@ onMounted(() => {
 
           <template #empty>
             <div class="text-center py-12">
-              <i class="pi pi-inbox text-4xl text-gray-400 mb-4"></i>
-              <p class="text-gray-500 dark:text-gray-400">{{ t('No hay testRAG disponibles') }}</p>
+              <i class="pi pi-inbox text-4xl  mb-4"></i>
+              <p style="color: var(--text-color-secondary);">{{ t('No hay testRAG disponibles') }}</p>
             </div>
           </template>
 
           <template #loading>
             <div class="text-center py-12">
               <i class="pi pi-spin pi-spinner text-4xl text-blue-500 mb-4"></i>
-              <p class="text-gray-500 dark:text-gray-400">{{ t('Cargando...') }}</p>
+              <p style="color: var(--text-color-secondary);">{{ t('Cargando...') }}</p>
             </div>
           </template>
         </DataTable>
@@ -278,22 +278,22 @@ onMounted(() => {
       :pt="{
         root: 'flex flex-col',
         content: 'flex-1 overflow-auto p-0',
-        header: 'border-b border-gray-200 dark:border-gray-700 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20',
-        title: 'text-xl font-semibold text-gray-800 dark:text-gray-200'
+        header: 'border-b bg-gradient-to-r from-blue-50 to-indigo-50',
+        title: 'text-xl font-semibold'
       }"
     >
       <template #header>
         <div class="flex items-center gap-3">
-          <i class="pi pi-code text-2xl text-blue-600 dark:text-blue-400"></i>
+          <i class="pi pi-code text-2xl text-blue-600 "></i>
           <div class="flex-1">
-            <h3 class="text-xl font-semibold text-gray-800 dark:text-gray-200">
+            <h3 class="text-xl font-semibold" style="color: var(--text-color);">
               {{ selectedTestRAG?.query || t('Resultado Test RAG') }}
             </h3>
-            <p v-if="selectedTestRAG" class="text-sm text-gray-600 dark:text-gray-400 mt-1">
+            <p v-if="selectedTestRAG" class="text-sm mt-1" style="color: var(--text-color-secondary);">
               {{ t('ID') }}: {{ selectedTestRAG.id }} | {{ t('Usuario') }}: {{ selectedTestRAG.username || '-' }} | {{ formatDate(selectedTestRAG.created_at) }}
             </p>
-            <p v-if="selectedTestRAG?.comentario" class="text-sm text-gray-700 dark:text-gray-300 mt-2 italic border-l-4 border-blue-500 pl-3 bg-blue-50 dark:bg-blue-900/20 py-2 rounded-r">
-              <i class="pi pi-comment mr-2 text-blue-600 dark:text-blue-400"></i>
+            <p v-if="selectedTestRAG?.comentario" class="text-sm mt-2 italic border-l-4 border-blue-500 pl-3 bg-blue-50 py-2 rounded-r" style="color: var(--text-color);">
+              <i class="pi pi-comment mr-2 text-blue-600 "></i>
               <strong>{{ t('Comentario') }}:</strong> {{ selectedTestRAG.comentario }}
             </p>
           </div>
@@ -310,7 +310,7 @@ onMounted(() => {
       </div>
       <div v-else class="p-12 text-center">
         <i class="pi pi-spin pi-spinner text-4xl text-blue-500 mb-4"></i>
-        <p class="text-gray-500 dark:text-gray-400">{{ t('Cargando resultado...') }}</p>
+        <p style="color: var(--text-color-secondary);">{{ t('Cargando resultado...') }}</p>
       </div>
     </Dialog>
   </div>

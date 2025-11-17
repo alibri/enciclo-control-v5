@@ -60,18 +60,18 @@ const login = async () => {
 
 <template>
   <form @submit.prevent="login">
-    <div class="min-h-screen bg-surface-50 dark:bg-surface-950 flex items-center justify-center px-6 py-8">
+    <div class="min-h-screen bg-surface-50 flex items-center justify-center px-6 py-8" style="background-color: var(--surface-ground);">
       <div
-        class="bg-surface-0 dark:bg-surface-900 p-8 md:p-12 shadow-sm rounded-2xl w-full max-w-sm flex flex-col gap-8">
+        class="bg-surface-0 p-8 md:p-12 shadow-sm rounded-2xl w-full max-w-sm flex flex-col gap-8" style="background-color: var(--surface-card);">
         <div class="flex flex-col items-center gap-4">
           <div class="flex items-center gap-4">
             <img src="/Grupo-Enciclo.svg" alt="Logo Enciclo" style="height: 3rem; margin-bottom: 0.5rem;" />
           </div>
           <div class="flex flex-col items-center gap-2 w-full">
-            <div class="text-surface-900 dark:text-surface-0 text-2xl font-semibold leading-tight text-center w-full">{{
+            <div class="text-surface-900 text-2xl font-semibold leading-tight text-center w-full" style="color: var(--text-color);">{{
               runtimeConfig.public.APP_TITLE }}</div>
             <div class="text-center w-full">
-              <span class="text-surface-700 dark:text-surface-200 leading-normal">{{ runtimeConfig.public.APP_VERSION
+              <span class="text-surface-700 leading-normal" style="color: var(--text-color-secondary);">{{ runtimeConfig.public.APP_VERSION
               }}</span>
             </div>
           </div>

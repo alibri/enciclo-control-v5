@@ -46,11 +46,11 @@ const blocked = ref(false);
 </script>
 
 <template>
-  <div class="min-h-screen bg-gray-50 dark:bg-gray-900 p-4">
+  <div class="min-h-screen p-4" style="background-color: var(--surface-ground);">
     <!-- Header Section -->
     <div class="mb-6">
       <div class="flex items-center space-x-3">
-        <h2 class="text-3xl font-bold text-gray-900">
+        <h2 class="text-3xl font-bold" style="color: var(--text-color);">
           <i class="pi pi-globe mr-2 text-blue-500"></i>
           {{ t('Test IP') }}</h2>
         <Badge v-if="resultIP || resultIPRange" value="✓" severity="success" />
@@ -69,7 +69,7 @@ const blocked = ref(false);
         <template #content>
           <div class="space-y-4">
             <div class="space-y-2">
-              <label for="ip" class="block text-sm font-medium text-gray-700">
+              <label for="ip" class="block text-sm font-medium" style="color: var(--text-color);">
                 <i class="pi pi-map-marker text-gray-400 mr-2"></i>
                 {{ t('Dirección IP') }}
               </label>
@@ -104,7 +104,7 @@ const blocked = ref(false);
         <template #content>
           <div class="space-y-4">
             <div class="space-y-2">
-              <label for="ipRange" class="block text-sm font-medium text-gray-700">
+              <label for="ipRange" class="block text-sm font-medium" style="color: var(--text-color);">
                 <i class="pi pi-map-marker text-gray-400 mr-2"></i>
                 {{ t('IP Base') }}
               </label>
@@ -117,7 +117,7 @@ const blocked = ref(false);
             </div>
             
             <div class="space-y-2">
-              <label for="rango" class="block text-sm font-medium text-gray-700">
+              <label for="rango" class="block text-sm font-medium" style="color: var(--text-color);">
                 <i class="pi pi-list text-gray-400 mr-2"></i>
                 {{ t('Rango de IPs') }}
               </label>
@@ -182,8 +182,8 @@ const blocked = ref(false);
         <template #content>
           <div class="text-center py-12">
             <i class="pi pi-info-circle text-4xl text-gray-400 mb-4"></i>
-            <h3 class="text-lg font-medium text-gray-900 mb-2">{{ t('Listo para probar') }}</h3>
-            <p class="text-gray-500">{{ t('Ingrese una IP o rango de IPs para comenzar las pruebas') }}</p>
+            <h3 class="text-lg font-medium mb-2" style="color: var(--text-color);">{{ t('Listo para probar') }}</h3>
+            <p style="color: var(--text-color-secondary);">{{ t('Ingrese una IP o rango de IPs para comenzar las pruebas') }}</p>
           </div>
         </template>
       </Card>
@@ -195,8 +195,8 @@ const blocked = ref(false);
         <template #content>
           <div class="text-center py-12">
             <i class="pi pi-spin pi-spinner text-4xl text-blue-500 mb-4"></i>
-            <h3 class="text-lg font-medium text-gray-900 mb-2">{{ t('Ejecutando pruebas...') }}</h3>
-            <p class="text-gray-500">{{ t('Por favor espere mientras se procesan las IPs') }}</p>
+            <h3 class="text-lg font-medium mb-2" style="color: var(--text-color);">{{ t('Ejecutando pruebas...') }}</h3>
+            <p style="color: var(--text-color-secondary);">{{ t('Por favor espere mientras se procesan las IPs') }}</p>
           </div>
         </template>
       </Card>

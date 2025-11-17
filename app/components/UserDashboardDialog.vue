@@ -68,7 +68,7 @@ watch(() => props.visible, (nuevo, anterior) => {
     @update:visible="emit('update:visible', $event)"
   >
     <div v-if="user" class="flex flex-col gap-4">
-      <div class="flex items-center gap-3 bg-gray-50 dark:bg-gray-700 rounded-lg p-4">
+      <div class="flex items-center gap-3 rounded-lg p-4" style="background-color: var(--surface-hover);">
         <i class="pi pi-user text-2xl text-blue-500"></i>
         <div class="p-4 shadow-sm">
           <h3 class="text-2xl font-extrabold text-blue-700 mb-2 flex items-center gap-2">
@@ -77,35 +77,35 @@ watch(() => props.visible, (nuevo, anterior) => {
           </h3>
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
             <div class="flex items-center gap-2">
-              <i class="pi pi-user text-gray-500"></i>
-              <span class="font-semibold text-gray-700">{{ t('Usuario') }}:</span>
-              <span class="text-gray-800">{{ user.user }}</span>
+              <i class="pi pi-user "></i>
+              <span class="font-semibold" style="color: var(--text-color);">{{ t('Usuario') }}:</span>
+              <span style="color: var(--text-color-secondary);">{{ user.user }}</span>
             </div>
             <div class="flex items-center gap-2">
-              <i class="pi pi-users text-gray-500"></i>
-              <span class="font-semibold text-gray-700">{{ t('Grupo') }}:</span>
-              <span class="text-gray-800">{{ user.grupo }}</span>
+              <i class="pi pi-users "></i>
+              <span class="font-semibold" style="color: var(--text-color);">{{ t('Grupo') }}:</span>
+              <span style="color: var(--text-color-secondary);">{{ user.grupo }}</span>
             </div>
             <div class="flex items-center gap-2 col-span-1 sm:col-span-2">
-              <i class="pi pi-book text-gray-500"></i>
-              <span class="font-semibold text-gray-700">{{ t('Colecciones') }}:</span>
-              <span class="text-gray-800">
+              <i class="pi pi-book "></i>
+              <span class="font-semibold" style="color: var(--text-color);">{{ t('Colecciones') }}:</span>
+              <span style="color: var(--text-color-secondary);">
                 <span v-if="user.collections && user.collections.length">
                   <span v-for="(col, idx) in user.collections" :key="col" class="inline-block bg-blue-100 text-blue-800 rounded px-2 py-0.5 mr-1 text-xs font-medium">
                     {{ col }}
                   </span>
                 </span>
-                <span v-else class="text-gray-400">{{ t('Ninguna') }}</span>
+                <span v-else style="color: var(--text-color-secondary);">{{ t('Ninguna') }}</span>
               </span>
             </div>
             <div class="flex items-center gap-2">
-              <i class="pi pi-calendar text-gray-500"></i>
-              <span class="font-semibold text-gray-700">{{ t('Inicio estadísticas') }}:</span>
-              <span class="text-gray-800">{{ user.stats_min ? formatDate(user.stats_min) : '-' }}</span>
+              <i class="pi pi-calendar "></i>
+              <span class="font-semibold" style="color: var(--text-color);">{{ t('Inicio estadísticas') }}:</span>
+              <span style="color: var(--text-color-secondary);">{{ user.stats_min ? formatDate(user.stats_min) : '-' }}</span>
               <span v-if="user.manual_stats" class="inline-flex items-center ml-2 px-2 py-0.5 rounded-full bg-yellow-100 text-yellow-800 text-xs font-semibold">
                 <i class="pi pi-chart-bar mr-1"></i> {{ t('Solo estadísticas manuales') }}
               </span>
-              <span v-else class="inline-flex items-center ml-2 px-2 py-0.5 rounded-full bg-gray-100 text-gray-800 text-xs font-semibold">{{ t('Estadísticas Manuales + Automaticas') }}</span>
+              <span v-else class="inline-flex items-center ml-2 px-2 py-0.5 rounded-full bg-gray-100 text-xs font-semibold" style="color: var(--text-color-secondary);">{{ t('Estadísticas Manuales + Automaticas') }}</span>
             </div>
           </div>
         </div>

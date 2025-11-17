@@ -74,14 +74,14 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="min-h-screen bg-gray-50 dark:bg-gray-900 p-4">
+  <div class="min-h-screen p-4" style="background-color: var(--surface-ground);">
     <!-- Header mejorado -->
     <div class="flex justify-between items-center mb-6">
       <div>
-        <h2 class="text-2xl font-bold text-gray-800 dark:text-gray-200 mb-2">
-          <i class="pi pi-sign-in mr-2 text-blue-500"></i>
+        <h2 class="text-2xl font-bold mb-2" style="color: var(--text-color);">
+          <i class="pi pi-sign-in mr-2" style="color: var(--primary-color);"></i>
           {{ t('Sesiones') }}</h2>
-        <p class="text-gray-600 text-sm">{{ t('Gestión y seguimiento de sesiones de usuario') }}</p>
+        <p class="text-sm" style="color: var(--text-color-secondary);">{{ t('Gestión y seguimiento de sesiones de usuario') }}</p>
       </div>
       <div class="flex gap-2">
         <Button
@@ -100,7 +100,7 @@ onMounted(() => {
     </div>
 
     <!-- Tabla mejorada -->
-    <div class="bg-white rounded-lg shadow-sm border border-gray-200">
+    <div class="rounded-lg shadow-sm border" style="background-color: var(--surface-card); border-color: var(--surface-border);">
       <DataTable
         ref="dt"
         v-model:filters="filters"
@@ -128,13 +128,13 @@ onMounted(() => {
       >
         <!-- Header de la tabla -->
         <template #header>
-          <div class="flex flex-wrap justify-between items-center gap-4 p-4 bg-gray-50 dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
+          <div class="flex flex-wrap justify-between items-center gap-4 p-4 border-b" style="background-color: var(--surface-card); border-color: var(--surface-border);">
             <div class="flex items-center gap-2">
-              <i class="pi pi-table text-blue-500"></i>
-              <span class="font-semibold text-gray-700">{{ t('Lista de Sesiones') }}</span>
+              <i class="pi pi-table" style="color: var(--primary-color);"></i>
+              <span class="font-semibold" style="color: var(--text-color);">{{ t('Lista de Sesiones') }}</span>
             </div>
             <div class="flex items-center gap-2">
-              <span class="text-sm text-gray-500">{{ totalRecords }} {{ t('registros') }}</span>
+              <span class="text-sm" style="color: var(--text-color-secondary);">{{ totalRecords }} {{ t('registros') }}</span>
             </div>
           </div>
         </template>
@@ -142,15 +142,15 @@ onMounted(() => {
         <!-- Estados de carga y vacío -->
         <template #empty>
           <div class="text-center py-8">
-            <i class="pi pi-inbox text-4xl text-gray-300 mb-4"></i>
-            <p class="text-gray-500 text-lg">{{ t('No se han encontrado datos.') }}</p>
+            <i class="pi pi-inbox text-4xl mb-4" style="color: var(--text-color-secondary);"></i>
+            <p class="text-lg" style="color: var(--text-color-secondary);">{{ t('No se han encontrado datos.') }}</p>
           </div>
         </template>
         
         <template #loading>
           <div class="text-center py-8">
-            <i class="pi pi-spin pi-spinner text-2xl text-blue-500 mb-2"></i>
-            <p class="text-gray-600">{{ t('Cargando datos...') }}</p>
+            <i class="pi pi-spin pi-spinner text-2xl mb-2" style="color: var(--primary-color);"></i>
+            <p style="color: var(--text-color-secondary);">{{ t('Cargando datos...') }}</p>
           </div>
         </template>
 
@@ -162,7 +162,8 @@ onMounted(() => {
                 <Button 
                   icon="pi pi-eye" 
                   type="button" 
-                  class="p-button-text p-button-sm text-blue-600 hover:text-blue-800"
+                  class="p-button-text p-button-sm"
+                  style="color: var(--primary-color);"
                   v-tooltip.top="t('Ver detalles')"
                 />
               </NuxtLink>
@@ -184,10 +185,11 @@ onMounted(() => {
           </template>
           <template #body="slotProps">
             <div class="flex items-center gap-2">
-              <i class="pi pi-user text-gray-400"></i>
+              <i class="pi pi-user" style="color: var(--text-color-secondary);"></i>
               <NuxtLink 
                 :to="'/users/'+slotProps.data.user" 
-                class="text-blue-600 hover:text-blue-800 font-medium no-underline hover:underline"
+                class="font-medium no-underline hover:underline"
+                style="color: var(--primary-color);"
               >
                 {{ slotProps.data.user }}
               </NuxtLink>
@@ -199,8 +201,8 @@ onMounted(() => {
         <Column field="begin" :header="t('Inicio')" :sortable="true" style="min-width: 150px">
           <template #body="slotProps">
             <div class="flex items-center gap-2">
-              <i class="pi pi-calendar text-gray-400"></i>
-              <span class="text-sm text-gray-700">{{ formatDateTime(slotProps.data.begin) }}</span>
+              <i class="pi pi-calendar" style="color: var(--text-color-secondary);"></i>
+              <span class="text-sm" style="color: var(--text-color);">{{ formatDateTime(slotProps.data.begin) }}</span>
             </div>
           </template>
         </Column>
@@ -209,8 +211,8 @@ onMounted(() => {
         <Column field="ts" :header="t('Duración')" :sortable="true" style="min-width: 100px">
           <template #body="slotProps">
             <div class="flex items-center gap-2">
-              <i class="pi pi-clock text-gray-400"></i>
-              <span class="text-sm font-mono bg-gray-100 px-2 py-1 rounded">{{ formatSegundosAHora(slotProps.data.ts) }}</span>
+              <i class="pi pi-clock" style="color: var(--text-color-secondary);"></i>
+              <span class="text-sm font-mono px-2 py-1 rounded" style="background-color: var(--surface-hover); color: var(--text-color);">{{ formatSegundosAHora(slotProps.data.ts) }}</span>
             </div>
           </template>
         </Column>
@@ -219,8 +221,8 @@ onMounted(() => {
         <Column field="pages" :header="t('Páginas')" :sortable="true" style="min-width: 80px">
           <template #body="slotProps">
             <div class="flex items-center gap-2">
-              <i class="pi pi-file text-gray-400"></i>
-              <span class="text-sm font-semibold text-blue-600">{{ slotProps.data.pages }}</span>
+              <i class="pi pi-file" style="color: var(--text-color-secondary);"></i>
+              <span class="text-sm font-semibold" style="color: var(--primary-color);">{{ slotProps.data.pages }}</span>
             </div>
           </template>
         </Column>
@@ -241,15 +243,15 @@ onMounted(() => {
           <template #body="slotProps">
             <div class="space-y-1">
               <div class="flex items-center gap-2 text-sm">
-                <i class="pi pi-desktop text-gray-400"></i>
-                <span class="text-gray-600">{{ slotProps.data.browser }} {{ slotProps.data.version }}</span>
+                <i class="pi pi-desktop" style="color: var(--text-color-secondary);"></i>
+                <span style="color: var(--text-color-secondary);">{{ slotProps.data.browser }} {{ slotProps.data.version }}</span>
               </div>
-              <div class="flex items-center gap-2 text-xs text-gray-500">
-                <i class="pi pi-mobile text-gray-400"></i>
+              <div class="flex items-center gap-2 text-xs" style="color: var(--text-color-secondary);">
+                <i class="pi pi-mobile" style="color: var(--text-color-secondary);"></i>
                 <span>{{ slotProps.data.platform }}</span>
                 <div class="flex gap-1 ml-2">
                   <i v-if="slotProps.data.mobile" class="pi pi-check-circle text-green-500" title="Mobile"></i>
-                  <i v-if="slotProps.data.tablet" class="pi pi-tablet text-blue-500" title="Tablet"></i>
+                  <i v-if="slotProps.data.tablet" class="pi pi-tablet" style="color: var(--primary-color);" title="Tablet"></i>
                 </div>
               </div>
             </div>
@@ -262,14 +264,14 @@ onMounted(() => {
             <div class="space-y-1">
               <div class="flex items-center gap-2 text-sm">
                 <i class="pi pi-map-marker text-red-500"></i>
-                <span class="text-gray-700">{{ slotProps.data.glc_country_name }}</span>
+                <span style="color: var(--text-color);">{{ slotProps.data.glc_country_name }}</span>
               </div>
-              <div class="flex items-center gap-2 text-xs text-gray-500">
-                <i class="pi pi-building text-gray-400"></i>
+              <div class="flex items-center gap-2 text-xs" style="color: var(--text-color-secondary);">
+                <i class="pi pi-building" style="color: var(--text-color-secondary);"></i>
                 <span>{{ slotProps.data.glc_city }}</span>
               </div>
-              <div class="flex items-center gap-2 text-xs text-gray-500">
-                <i class="pi pi-wifi text-gray-400"></i>
+              <div class="flex items-center gap-2 text-xs" style="color: var(--text-color-secondary);">
+                <i class="pi pi-wifi" style="color: var(--text-color-secondary);"></i>
                 <span class="font-mono">{{ slotProps.data.ip }}</span>
               </div>
             </div>
@@ -280,7 +282,7 @@ onMounted(() => {
         <Column field="agent" :header="t('User Agent')" :sortable="true" style="min-width: 200px" class="hidden lg:table-cell">
           <template #body="slotProps">
             <div class="max-w-xs">
-              <span class="text-xs text-gray-500 break-all">{{ slotProps.data.agent }}</span>
+              <span class="text-xs break-all" style="color: var(--text-color-secondary);">{{ slotProps.data.agent }}</span>
             </div>
           </template>
         </Column>

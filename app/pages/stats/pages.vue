@@ -74,15 +74,15 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="min-h-screen bg-gray-50 dark:bg-gray-900 p-4">
+  <div class="min-h-screen p-4" style="background-color: var(--surface-ground);">
     <!-- Header mejorado con estadísticas -->
     <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between mb-6">
       <div class="mb-4 lg:mb-0">
-        <h2 class="text-2xl font-bold text-gray-800 dark:text-gray-200 mb-2">
+        <h2 class="text-2xl font-bold mb-2" style="color: var(--text-color);">
           <i class="pi pi-file-o mr-2 text-blue-500"></i>
           {{ t('Páginas') }}
         </h2>
-        <p class="text-sm text-gray-600 dark:text-gray-400">
+        <p class="text-sm" style="color: var(--text-color-secondary);">
           {{ t('Estadísticas de visualización de páginas') }}
         </p>
       </div>
@@ -113,7 +113,7 @@ onMounted(() => {
           class="p-datatable-sm" @page="onPage($event)" @sort="onSort($event)" @filter="onFilter($event)">
           <!-- Header con acciones mejoradas -->
           <template #header>
-            <div class="flex flex-wrap justify-between items-center gap-4 p-4 bg-gray-50 dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
+            <div class="flex flex-wrap justify-between items-center gap-4 p-4 border-b" style="background-color: var(--surface-card); border-color: var(--surface-border);">
               <div class="flex items-center gap-2">
                 <i class="pi pi-table text-blue-500"></i>
                 <span class="font-semibold text-gray-700">{{ t('Lista de Páginas') }}</span>
@@ -138,14 +138,14 @@ onMounted(() => {
           <template #empty>
             <div class="text-center py-8">
               <i class="pi pi-inbox text-4xl text-gray-400 mb-4"></i>
-              <p class="text-gray-600 dark:text-gray-400">{{ t('No se han encontrado datos.') }}</p>
+              <p style="color: var(--text-color-secondary);">{{ t('No se han encontrado datos.') }}</p>
             </div>
           </template>
 
           <template #loading>
             <div class="text-center py-8">
               <i class="pi pi-spin pi-spinner text-4xl text-blue-500 mb-4"></i>
-              <p class="text-gray-600 dark:text-gray-400">{{ t('Cargando datos...') }}</p>
+              <p style="color: var(--text-color-secondary);">{{ t('Cargando datos...') }}</p>
             </div>
           </template>
 
@@ -159,7 +159,7 @@ onMounted(() => {
               <div class="flex items-center gap-2">
                 <i class="pi pi-user text-gray-400"></i>
                 <NuxtLink :to="'/users/' + slotProps.data.user"
-                  class="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 font-medium transition-colors duration-200">
+                  class="text-blue-600 hover:text-blue-800 font-medium transition-colors duration-200">
                   {{ slotProps.data.user }}
                 </NuxtLink>
               </div>
@@ -178,7 +178,7 @@ onMounted(() => {
             <template #body="slotProps">
               <div class="flex items-center gap-2">
                 <i class="pi pi-folder text-yellow-500"></i>
-                <span class="text-yellow-700 dark:text-yellow-400 font-medium">
+                <span class="text-yellow-700 font-medium">
                   {{ slotProps.data.collection }}
                 </span>
               </div>
@@ -197,7 +197,7 @@ onMounted(() => {
             <template #body="slotProps">
               <div class="flex items-center gap-2">
                 <i class="pi pi-calendar text-gray-500"></i>
-                <span class="text-sm text-gray-700 dark:text-gray-300">
+                <span class="text-sm ">
                   {{ formatDateTime(slotProps.data.date) }}
                 </span>
               </div>
@@ -221,7 +221,7 @@ onMounted(() => {
               <div class="flex items-center gap-2">
                 <span v-if="slotProps.data.glc_country_name">
                   <i class="pi pi-globe text-green-500"></i>
-                  <span class="text-green-700 dark:text-green-400 text-sm font-medium">
+                  <span class="text-green-700 text-sm font-medium">
                     {{ slotProps.data.glc_country_name }}
                   </span>
                 </span>
@@ -238,7 +238,7 @@ onMounted(() => {
               <div class="flex items-center gap-2">
                 <span v-if="slotProps.data.glc_city">
                   <i class="pi pi-map-marker text-blue-500"></i>
-                  <span class="text-blue-700 dark:text-blue-400 text-sm font-medium">
+                  <span class="text-blue-700 text-sm font-medium">
                     {{ slotProps.data.glc_city }}
                   </span>
                 </span>

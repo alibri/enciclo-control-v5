@@ -38,8 +38,17 @@ export function useLayout() {
 
   const changeThemeSettings = (theme: string, darkTheme: boolean) => {
     layoutConfig.darkTheme = darkTheme
+    
+    // Guardar en localStorage
     if (process.client) {
       localStorage.setItem('darkTheme', JSON.stringify(darkTheme))
+      
+      // Aplicar/remover la clase del documento
+      if (darkTheme) {
+        document.documentElement.classList.add('p-dark')
+      } else {
+        document.documentElement.classList.remove('p-dark')
+      }
     }
   }
 

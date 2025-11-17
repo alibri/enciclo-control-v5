@@ -178,7 +178,7 @@ const getModelOption = (value: string) => {
             :disabled="disabled"
             :placeholder="t('Seleccione un agente')"
           />
-          <label :for="getId('agent')" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+          <label :for="getId('agent')" class="block text-sm font-medium" style="color: var(--text-color);">
             <i class="pi pi-server text-gray-400 mr-2"></i>
             {{ t('Agente') }}
           </label>
@@ -202,9 +202,9 @@ const getModelOption = (value: string) => {
               <div>
                 <span class="font-bold">{{ slotProps.option.value }}</span>
                 <span> (</span>
-                <span class="text-green-600 dark:text-green-400">In: ${{ slotProps.option.inputPrice }}/1M</span>
+                <span class="text-green-600 ">In: ${{ slotProps.option.inputPrice }}/1M</span>
                 <span>, </span>
-                <span class="text-blue-600 dark:text-blue-400">Out: ${{ slotProps.option.outputPrice }}/1M</span>
+                <span class="text-blue-600 ">Out: ${{ slotProps.option.outputPrice }}/1M</span>
                 <span>)</span>
               </div>
             </template>
@@ -212,25 +212,25 @@ const getModelOption = (value: string) => {
               <div v-if="slotProps.value">
                 <span class="font-bold">{{ slotProps.value }}</span>
                 <span v-if="getModelOption(slotProps.value)"> (</span>
-                <span v-if="getModelOption(slotProps.value)" class="text-green-600 dark:text-green-400">In: ${{ getModelOption(slotProps.value)?.inputPrice }}/1M</span>
+                <span v-if="getModelOption(slotProps.value)" class="text-green-600 ">In: ${{ getModelOption(slotProps.value)?.inputPrice }}/1M</span>
                 <span v-if="getModelOption(slotProps.value)">, </span>
-                <span v-if="getModelOption(slotProps.value)" class="text-blue-600 dark:text-blue-400">Out: ${{ getModelOption(slotProps.value)?.outputPrice }}/1M</span>
+                <span v-if="getModelOption(slotProps.value)" class="text-blue-600 ">Out: ${{ getModelOption(slotProps.value)?.outputPrice }}/1M</span>
                 <span v-if="getModelOption(slotProps.value)">)</span>
               </div>
               <span v-else>{{ slotProps.placeholder }}</span>
             </template>
           </Select>
-          <label :for="getId('model')" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+          <label :for="getId('model')" class="block text-sm font-medium" style="color: var(--text-color);">
             <i class="pi pi-microchip text-gray-400 mr-2"></i>
             {{ t('Modelo') }}
           </label>
         </IftaLabel>
         </div>
         <div class="space-y-2">
-          <label :for="getId('temperature')" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+          <label :for="getId('temperature')" class="block text-sm font-medium" style="color: var(--text-color);">
             <i class="pi pi-sliders-h text-gray-400 mr-2"></i>
             {{ t('Temperatura') }}
-            <span class="ml-2 text-gray-500 dark:text-gray-400">({{ localConfig.temperature }})</span>
+            <span class="ml-2" style="color: var(--text-color-secondary);">({{ localConfig.temperature }})</span>
           </label>
           <Slider 
             :id="getId('temperature')" 
@@ -256,7 +256,7 @@ const getModelOption = (value: string) => {
             :disabled="disabled"
             :placeholder="t('Seleccione chunks')"
           />
-          <label :for="getId('collection')" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+          <label :for="getId('collection')" class="block text-sm font-medium" style="color: var(--text-color);">
             <i class="pi pi-database text-gray-400 mr-2"></i>
             {{ t('Chunks') }}
           </label>
@@ -276,7 +276,7 @@ const getModelOption = (value: string) => {
             :disabled="disabled"
             :placeholder="t('Seleccione una clasificación')"
           />
-          <label :for="getId('classification')" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+          <label :for="getId('classification')" class="block text-sm font-medium" style="color: var(--text-color);">
             <i class="pi pi-tags text-gray-400 mr-2"></i>
             {{ t('Clasificación') }}
           </label>
@@ -303,7 +303,7 @@ const getModelOption = (value: string) => {
                     :binary="true"
                     :disabled="disabled"
                   />
-                  <label :for="getId('semantic')" class="ml-2 text-sm text-gray-700 dark:text-gray-300">
+                  <label :for="getId('semantic')" class="ml-2 text-sm ">
                     {{ t('Buscar en la base de datos semántica') }}
                   </label>
                 </div>
@@ -315,7 +315,7 @@ const getModelOption = (value: string) => {
                     :binary="true"
                     :disabled="disabled"
                   />
-                  <label :for="getId('bm25')" class="ml-2 text-sm text-gray-700 dark:text-gray-300">
+                  <label :for="getId('bm25')" class="ml-2 text-sm ">
                     {{ t('Buscar en la base de datos BM25 (texto plano)') }}
                   </label>
                 </div>
@@ -327,7 +327,7 @@ const getModelOption = (value: string) => {
                     :binary="true"
                     :disabled="disabled"
                   />
-                  <label :for="getId('context')" class="ml-2 text-sm text-gray-700 dark:text-gray-300">
+                  <label :for="getId('context')" class="ml-2 text-sm ">
                     {{ t('Añadir contexto a los resultados') }}
                   </label>
                 </div>
@@ -339,7 +339,7 @@ const getModelOption = (value: string) => {
                     :binary="true"
                     :disabled="disabled"
                   />
-                  <label :for="getId('clean_query')" class="ml-2 text-sm text-gray-700 dark:text-gray-300">
+                  <label :for="getId('clean_query')" class="ml-2 text-sm ">
                     {{ t('Limpiar la consulta (sin limpieza no hay clasificación ni traducción)') }}
                   </label>
                 </div>
@@ -358,7 +358,7 @@ const getModelOption = (value: string) => {
                     showButtons
                     :disabled="disabled"
                   />
-                  <label :for="getId('topN')" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                  <label :for="getId('topN')" class="block text-sm font-medium" style="color: var(--text-color);">
                     <i class="pi pi-sort-numeric-up text-gray-400 mr-2"></i>
                     {{ t('Número máximo de resultados de búsqueda semántica/BM25') }}
                   </label>
@@ -376,7 +376,7 @@ const getModelOption = (value: string) => {
                     showButtons
                     :disabled="disabled"
                   />
-                  <label :for="getId('num_queries')" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                  <label :for="getId('num_queries')" class="block text-sm font-medium" style="color: var(--text-color);">
                     <i class="pi pi-list text-gray-400 mr-2"></i>
                     {{ t('Número de consultas alternativas a realizar') }}
                   </label>
@@ -394,7 +394,7 @@ const getModelOption = (value: string) => {
                     showButtons
                     :disabled="disabled"
                   />
-                  <label :for="getId('use_docs')" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                  <label :for="getId('use_docs')" class="block text-sm font-medium" style="color: var(--text-color);">
                     <i class="pi pi-file text-gray-400 mr-2"></i>
                     {{ t('Número de documentos completos a usar') }}
                   </label>
@@ -412,7 +412,7 @@ const getModelOption = (value: string) => {
                     showButtons
                     :disabled="disabled"
                   />
-                  <label :for="getId('min_count')" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                  <label :for="getId('min_count')" class="block text-sm font-medium" style="color: var(--text-color);">
                     <i class="pi pi-filter text-gray-400 mr-2"></i>
                     {{ t('Número mínimo de apariciones de un documento para ser considerado') }}
                   </label>
@@ -425,13 +425,13 @@ const getModelOption = (value: string) => {
 
         <!-- Notas al pie con enlaces a precios -->
         <div class="mt-6 pt-4">
-          <p class="text-xs text-gray-500 dark:text-gray-400 text-center">
+          <p class="text-xs  text-center">
             {{ t('Precios de modelos') }}:
             <a 
               href="https://ai.google.dev/gemini-api/docs/pricing" 
               target="_blank" 
               rel="noopener noreferrer"
-              class="text-blue-600 dark:text-blue-400 hover:underline ml-1"
+              class="text-blue-600  hover:underline ml-1"
             >
               Gemini
             </a>
@@ -440,7 +440,7 @@ const getModelOption = (value: string) => {
               href="https://platform.openai.com/docs/pricing" 
               target="_blank" 
               rel="noopener noreferrer"
-              class="text-blue-600 dark:text-blue-400 hover:underline"
+              class="text-blue-600  hover:underline"
             >
               OpenAI
             </a>

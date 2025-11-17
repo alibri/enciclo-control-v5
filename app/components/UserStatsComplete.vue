@@ -145,87 +145,87 @@ const chartOptions = computed(() => {
 <template>
 
     <div class="col-span-12 lg:col-span-6 xl:col-span-6">
-      <div class="border border-gray-200 dark:border-gray-700 rounded-lg p-6 mb-2 bg-white dark:bg-gray-800">
+      <div class="border rounded-lg p-6 mb-2" style="border-color: var(--surface-border); background-color: var(--surface-card);">
         <div class="flex justify-between mb-3">
           <div>
-            <span class="block text-gray-900 dark:text-gray-100 font-medium mb-3">{{ t('Total Logins') }}</span>
-            <div class="text-blue-400 dark:text-blue-300 font-medium text-xl">
+            <span class="block font-medium mb-3" style="color: var(--text-color);">{{ t('Total Logins') }}</span>
+            <div class="text-blue-400 font-medium text-xl">
               {{ formatIntNumber(loginlength) }}
             </div>
           </div>
-          <div class="flex items-center justify-center bg-blue-100 dark:bg-blue-900 rounded-full print:hidden"
+          <div class="flex items-center justify-center bg-highlight rounded-full print:hidden"
             style="width: 2.5rem; height: 2.5rem">
-            <i class="pi pi-sign-in text-blue-500 dark:text-blue-400 text-xl" />
+            <i class="pi pi-sign-in text-primary text-xl" />
           </div>
         </div>
       </div>
-      <div class="border border-gray-200 dark:border-gray-700 rounded-lg p-6 bg-white dark:bg-gray-800">
+      <div class="border rounded-lg p-6" style="border-color: var(--surface-border); background-color: var(--surface-card);">
         <Chart type="line" :data="chartLogins" :options="chartOptions" class="h-96" />
       </div>
     </div>
 
     <div class="col-span-12 lg:col-span-6 xl:col-span-6">
-      <div class="border border-gray-200 dark:border-gray-700 rounded-lg p-6 mb-2 bg-white dark:bg-gray-800">
+      <div class="border rounded-lg p-6 mb-2" style="border-color: var(--surface-border); background-color: var(--surface-card);">
         <div class="flex justify-between mb-3">
           <div>
-            <span class="block text-gray-900 dark:text-gray-100 font-medium mb-3">{{ t('Páginas Vistas') }}</span>
-            <div class="text-green-400 dark:text-green-300 font-medium text-xl">
+            <span class="block font-medium mb-3" style="color: var(--text-color);">{{ t('Páginas Vistas') }}</span>
+            <div class="text-green-400 font-medium text-xl">
               {{ formatIntNumber(pageslength) }}
             </div>
           </div>
-          <div class="flex items-center justify-center bg-green-100 dark:bg-green-900 rounded-full print:hidden"
+          <div class="flex items-center justify-center bg-highlight rounded-full print:hidden"
             style="width: 2.5rem; height: 2.5rem">
-            <i class="pi pi-copy text-green-500 dark:text-green-400 text-xl" />
+            <i class="pi pi-copy text-green-500 text-xl" />
           </div>
         </div>
       </div>
-      <div class="border border-gray-200 dark:border-gray-700 rounded-lg p-6 bg-white dark:bg-gray-800">
+      <div class="border rounded-lg p-6" style="border-color: var(--surface-border); background-color: var(--surface-card);">
         <Chart type="line" :data="chartPages" :options="chartOptions" class="h-96" />
       </div>
     </div>
 
     <div class="col-span-12 lg:col-span-6 xl:col-span-6">
-      <div class="border border-gray-200 rounded-lg p-6 mb-2">
+      <div class="border rounded-lg p-6 mb-2" style="border-color: var(--surface-border); background-color: var(--surface-card);">
         <div class="flex justify-between mb-3">
           <div>
-            <span class="block text-gray-900 font-medium mb-3">{{ t('Tiempo Total') }}</span>
+            <span class="block font-medium mb-3" style="color: var(--text-color);">{{ t('Tiempo Total') }}</span>
             <div class="text-red-400 font-medium text-xl">
               {{ total_time }}
             </div>
           </div>
-          <div class="flex items-center justify-center bg-red-100 rounded-full print:hidden"
+          <div class="flex items-center justify-center bg-highlight rounded-full print:hidden"
             style="width: 2.5rem; height: 2.5rem">
             <i class="pi pi-clock text-red-500 text-xl" />
           </div>
         </div>
       </div>
-      <div class="border border-gray-200 rounded-lg p-6">
+      <div class="border rounded-lg p-6" style="border-color: var(--surface-border); background-color: var(--surface-card);">
         <Chart type="line" :data="chartTime" :options="chartOptions" class="h-96" />
       </div>
     </div>
 
     <div class="col-span-12 lg:col-span-6 xl:col-span-6">
-      <div class="border border-gray-200 rounded-lg p-6 mb-2">
+      <div class="border rounded-lg p-6 mb-2" style="border-color: var(--surface-border); background-color: var(--surface-card);">
         <div class="flex justify-between mb-3">
           <div>
-            <span class="block text-gray-900 font-medium mb-3">{{ t('Total Pregúntame') }}</span>
+            <span class="block font-medium mb-3" style="color: var(--text-color);">{{ t('Total Pregúntame') }}</span>
             <div class="text-yellow-400 font-medium text-xl">
               {{ formatIntNumber(chatslength) }}
             </div>
           </div>
-          <div class="flex items-center justify-center bg-yellow-100 rounded-full print:hidden"
+          <div class="flex items-center justify-center bg-highlight rounded-full print:hidden"
             style="width: 2.5rem; height: 2.5rem">
             <i class="pi pi-comment text-yellow-500 text-xl" />
           </div>
         </div>
       </div>
-      <div class="border border-gray-200 rounded-lg p-6">
+      <div class="border rounded-lg p-6" style="border-color: var(--surface-border); background-color: var(--surface-card);">
         <Chart type="line" :data="chartChats" :options="chartOptions" class="h-96" />
       </div>
     </div>
 
     <div class="col-span-12 lg:col-span-6 xl:col-span-6 print:hidden">
-      <div class="border border-gray-200 rounded-lg p-6 print:hidden">
+      <div class="border rounded-lg p-6 print:hidden" style="border-color: var(--surface-border);">
         <h4>{{ t('Sesiones') }}</h4>
         <SimpleSessionsDataTable :value="value.logins" :rows="10" :paginator="true" :show-end="true"
           :show-user="showUser" />
@@ -233,46 +233,46 @@ const chartOptions = computed(() => {
     </div>
 
     <div class="col-span-12 lg:col-span-6 xl:col-span-6 print:hidden">
-      <div class="border border-gray-200 rounded-lg p-6 print:hidden">
+      <div class="border rounded-lg p-6 print:hidden" style="border-color: var(--surface-border);">
         <h4>{{ t('Páginas') }}</h4>
         <SimplePagesDataTable :value="value.pages" :rows="10" :paginator="true" :show-user="showUser" />
       </div>
     </div>
 
     <div class="col-span-12 lg:col-span-6 xl:col-span-6 print:hidden">
-      <div class="border border-gray-200 rounded-lg p-6 mb-2">
+      <div class="border rounded-lg p-6 mb-2" style="border-color: var(--surface-border); background-color: var(--surface-card);">
         <div class="flex justify-between mb-3">
           <div>
-            <span class="block text-gray-900 font-medium mb-3">{{ t('Total Consultas') }}</span>
+            <span class="block font-medium mb-3" style="color: var(--text-color);">{{ t('Total Consultas') }}</span>
             <div class="text-cyan-400 font-medium text-xl">
               {{ formatIntNumber(querieslength) }}
             </div>
           </div>
-          <div class="flex items-center justify-center bg-cyan-100 rounded-full" style="width: 2.5rem; height: 2.5rem">
+          <div class="flex items-center justify-center bg-highlight rounded-full" style="width: 2.5rem; height: 2.5rem">
             <i class="pi pi-question-circle text-cyan-500 text-xl" />
           </div>
         </div>
       </div>
-      <div class="border border-gray-200 rounded-lg p-6">
+      <div class="border rounded-lg p-6" style="border-color: var(--surface-border); background-color: var(--surface-card);">
         <SimpleQueriesDataTable :value="props.value.queries" :rows="10" :paginator="true" :show-user="showUser" />
       </div>
     </div>
 
     <div class="col-span-12 lg:col-span-6 xl:col-span-6 print:hidden">
-      <div class="border border-gray-200 rounded-lg p-6 mb-2">
+      <div class="border rounded-lg p-6 mb-2" style="border-color: var(--surface-border); background-color: var(--surface-card);">
         <div class="flex justify-between mb-3">
           <div>
-            <span class="block text-gray-900 font-medium mb-3">{{ t('Total Impresiones') }}</span>
+            <span class="block font-medium mb-3" style="color: var(--text-color);">{{ t('Total Impresiones') }}</span>
             <div class="text-green-400 font-medium text-xl">
               {{ formatIntNumber(printslength) }}
             </div>
           </div>
-          <div class="flex items-center justify-center bg-green-100 rounded-full" style="width: 2.5rem; height: 2.5rem">
+          <div class="flex items-center justify-center bg-highlight rounded-full" style="width: 2.5rem; height: 2.5rem">
             <i class="pi pi-print text-green-500 text-xl" />
           </div>
         </div>
       </div>
-      <div class="border border-gray-200 rounded-lg p-6">
+      <div class="border rounded-lg p-6" style="border-color: var(--surface-border); background-color: var(--surface-card);">
         <SimplePrintsDataTable :value="props.value.prints" :rows="10" :paginator="true" :show-user="showUser" />
       </div>
     </div>

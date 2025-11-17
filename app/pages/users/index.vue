@@ -428,15 +428,15 @@ const onRowClick = (event: any) => {
 </script>
 
 <template>
-  <div class="min-h-screen bg-gray-50 dark:bg-gray-900 p-4">
+  <div class="min-h-screen p-4" style="background-color: var(--surface-ground);">
     <!-- Header mejorado -->
     <div class="flex justify-between items-center mb-6">
     <div>
-      <h2 class="text-2xl font-bold text-gray-800 dark:text-gray-200 mb-2">
+      <h2 class="text-2xl font-bold mb-2" style="color: var(--text-color);">
         <i class="pi pi-users mr-2 text-blue-500"></i>
         {{ t('Usuarios') }}
       </h2>
-      <p class="text-gray-600 dark:text-gray-400 text-sm">{{ t('Gestión y seguimiento de usuarios') }}</p>
+      <p class="text-sm" style="color: var(--text-color-secondary);">{{ t('Gestión y seguimiento de usuarios') }}</p>
     </div>
     <div class="flex gap-2">
         <Button
@@ -458,7 +458,7 @@ const onRowClick = (event: any) => {
         <Toolbar>
           <template #start>
             <Button :label="t('Nuevo')" icon="pi pi-plus" class="ml-2" @click="openNewUser()" />
-            <i class="fas fa-grip-lines-vertical mx-2 text-gray-300" />
+            <i class="fas fa-grip-lines-vertical mx-2" style="color: var(--surface-border);" />
           </template>
           <template #end>
             <Button icon="pi pi-trash" :label="t('Desactivar grupo')" class="p-button-danger mr-2" @click="abrirDialogDesactivarGrupo()" />
@@ -484,13 +484,13 @@ const onRowClick = (event: any) => {
             :current-page-report-template="t('show-per-page')" @page="onPage($event)" @sort="onSort($event)"
             @filter="onFilter($event)" @row-click="onRowClick" @row-dblclick="onRowDoubleClick" class="users-table">
             <template #header>
-              <div class="flex flex-wrap justify-between items-center gap-4 p-4 bg-gray-50 dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
+              <div class="flex flex-wrap justify-between items-center gap-4 p-4 border-b" style="background-color: var(--surface-card); border-color: var(--surface-border);">
                 <div class="flex items-center gap-2">
                   <i class="pi pi-table text-blue-500"></i>
-                  <span class="font-semibold text-gray-700 dark:text-gray-300">{{ t('Lista de Usuarios') }}</span>
+                  <span class="font-semibold" style="color: var(--text-color);">{{ t('Lista de Usuarios') }}</span>
                 </div>
                 <div class="flex items-center gap-2">
-                  <span class="text-sm text-gray-500 dark:text-gray-400">{{ formatIntNumber(totalRecords) }} {{ t('registros') }}</span>
+                  <span class="text-sm" style="color: var(--text-color-secondary);">{{ formatIntNumber(totalRecords) }} {{ t('registros') }}</span>
                 </div>
               </div>
               <div class="flex justify-between items-center mt-2">
@@ -505,10 +505,10 @@ const onRowClick = (event: any) => {
               </div>
             </template>
             <template #empty>
-              <div class="text-center text-gray-500 dark:text-gray-400 py-8">{{ t('No se han encontrado datos.') }}</div>
+              <div class="text-center py-8" style="color: var(--text-color-secondary);">{{ t('No se han encontrado datos.') }}</div>
             </template>
             <template #loading>
-              <div class="text-center text-gray-600 dark:text-gray-400 py-8">{{ t('Cargando datos..') }} <i class="pi pi-spin pi-spinner"
+              <div class="text-center py-8" style="color: var(--text-color-secondary);">{{ t('Cargando datos..') }} <i class="pi pi-spin pi-spinner"
                   style="font-size: 2rem" /></div>
             </template>
             <Column header="#" :style="{ width: '60px' }" class="text-center">
@@ -527,7 +527,7 @@ const onRowClick = (event: any) => {
             </Column>
             <Column field="id" :header="t('ID')" :sortable="true" :style="{ width: '80px' }" class="text-center">
               <template #body="slotProps">
-                <span class="text-sm font-mono bg-gray-100 px-2 py-1 rounded">{{ slotProps.data.id }}</span>
+                <span class="text-sm font-mono px-2 py-1 rounded" style="background-color: var(--surface-hover); color: var(--text-color);">{{ slotProps.data.id }}</span>
               </template>
             </Column>
             <Column field="name" :header="t('Nombre')" :sortable="true" class="font-semibold">
@@ -563,7 +563,7 @@ const onRowClick = (event: any) => {
                     <i class="pi pi-users mr-1"></i>
                     {{ slotProps.data.grupo }}
                   </span>
-                  <span v-else class="text-gray-400 text-sm">-</span>
+                  <span v-else class="text-sm" style="color: var(--text-color-secondary);">-</span>
                 </NuxtLink>
               </template>
             </Column>
@@ -587,12 +587,12 @@ const onRowClick = (event: any) => {
             <Column field="begin" :header="t('Inicio')" :sortable="true" :style="{ width: '100px' }"
               class="text-center">
               <template #body="slotProps">
-                <span class="text-xs text-gray-600">{{ slotProps.data.begin || '-' }}</span>
+                <span class="text-xs" style="color: var(--text-color-secondary);">{{ slotProps.data.begin || '-' }}</span>
               </template>
             </Column>
             <Column field="end" :header="t('Final')" :sortable="true" :style="{ width: '100px' }" class="text-center">
               <template #body="slotProps">
-                <span class="text-xs text-gray-600">{{ slotProps.data.end || '-' }}</span>
+                <span class="text-xs" style="color: var(--text-color-secondary);">{{ slotProps.data.end || '-' }}</span>
               </template>
             </Column>
             <Column field="dashboard_access" :header="t('Dash.')" :sortable="true" :style="{ width: '100px' }"
@@ -600,7 +600,7 @@ const onRowClick = (event: any) => {
               <template #body="slotProps">
                 <span :class="slotProps.data.dashboard_access
                   ? 'inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-blue-100 text-blue-800'
-                  : 'inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-500'">
+                  : 'inline-flex items-center px-2 py-0.5 rounded text-xs font-medium'" style="background-color: var(--surface-hover); color: var(--text-color-secondary);">
                   <i :class="slotProps.data.dashboard_access ? 'pi pi-chart-line mr-1' : 'pi pi-times mr-1'"></i>
                   {{ slotProps.data.dashboard_access ? t('Dashboard') : '-' }}
                 </span>
@@ -609,17 +609,17 @@ const onRowClick = (event: any) => {
             <Column field="stats_min" :header="t('I.Est.')" :sortable="true" :style="{ width: '120px' }"
               class="text-center">
               <template #body="slotProps">
-                <span class="text-xs text-gray-600">{{ slotProps.data.stats_min ? formatDate(slotProps.data.stats_min) :
+                <span class="text-xs" style="color: var(--text-color-secondary);">{{ slotProps.data.stats_min ? formatDate(slotProps.data.stats_min) :
                   '-' }}</span>
               </template>
             </Column>
             <Column field="email" :header="t('Email')" :sortable="true" :style="{ width: '200px' }">
               <template #body="slotProps">
                 <div v-if="slotProps.data.email" class="flex items-center gap-2">
-                  <i class="pi pi-envelope text-gray-400 text-sm"></i>
-                  <span class="text-sm text-gray-600 truncate">{{ slotProps.data.email }}</span>
+                  <i class="pi pi-envelope text-sm" style="color: var(--text-color-secondary);"></i>
+                  <span class="text-sm truncate" style="color: var(--text-color-secondary);">{{ slotProps.data.email }}</span>
                 </div>
-                <span v-else class="text-gray-400 text-sm">-</span>
+                <span v-else class="text-sm" style="color: var(--text-color-secondary);">-</span>
               </template>
             </Column>
             <Column field="isenabled" :header="t('Estado')" :sortable="true" :style="{ width: '100px' }"
@@ -665,25 +665,25 @@ const onRowClick = (event: any) => {
                   class="p-column-filter" :placeholder="t('Búsqueda por IP')" @keydown.enter="filterCallback()" />
               </template>
               <template #body="slotProps">
-                <span v-if="slotProps.data.iprange" class="text-xs font-mono bg-gray-100 px-2 py-1 rounded">
+                <span v-if="slotProps.data.iprange" class="text-xs font-mono px-2 py-1 rounded" style="background-color: var(--surface-hover); color: var(--text-color);">
                   {{ slotProps.data.iprange }}
                 </span>
-                <span v-else class="text-gray-400 text-sm">-</span>
+                <span v-else class="text-sm" style="color: var(--text-color-secondary);">-</span>
               </template>
             </Column>
             <Column field="geoip" :header="t('Ubicación')" :sortable="true" :style="{ width: '100px' }">
               <template #body="slotProps">
-                <span v-if="slotProps.data.geoip" class="text-xs text-blue-600">
+                <span v-if="slotProps.data.geoip" class="text-xs" style="color: var(--primary-color);">
                   <i class="pi pi-map-marker mr-1"></i>{{ slotProps.data.geoip }}
                 </span>
-                <span v-else class="text-gray-400 text-sm">-</span>
+                <span v-else class="text-sm" style="color: var(--text-color-secondary);">-</span>
               </template>
             </Column>
             <Column field="created_at" :header="t('Creado')" :sortable="true" :style="{ width: '140px' }">
               <template #body="slotProps">
-                <div class="text-xs text-gray-600">
-                  <div class="font-medium">{{ new Date(slotProps.data.created_at).toLocaleDateString('es-ES') }}</div>
-                  <div class="text-gray-400">{{ new Date(slotProps.data.created_at).toLocaleTimeString('es-ES', {
+                <div class="text-xs" style="color: var(--text-color-secondary);">
+                  <div class="font-medium" style="color: var(--text-color);">{{ new Date(slotProps.data.created_at).toLocaleDateString('es-ES') }}</div>
+                  <div style="color: var(--text-color-secondary);">{{ new Date(slotProps.data.created_at).toLocaleTimeString('es-ES', {
                     hour: '2-digit',
                     minute: '2-digit'
                   }) }}</div>
@@ -692,9 +692,9 @@ const onRowClick = (event: any) => {
             </Column>
             <Column field="updated_at" :header="t('Act.')" :sortable="true" :style="{ width: '140px' }">
               <template #body="slotProps">
-                <div class="text-xs text-gray-600">
-                  <div class="font-medium">{{ new Date(slotProps.data.updated_at).toLocaleDateString('es-ES') }}</div>
-                  <div class="text-gray-400">{{ new Date(slotProps.data.updated_at).toLocaleTimeString('es-ES', {
+                <div class="text-xs" style="color: var(--text-color-secondary);">
+                  <div class="font-medium" style="color: var(--text-color);">{{ new Date(slotProps.data.updated_at).toLocaleDateString('es-ES') }}</div>
+                  <div style="color: var(--text-color-secondary);">{{ new Date(slotProps.data.updated_at).toLocaleTimeString('es-ES', {
                     hour: '2-digit',
                     minute: '2-digit'
                   }) }}</div>
@@ -714,7 +714,7 @@ const onRowClick = (event: any) => {
       <Dialog v-model:visible="displayDesactivarGrupo" modal :header="t('Desactivar grupo')" :style="{ width: '30rem' }">
         <div class="flex flex-col gap-4 p-4">
           <div class="flex flex-col gap-2">
-            <label for="grupo" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+            <label for="grupo" class="block text-sm font-medium" style="color: var(--text-color);">
               {{ t('Grupo') }}
             </label>
             <InputText
@@ -746,7 +746,7 @@ const onRowClick = (event: any) => {
       <Dialog v-model:visible="displayImportResult" modal :header="t('Resultado de la importación')" :style="{ width: '50rem', maxWidth: '90vw' }">
         <div class="p-4">
           <div class="mb-4">
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            <label class="block text-sm font-medium mb-2" style="color: var(--text-color);">
               {{ t('Progreso de la importación') }}
             </label>
             <ProgressBar :value="importProgress" :showValue="true" />
@@ -782,11 +782,11 @@ const onRowClick = (event: any) => {
 :deep(.p-datatable-tbody > tr) {
   cursor: pointer;
   transition: all 0.2s ease;
-  border-bottom: 1px solid #f1f5f9;
+  border-bottom: 1px solid var(--surface-border);
 }
 
 :deep(.p-datatable-tbody > tr:hover) {
-  background-color: #f8fafc !important;
+  background-color: var(--surface-hover) !important;
   transform: translateY(-1px);
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
@@ -797,10 +797,10 @@ const onRowClick = (event: any) => {
 
 /* Mejorar el header de la tabla */
 :deep(.p-datatable-thead > tr > th) {
-  background-color: #f8fafc;
-  border-bottom: 2px solid #e2e8f0;
+  background-color: var(--surface-card);
+  border-bottom: 2px solid var(--surface-border);
   font-weight: 600;
-  color: #475569;
+  color: var(--text-color);
   padding: 1rem 0.75rem;
 }
 
@@ -818,22 +818,22 @@ const onRowClick = (event: any) => {
 
 /* Mejorar el paginador */
 :deep(.p-paginator) {
-  background-color: #f8fafc;
-  border-top: 1px solid #e2e8f0;
+  background-color: var(--surface-card);
+  border-top: 1px solid var(--surface-border);
   padding: 1rem;
 }
 
 /* Mejorar los filtros */
 :deep(.p-column-filter) {
   border-radius: 6px;
-  border: 1px solid #d1d5db;
+  border: 1px solid var(--surface-border);
   padding: 0.5rem;
   font-size: 0.875rem;
 }
 
 :deep(.p-column-filter:focus) {
-  border-color: #3b82f6;
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--primary-color) 10%, transparent);
 }
 
 /* Mejorar los tags */
@@ -856,7 +856,8 @@ const onRowClick = (event: any) => {
 
 /* Mejorar el estado de carga */
 :deep(.p-datatable-loading-overlay) {
-  background-color: rgba(255, 255, 255, 0.8);
+  background-color: var(--surface-ground);
+  opacity: 0.8;
   backdrop-filter: blur(2px);
 }
 
@@ -866,24 +867,24 @@ const onRowClick = (event: any) => {
 }
 
 .table-container::-webkit-scrollbar-track {
-  background: #f1f5f9;
+  background: var(--surface-ground);
   border-radius: 4px;
 }
 
 .table-container::-webkit-scrollbar-thumb {
-  background: #cbd5e1;
+  background: var(--surface-border);
   border-radius: 4px;
   transition: background 0.2s ease;
 }
 
 .table-container::-webkit-scrollbar-thumb:hover {
-  background: #94a3b8;
+  background: var(--text-color-secondary);
 }
 
 /* Firefox scrollbar */
 .table-container {
   scrollbar-width: thin;
-  scrollbar-color: #cbd5e1 #f1f5f9;
+  scrollbar-color: var(--surface-border) var(--surface-ground);
 }
 
 /* Responsive mejoras */

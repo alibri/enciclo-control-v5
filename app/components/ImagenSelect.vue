@@ -166,21 +166,21 @@ const config = {
       :pt="{
         root: 'flex flex-col',
         content: 'flex-1 overflow-scroll',
-        header: 'border-b border-gray-200 bg-gradient-to-r from-blue-50 to-indigo-50',
-        title: 'text-xl font-semibold text-gray-800'
+        header: 'border-b bg-gradient-to-r from-blue-50 to-indigo-50',
+        title: 'text-xl font-semibold'
       }"
     >
       <template #header>
         <div class="flex items-center gap-3">
           <i class="pi pi-image text-2xl text-blue-600"></i>
-          <span class="text-xl font-semibold text-gray-800">{{ t('Seleccionar Imagen') }}</span>
+          <span class="text-xl font-semibold" style="color: var(--text-color);">{{ t('Seleccionar Imagen') }}</span>
         </div>
       </template>
       
       <BlockUI :blocked="blocked">
         <div class="h-full flex flex-col">
           <Tabs value="0" class="flex-1 flex flex-col">
-            <TabList class="border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800">
+            <TabList class="border-b   ">
               <Tab value="0" class="px-6 py-3">
                 <i class="pi pi-folder mr-2"></i>
                 {{ t('Contenido') }}
@@ -197,13 +197,13 @@ const config = {
             
             <TabPanels class="flex-1 overflow-hidden">
               <TabPanel value="0" class="h-full overflow-auto p-6 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100 hover:scrollbar-thumb-gray-400">
-                <div v-if="!images || images.length === 0" class="flex flex-col items-center justify-center h-64 text-gray-500">
+                <div v-if="!images || images.length === 0" class="flex flex-col items-center justify-center h-64" style="color: var(--text-color-secondary);">
                   <i class="pi pi-image text-6xl mb-4"></i>
                   <p class="text-lg">{{ t('No hay imágenes disponibles') }}</p>
                 </div>
                 <div v-else class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
                   <div v-for="image in images" :key="image" class="group relative">
-                    <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1 h-64 flex flex-col relative">
+                    <div class="rounded-xl shadow-sm border overflow-hidden hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1 h-64 flex flex-col relative" style="border-color: var(--surface-border); background-color: var(--surface-card);">
                       <div class="absolute top-2 right-2 z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
                         <div class="flex gap-1">
                           <Button 
@@ -226,7 +226,7 @@ const config = {
                           />
                         </div>
                       </div>
-                      <div class="flex-1 flex items-center justify-center bg-gray-50 dark:bg-gray-700 p-2 relative">
+                      <div class="flex-1 flex items-center justify-center p-2 relative" style="background-color: var(--surface-hover);">
                         <Image 
                           :src="image" 
                           class="max-w-full max-h-full object-contain cursor-pointer rounded-lg" 
@@ -245,7 +245,7 @@ const config = {
                   <div class="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-xl p-6">
                     <div class="flex items-center gap-3 mb-4">
                       <i class="pi pi-cloud-upload text-2xl text-blue-600"></i>
-                      <h3 class="text-lg font-semibold text-gray-800">{{ t('Subir Nueva Imagen') }}</h3>
+                      <h3 class="text-lg font-semibold" style="color: var(--text-color);">{{ t('Subir Nueva Imagen') }}</h3>
                     </div>
                     <FileUpload
                       name="demo[]"
@@ -265,21 +265,21 @@ const config = {
                       <template #empty>
                         <div class="text-center py-8">
                           <i class="pi pi-cloud-upload text-4xl text-blue-400 mb-3"></i>
-                          <p class="text-gray-600 text-lg">{{ t('Arrastra y suelta archivos aquí para subirlos') }}</p>
-                          <p class="text-gray-500 text-sm mt-2">{{ t('o haz clic para seleccionar') }}</p>
+                          <p class="text-lg" style="color: var(--text-color-secondary);">{{ t('Arrastra y suelta archivos aquí para subirlos') }}</p>
+                          <p class="text-sm mt-2" style="color: var(--text-color-secondary);">{{ t('o haz clic para seleccionar') }}</p>
                         </div>
                       </template>
                     </FileUpload>
                   </div>
                 </div>
                 
-                <div v-if="!media || media.length === 0" class="flex flex-col items-center justify-center h-64 text-gray-500">
+                <div v-if="!media || media.length === 0" class="flex flex-col items-center justify-center h-64" style="color: var(--text-color-secondary);">
                   <i class="pi pi-images text-6xl mb-4"></i>
                   <p class="text-lg">{{ t('No hay imágenes en Media') }}</p>
                 </div>
                 <div v-else class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
                   <div v-for="image in media" :key="image" class="group relative">
-                    <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1 h-64 flex flex-col relative">
+                    <div class="rounded-xl shadow-sm border overflow-hidden hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1 h-64 flex flex-col relative" style="border-color: var(--surface-border); background-color: var(--surface-card);">
                       <div class="absolute top-2 right-2 z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
                         <div class="flex gap-1">
                           <Button 
@@ -302,7 +302,7 @@ const config = {
                           />
                         </div>
                       </div>
-                      <div class="flex-1 flex items-center justify-center bg-gray-50 dark:bg-gray-700 p-2 relative">
+                      <div class="flex-1 flex items-center justify-center p-2 relative" style="background-color: var(--surface-hover);">
                         <Image 
                           :src="image" 
                           class="max-w-full max-h-full object-contain cursor-pointer rounded-lg" 
@@ -317,13 +317,13 @@ const config = {
               </TabPanel>
               
               <TabPanel value="2" class="h-full overflow-auto p-6 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100 hover:scrollbar-thumb-gray-400">
-                <div v-if="!repositorio || repositorio.length === 0" class="flex flex-col items-center justify-center h-64 text-gray-500">
+                <div v-if="!repositorio || repositorio.length === 0" class="flex flex-col items-center justify-center h-64" style="color: var(--text-color-secondary);">
                   <i class="pi pi-database text-6xl mb-4"></i>
                   <p class="text-lg">{{ t('No hay imágenes en el Repositorio') }}</p>
                 </div>
                 <div v-else class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
                   <div v-for="image in repositorio" :key="image" class="group relative">
-                    <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1 h-64 flex flex-col relative">
+                    <div class="rounded-xl shadow-sm border overflow-hidden hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1 h-64 flex flex-col relative" style="border-color: var(--surface-border); background-color: var(--surface-card);">
                       <div class="absolute top-2 right-2 z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
                         <div class="flex gap-1">
                           <Button 
@@ -346,7 +346,7 @@ const config = {
                           />
                         </div>
                       </div>
-                      <div class="flex-1 flex items-center justify-center bg-gray-50 dark:bg-gray-700 p-2 relative">
+                      <div class="flex-1 flex items-center justify-center p-2 relative" style="background-color: var(--surface-hover);">
                         <Image 
                           :src="image" 
                           class="max-w-full max-h-full object-contain cursor-pointer rounded-lg" 

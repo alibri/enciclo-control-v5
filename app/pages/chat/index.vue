@@ -97,14 +97,14 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="min-h-screen bg-gray-50 dark:bg-gray-900 p-4">
+  <div class="min-h-screen p-4" style="background-color: var(--surface-ground);">
     <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between mb-6">
       <div class="mb-4 lg:mb-0">
-        <h2 class="text-2xl font-bold text-gray-800 dark:text-gray-200 mb-2">
-          <i class="pi pi-comments mr-2 text-blue-500"></i>
+        <h2 class="text-2xl font-bold mb-2" style="color: var(--text-color);">
+          <i class="pi pi-comments mr-2" style="color: var(--primary-color);"></i>
           {{ t('Consultas Pregúntame') }}
         </h2>
-        <p class="text-gray-600 text-sm">{{ t('Doble clic en una fila para ver detalles') }}</p>
+        <p class="text-sm" style="color: var(--text-color-secondary);">{{ t('Doble clic en una fila para ver detalles') }}</p>
       </div>
       <div class="flex gap-2">
         <Button
@@ -131,18 +131,18 @@ onMounted(() => {
           :current-page-report-template="t('show-per-page')" class="p-datatable-sm" @page="onPage($event)"
           @sort="onSort($event)" @filter="onFilter($event)" @row-dblclick="onRowDoubleClick($event)">
           <template #header>
-            <div class="flex flex-wrap justify-between items-center gap-4 p-4 bg-gray-50 dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
+            <div class="flex flex-wrap justify-between items-center gap-4 p-4 border-b" style="background-color: var(--surface-card); border-color: var(--surface-border);">
               <div class="flex items-center gap-2">
-                <i class="pi pi-table text-blue-500"></i>
-                <span class="font-semibold text-gray-700">{{ t('Lista de Preguntas') }}</span>
+                <i class="pi pi-table" style="color: var(--primary-color);"></i>
+                <span class="font-semibold" style="color: var(--text-color);">{{ t('Lista de Preguntas') }}</span>
               </div>
               <div class="flex items-center gap-2">
-                <span class="text-sm text-gray-500">{{ formatIntNumber(totalRecords) }} {{ t('registros') }}</span>
+                <span class="text-sm" style="color: var(--text-color-secondary);">{{ formatIntNumber(totalRecords) }} {{ t('registros') }}</span>
               </div>
             </div>
             <div class="flex justify-between items-center mt-2">
               <div class="flex items-center justify-center">
-                <label class="mr-2" for="switch1">{{ t('SIN RESPUESTA') }}</label>
+                <label class="mr-2" style="color: var(--text-color);" for="switch1">{{ t('SIN RESPUESTA') }}</label>
                 <ToggleSwitch v-model="no_respuesta" id="switch1" @change="loadData()" />
               </div>
               <div class="flex items-center gap-2">
@@ -163,9 +163,9 @@ onMounted(() => {
           </template>
           <Column field="id" header="#" :sortable="true" class="text-center">
             <template #body="slotProps">
-              <a class="flex items-start cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700 p-2 rounded transition-colors"
+              <a class="flex items-start cursor-pointer p-2 rounded transition-colors" style="background-color: var(--surface-hover);"
                 @click="showChat(dialog, slotProps.data.id)">
-                <i class="pi pi-eye text-blue-500 mr-2 mt-0.5 flex-shrink-0" v-tooltip.top="t('Ver detalle')"></i> </a>
+                <i class="pi pi-eye mr-2 mt-0.5 flex-shrink-0" style="color: var(--primary-color);" v-tooltip.top="t('Ver detalle')"></i> </a>
             </template>
           </Column>
           <Column field="user" :header="t('Usuario')" :sortable="true">
@@ -175,7 +175,8 @@ onMounted(() => {
             </template>
             <template #body="slotProps">
               <NuxtLink :to="'/users/' + slotProps.data.user"
-                class="inline-flex items-center text-blue-600 hover:text-blue-800 font-medium transition-colors">
+                class="inline-flex items-center font-medium transition-colors"
+                style="color: var(--primary-color);">
                 <i class="pi pi-user mr-1 text-xs"></i>
                 {{ slotProps.data.user }}
               </NuxtLink>
@@ -184,7 +185,8 @@ onMounted(() => {
           <Column field="collection" :header="t('Colección')" :sortable="true" class="text-center">
             <template #body="slotProps">
               <span
-                class="inline-flex items-center px-2 py-1 bg-yellow-100 text-yellow-800 text-xs font-medium rounded-md">
+                class="inline-flex items-center px-2 py-1 text-xs font-medium rounded-md"
+                style="background-color: var(--highlight-bg); color: var(--text-color); padding: 0.25rem 0.5rem;">
                 <i class="pi pi-folder mr-1"></i>
                 {{ slotProps.data.collection }}
               </span>
@@ -192,17 +194,17 @@ onMounted(() => {
           </Column>
           <Column field="query" :header="t('Pregunta')" :sortable="true">
             <template #body="slotProps">
-              <a class="flex items-start cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700 p-2 rounded transition-colors"
+              <a class="flex items-start cursor-pointer p-2 rounded transition-colors" style="background-color: var(--surface-hover);"
                 @click="showChat(dialog, slotProps.data.id)">
-                <span class="text-sm leading-relaxed">{{ slotProps.data.query }}</span>
+                <span class="text-sm leading-relaxed" style="color: var(--text-color);">{{ slotProps.data.query }}</span>
               </a>
             </template>
           </Column>
           <Column field="date" :header="t('Fecha')" :sortable="true">
             <template #body="slotProps">
               <div class="flex flex-col">
-                <span class="text-xs text-gray-600">{{ formatDateTime(slotProps.data.date) }}</span>
-                <span class="text-xs text-gray-400">{{ new Date(slotProps.data.date).toLocaleDateString() }}</span>
+                <span class="text-xs" style="color: var(--text-color);">{{ formatDateTime(slotProps.data.date) }}</span>
+                <span class="text-xs" style="color: var(--text-color-secondary);">{{ new Date(slotProps.data.date).toLocaleDateString() }}</span>
               </div>
             </template>
           </Column>
@@ -299,7 +301,8 @@ onMounted(() => {
               <div v-if="slotProps.data.response" class="flex flex-col gap-2">
                 <!-- Clasificación -->
                 <div v-if="slotProps.data.response.clasificacion" class="flex items-center gap-2">
-                  <span class="inline-flex items-center px-2 py-1 bg-indigo-100 text-indigo-800 text-xs font-medium rounded-md">
+                  <span class="inline-flex items-center px-2 py-1 text-xs font-medium rounded-md"
+                    style="background-color: var(--highlight-bg); color: var(--text-color); padding: 0.25rem 0.5rem;">
                     <i class="pi pi-tag mr-1"></i>
                     <strong>{{ t('Clasificación') }}:</strong> {{ slotProps.data.response.clasificacion }}
                   </span>
@@ -307,7 +310,8 @@ onMounted(() => {
                 
                 <!-- Porcentaje de asignación -->
                 <div v-if="slotProps.data.response.porcentaje_asignacion !== undefined && slotProps.data.response.porcentaje_asignacion !== null" class="flex items-center gap-2">
-                  <span class="inline-flex items-center px-2 py-1 bg-teal-100 text-teal-800 text-xs font-medium rounded-md">                    
+                  <span class="inline-flex items-center px-2 py-1 text-xs font-medium rounded-md"
+                    style="background-color: var(--highlight-bg); color: var(--text-color);">                    
                     {{ slotProps.data.response.porcentaje_asignacion }}%
                   </span>
                 </div>
@@ -344,16 +348,16 @@ onMounted(() => {
               <div v-if="slotProps.data.response" class="flex flex-col gap-1.5 text-xs">
                 <!-- Modelo -->
                 <div v-if="slotProps.data.response.model" class="flex items-center gap-2">
-                  <i class="pi pi-cog text-gray-500"></i>
-                  <span class="font-semibold text-gray-600">Model:</span>
-                  <span class="text-gray-800 font-mono bg-gray-100 px-1.5 py-0.5 rounded">{{ slotProps.data.response.model }}</span>
+                  <i class="pi pi-cog" style="color: var(--text-color-secondary);"></i>
+                  <span class="font-semibold" style="color: var(--text-color-secondary);">Model:</span>
+                  <span class="font-mono px-1.5 py-0.5 rounded" style="background-color: var(--surface-hover); color: var(--text-color);">{{ slotProps.data.response.model }}</span>
                 </div>
                 
                 <!-- Temperature -->
                 <div v-if="slotProps.data.response.temperature !== undefined && slotProps.data.response.temperature !== null" class="flex items-center gap-2">
                   <i class="pi pi-gauge text-orange-500"></i>
-                  <span class="font-semibold text-gray-600">Temperature:</span>
-                  <span class="text-gray-800">{{ slotProps.data.response.temperature }}</span>
+                  <span class="font-semibold" style="color: var(--text-color-secondary);">Temperature:</span>
+                  <span style="color: var(--text-color);">{{ slotProps.data.response.temperature }}</span>
                 </div>
                 
                 <!-- Semantic -->

@@ -103,11 +103,11 @@ const testRAG = async () => {
 </script>
 
 <template>
-  <div class="min-h-screen bg-gray-50 dark:bg-gray-900 p-4">
+  <div class="min-h-screen p-4" style="background-color: var(--surface-ground);">
     <!-- Header Section -->
     <div class="mb-6">
       <div class="flex items-center space-x-3">
-        <h2 class="text-3xl font-bold text-gray-900 dark:text-gray-100">
+        <h2 class="text-3xl font-bold" style="color: var(--text-color);">
           <i class="pi pi-globe mr-2 text-blue-500"></i>
           {{ t('Test RAG') }}
         </h2>
@@ -144,8 +144,8 @@ const testRAG = async () => {
         <template #content>
           <div class="text-center py-12">
             <i class="pi pi-info-circle text-4xl text-gray-400 mb-4"></i>
-            <h3 class="text-lg font-medium text-gray-900 dark:text-gray-100 mb-2">{{ t('Listo para probar') }}</h3>
-            <p class="text-gray-500 dark:text-gray-400">{{ t('Ingrese una pregunta y configure los parámetros para comenzar') }}</p>
+            <h3 class="text-lg font-medium mb-2" style="color: var(--text-color);">{{ t('Listo para probar') }}</h3>
+            <p style="color: var(--text-color-secondary);">{{ t('Ingrese una pregunta y configure los parámetros para comenzar') }}</p>
           </div>
         </template>
       </Card>
@@ -157,8 +157,8 @@ const testRAG = async () => {
         <template #content>
           <div class="text-center py-12">
             <i class="pi pi-spin pi-spinner text-4xl text-blue-500 mb-4"></i>
-            <h3 class="text-lg font-medium text-gray-900 dark:text-gray-100 mb-2">{{ t('Ejecutando consulta...') }}</h3>
-            <p class="text-gray-500 dark:text-gray-400">{{ t('Por favor espere mientras se procesa la consulta RAG') }}</p>
+            <h3 class="text-lg font-medium mb-2" style="color: var(--text-color);">{{ t('Ejecutando consulta...') }}</h3>
+            <p style="color: var(--text-color-secondary);">{{ t('Por favor espere mientras se procesa la consulta RAG') }}</p>
           </div>
         </template>
       </Card>

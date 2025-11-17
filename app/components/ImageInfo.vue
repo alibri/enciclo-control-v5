@@ -50,9 +50,9 @@ onMounted(async () => {
     </div>
     <div v-else-if="dimensions.width > 0" class="text-center">
       <div class="font-semibold">{{ dimensions.width }} × {{ dimensions.height }}</div>
-      <div class="text-gray-300 text-xs">px</div>
+      <div class="text-xs" style="color: var(--text-color-secondary);">px</div>
     </div>
-    <div v-else class="text-center text-gray-300">
+    <div v-else class="text-center" style="color: var(--text-color-secondary);">
       <i class="pi pi-exclamation-triangle mr-1"></i>
       <span>{{ t('Error al cargar') }}</span>
     </div>

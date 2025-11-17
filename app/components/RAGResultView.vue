@@ -1,5 +1,5 @@
 <script setup lang='ts'>
-import { formatStringPre } from '~/utils/format';
+import { formatStringPre, formatIntNumber } from '~/utils/format';
 import { getPageLink } from '~/utils/openExternal';
 import TestService from '~/services/testService';
 import { getApiUrl } from '~/utils/api';
@@ -291,32 +291,32 @@ const generarPDF = async () => {
       <template #title>
         <div class="flex items-center justify-between">
           <div class="flex items-center space-x-3">
-            <div class="p-2 bg-green-100 dark:bg-green-900/30 rounded-lg">
-              <i class="pi pi-check-circle text-green-600 dark:text-green-400 text-xl"></i>
+            <div class="p-2 rounded-lg" style="background-color: var(--highlight-bg);">
+              <i class="pi pi-check-circle text-green-600 text-xl"></i>
             </div>
             <div>
-              <h2 class="text-2xl font-bold text-gray-900 dark:text-gray-100">{{ t('Resultado de la Consulta') }}</h2>
-              <p v-if="result.query" class="text-sm text-gray-500 dark:text-gray-400 mt-1">{{ result.query }}</p>
+              <h2 class="text-2xl font-bold" style="color: var(--text-color);">{{ t('Resultado de la Consulta') }}</h2>
+              <p v-if="result.query" class="text-sm mt-1" style="color: var(--text-color-secondary);">{{ result.query }}</p>
             </div>
           </div>
           <div class="flex items-center gap-4">
             <!-- Like -->
             <div v-if="result.like !== null && result.like !== undefined" class="flex items-center">
-              <div v-if="result.like === 1" class="flex items-center space-x-2 px-3 py-2 bg-green-100 dark:bg-green-900/30 rounded-lg">
-                <i class="pi pi-thumbs-up text-green-600 dark:text-green-400 text-xl"></i>
-                <span class="text-sm font-semibold text-green-700 dark:text-green-300">{{ t('Me gusta') }}</span>
+              <div v-if="result.like === 1" class="flex items-center space-x-2 px-3 py-2 bg-green-100 rounded-lg">
+                <i class="pi pi-thumbs-up text-green-600 text-xl"></i>
+                <span class="text-sm font-semibold text-green-700">{{ t('Me gusta') }}</span>
               </div>
-              <div v-else-if="result.like === 0" class="flex items-center space-x-2 px-3 py-2 bg-red-100 dark:bg-red-900/30 rounded-lg">
-                <i class="pi pi-thumbs-down text-red-600 dark:text-red-400 text-xl"></i>
-                <span class="text-sm font-semibold text-red-700 dark:text-red-300">{{ t('No me gusta') }}</span>
+              <div v-else-if="result.like === 0" class="flex items-center space-x-2 px-3 py-2 bg-red-100 rounded-lg">
+                <i class="pi pi-thumbs-down text-red-600 text-xl"></i>
+                <span class="text-sm font-semibold text-red-700">{{ t('No me gusta') }}</span>
               </div>
             </div>
             
             <!-- Counter -->
-            <div v-if="result.counter !== null && result.counter !== undefined" class="flex items-center space-x-2 px-3 py-2 bg-blue-100 dark:bg-blue-900/30 rounded-lg">
-              <i class="pi pi-mouse-pointer text-blue-600 dark:text-blue-400"></i>
-              <span class="text-sm font-semibold text-blue-700 dark:text-blue-300">{{ formatIntNumber(result.counter) }}</span>
-              <span class="text-xs text-blue-600 dark:text-blue-400">{{ t('clicks') }}</span>
+            <div v-if="result.counter !== null && result.counter !== undefined" class="flex items-center space-x-2 px-3 py-2 bg-blue-100 rounded-lg">
+              <i class="pi pi-mouse-pointer text-blue-600"></i>
+              <span class="text-sm font-semibold text-blue-700">{{ formatIntNumber(result.counter) }}</span>
+              <span class="text-xs text-blue-600">{{ t('clicks') }}</span>
             </div>
             
             <!-- Short URL -->
@@ -324,17 +324,17 @@ const generarPDF = async () => {
               <a 
                 :href="result.short_url" 
                 target="_blank"
-                class="flex items-center space-x-2 px-3 py-2 bg-indigo-100 dark:bg-indigo-900/30 rounded-lg hover:bg-indigo-200 dark:hover:bg-indigo-800/50 transition-colors"
+                class="flex items-center space-x-2 px-3 py-2 bg-indigo-100 rounded-lg hover:bg-indigo-200 transition-colors"
               >
-                <i class="pi pi-external-link text-indigo-600 dark:text-indigo-400"></i>
-                <span class="text-sm font-semibold text-indigo-700 dark:text-indigo-300">{{ t('Ver enlace') }}</span>
+                <i class="pi pi-external-link text-indigo-600"></i>
+                <span class="text-sm font-semibold text-indigo-700">{{ t('Ver enlace') }}</span>
               </a>
             </div>
             
             <!-- Tiempo total -->
             <div v-if="result.times?.total" class="text-right">
-              <div class="text-xs text-gray-500 dark:text-gray-400">{{ t('Tiempo total') }}</div>
-              <div class="text-lg font-semibold text-blue-600 dark:text-blue-400">
+              <div class="text-xs" style="color: var(--text-color-secondary);">{{ t('Tiempo total') }}</div>
+              <div class="text-lg font-semibold text-blue-600">
                 {{ typeof result.times.total === 'number' ? result.times.total.toFixed(2) : result.times.total }}s
               </div>
             </div>
@@ -344,64 +344,64 @@ const generarPDF = async () => {
       <template #content>
         <div class="space-y-6">
           <!-- Análisis de la Consulta -->
-          <div v-if="result.clasificacion || result.razonamiento_breve || result.es_pregunta" class="bg-white dark:bg-gray-800 p-5 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
+          <div v-if="result.clasificacion || result.razonamiento_breve || result.es_pregunta" class="p-5 rounded-xl shadow-sm border" style="background-color: var(--surface-card); border-color: var(--surface-border);">
             <div class="flex items-center space-x-2 mb-4">
-              <i class="pi pi-search text-violet-600 dark:text-violet-400"></i>
-              <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100">
+              <i class="pi pi-search text-violet-600"></i>
+              <h3 class="text-lg font-semibold" style="color: var(--text-color);">
                 {{ t('Análisis de la Consulta') }}
               </h3>
             </div>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div v-if="result.es_pregunta" class="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
-                <span class="text-sm font-medium text-gray-600 dark:text-gray-400 flex items-center">
+              <div v-if="result.es_pregunta" class="flex items-center justify-between p-3 rounded-lg" style="background-color: var(--surface-hover);">
+                <span class="text-sm font-medium flex items-center" style="color: var(--text-color-secondary);">
                   <i class="pi pi-question-circle mr-2 text-violet-600"></i>{{ t('Es Pregunta') }}
                 </span>
-                <span class="px-3 py-1 bg-violet-100 dark:bg-violet-900/30 text-violet-700 dark:text-violet-300 rounded-lg text-sm font-semibold">
+                <span class="px-3 py-1 bg-violet-100  text-violet-700  rounded-lg text-sm font-semibold">
                   {{ result.es_pregunta }}
                 </span>
               </div>
-              <div v-if="result.clasificacion" class="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
-                <span class="text-sm font-medium text-gray-600 dark:text-gray-400 flex items-center">
+              <div v-if="result.clasificacion" class="flex items-center justify-between p-3 rounded-lg" style="background-color: var(--surface-hover);">
+                <span class="text-sm font-medium flex items-center" style="color: var(--text-color-secondary);">
                   <i class="pi pi-tag mr-2 text-violet-600"></i>{{ t('Clasificación') }}
                 </span>
-                <span class="px-3 py-1 bg-violet-100 dark:bg-violet-900/30 text-violet-700 dark:text-violet-300 rounded-lg text-sm font-semibold capitalize">
+                <span class="px-3 py-1 bg-violet-100  text-violet-700  rounded-lg text-sm font-semibold capitalize">
                   {{ result.clasificacion }}
                 </span>
               </div>
-              <div v-if="result.porcentaje_asignacion !== undefined && result.porcentaje_asignacion !== null" class="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
-                <span class="text-sm font-medium text-gray-600 dark:text-gray-400 flex items-center">
+              <div v-if="result.porcentaje_asignacion !== undefined && result.porcentaje_asignacion !== null" class="flex items-center justify-between p-3 rounded-lg" style="background-color: var(--surface-hover);">
+                <span class="text-sm font-medium flex items-center" style="color: var(--text-color-secondary);">
                   <i class="pi pi-percentage mr-2 text-violet-600"></i>{{ t('Porcentaje de Asignación') }}
                 </span>
-                <span class="px-3 py-1 bg-violet-100 dark:bg-violet-900/30 text-violet-700 dark:text-violet-300 rounded-lg text-sm font-semibold">
+                <span class="px-3 py-1 bg-violet-100  text-violet-700  rounded-lg text-sm font-semibold">
                   {{ result.porcentaje_asignacion }}%
                 </span>
               </div>
-              <div v-if="result.clasificacion_top3 && result.clasificacion_top3.length > 0" class="md:col-span-3 p-4 bg-gradient-to-r from-violet-50 to-purple-50 dark:from-violet-900/20 dark:to-purple-900/20 rounded-lg border-l-4 border-violet-500">
+              <div v-if="result.clasificacion_top3 && result.clasificacion_top3.length > 0" class="md:col-span-3 p-4 bg-gradient-to-r from-violet-50 to-purple-50  rounded-lg border-l-4 border-violet-500">
                 <div class="flex items-start space-x-2 mb-3">
-                  <i class="pi pi-sort-amount-down text-violet-600 dark:text-violet-400 mt-0.5"></i>
-                  <h4 class="text-sm font-semibold text-gray-700 dark:text-gray-300">{{ t('Top 3 Clasificaciones') }}</h4>
+                  <i class="pi pi-sort-amount-down text-violet-600  mt-0.5"></i>
+                  <h4 class="text-sm font-semibold" style="color: var(--text-color);">{{ t('Top 3 Clasificaciones') }}</h4>
                 </div>
                 <div class="space-y-2">
                   <div v-for="(item, index) in result.clasificacion_top3" :key="index" 
-                       class="flex items-center justify-between p-2 bg-white dark:bg-gray-800/50 rounded-lg">
-                    <span class="text-sm text-gray-700 dark:text-gray-300 capitalize flex items-center">
-                      <span class="px-2 py-0.5 bg-violet-100 dark:bg-violet-900/30 text-violet-700 dark:text-violet-300 rounded text-xs font-semibold mr-2">
+                       class="flex items-center justify-between p-2 rounded-lg" style="background-color: var(--surface-card);">
+                    <span class="text-sm capitalize flex items-center" style="color: var(--text-color);">
+                      <span class="px-2 py-0.5 bg-violet-100  text-violet-700  rounded text-xs font-semibold mr-2">
                         {{ index + 1 }}
                       </span>
                       {{ item.categoria }}
                     </span>
-                    <span class="px-3 py-1 bg-violet-100 dark:bg-violet-900/30 text-violet-700 dark:text-violet-300 rounded-lg text-sm font-semibold">
+                    <span class="px-3 py-1 bg-violet-100  text-violet-700  rounded-lg text-sm font-semibold">
                       {{ item.porcentaje }}%
                     </span>
                   </div>
                 </div>
               </div>
-              <div v-if="result.razonamiento_breve" class="md:col-span-3 p-3 bg-gradient-to-r from-violet-50 to-purple-50 dark:from-violet-900/20 dark:to-purple-900/20 rounded-lg border-l-4 border-violet-500">
+              <div v-if="result.razonamiento_breve" class="md:col-span-3 p-3 bg-gradient-to-r from-violet-50 to-purple-50  rounded-lg border-l-4 border-violet-500">
                 <div class="flex items-start space-x-2">
-                  <i class="pi pi-comments text-violet-600 dark:text-violet-400 mt-0.5"></i>
+                  <i class="pi pi-comments text-violet-600  mt-0.5"></i>
                   <div class="flex-1">
-                    <span class="text-sm font-medium text-gray-600 dark:text-gray-400 block mb-1">{{ t('Razonamiento Breve') }}</span>
-                    <p class="text-sm text-gray-700 dark:text-gray-300 italic leading-relaxed">
+                    <span class="text-sm font-medium block mb-1" style="color: var(--text-color-secondary);">{{ t('Razonamiento Breve') }}</span>
+                    <p class="text-sm italic leading-relaxed" style="color: var(--text-color);">
                       {{ result.razonamiento_breve }}
                     </p>
                   </div>
@@ -412,11 +412,11 @@ const generarPDF = async () => {
 
           <!-- Titular y Contenido Principal -->
           <div class="space-y-4">
-            <div v-if="result.query" class="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 p-5 rounded-xl border-l-4 border-blue-500">
+            <div v-if="result.query" class="bg-gradient-to-r from-blue-50 to-indigo-50  p-5 rounded-xl border-l-4 border-blue-500">
               <div class="flex items-start space-x-3">
-                <i class="pi pi-bookmark text-blue-600 dark:text-blue-400 text-xl mt-1"></i>
+                <i class="pi pi-bookmark text-blue-600  text-xl mt-1"></i>
                 <div class="flex-1">
-                  <h3 class="text-xl font-bold text-gray-900 dark:text-gray-100 mb-2">
+                  <h3 class="text-xl font-bold mb-2" style="color: var(--text-color);">
                     {{ result.query }}
                   </h3>
                 </div>
@@ -426,7 +426,7 @@ const generarPDF = async () => {
             <!-- Content / Respuesta -->
             <div v-if="contentHtml || (result.translations && availableLanguages.length > 0)" class="space-y-4">
               <!-- Contenido Principal -->
-              <div v-if="result.content || result.response" class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
+              <div v-if="result.content || result.response" class="p-6 rounded-xl shadow-sm border" style="background-color: var(--surface-card); border-color: var(--surface-border);">
                 <div class="flex items-center space-x-2 mb-4">
                   <template v-if="getLanguageFlag('es').type === 'fi'">
                     <span class="fi fi-es w-5 h-5"></span>
@@ -434,21 +434,21 @@ const generarPDF = async () => {
                   <template v-else>
                     <img :src="getLanguageFlag('es').value" alt="es" class="w-5 h-5 object-contain" />
                   </template>
-                  <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100">
+                  <h3 class="text-lg font-semibold" style="color: var(--text-color);">
                     {{ t('Principal') }} (ES)
                   </h3>
                 </div>
-                <div class="prose prose-lg dark:prose-invert max-w-none markdown-content">
+                <div class="prose prose-lg  max-w-none markdown-content">
                   <div 
                     v-html="formatMarkdown(result.content || result.response)" 
-                    class="text-gray-800 dark:text-gray-200 leading-relaxed"
+                    class="leading-relaxed" style="color: var(--text-color);"
                   ></div>
                 </div>
               </div>
               
               <!-- Traducciones -->
               <div v-for="lang in availableLanguages" :key="lang" 
-                   class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
+                   class="p-6 rounded-xl shadow-sm border" style="background-color: var(--surface-card); border-color: var(--surface-border);">
                 <div class="flex items-center space-x-2 mb-4">
                   <template v-if="getLanguageFlag(lang).type === 'fi'">
                     <span :class="'fi fi-' + getLanguageFlag(lang).value" class="w-5 h-5"></span>
@@ -456,14 +456,14 @@ const generarPDF = async () => {
                   <template v-else>
                     <img :src="getLanguageFlag(lang).value" :alt="lang" class="w-5 h-5 object-contain" />
                   </template>
-                  <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100">
+                  <h3 class="text-lg font-semibold" style="color: var(--text-color);">
                     {{ lang.toUpperCase() }}
                   </h3>
                 </div>
-                <div class="prose prose-lg dark:prose-invert max-w-none markdown-content">
+                <div class="prose prose-lg  max-w-none markdown-content">
                   <div 
                     v-html="formatMarkdown(result.translations?.[lang])" 
-                    class="text-gray-800 dark:text-gray-200 leading-relaxed"
+                    class="leading-relaxed" style="color: var(--text-color);"
                   ></div>
                 </div>
               </div>
@@ -472,9 +472,9 @@ const generarPDF = async () => {
             <!-- Sabías que -->
             <div v-if="result.sabias || (result.translations?.sabias && availableLanguages.length > 0)" class="space-y-4">
               <!-- Sabías que Principal -->
-              <div v-if="result.sabias" class="bg-gradient-to-r from-amber-50 to-yellow-50 dark:from-amber-900/20 dark:to-yellow-900/20 p-5 rounded-xl border-l-4 border-amber-500">
+              <div v-if="result.sabias" class="bg-gradient-to-r from-amber-50 to-yellow-50  p-5 rounded-xl border-l-4 border-amber-500">
                 <div class="flex items-start space-x-3">
-                  <i class="pi pi-lightbulb text-amber-600 dark:text-amber-400 text-xl mt-1"></i>
+                  <i class="pi pi-lightbulb text-amber-600  text-xl mt-1"></i>
                   <div class="flex-1">
                     <div class="flex items-center space-x-2 mb-3">
                       <template v-if="getLanguageFlag('es').type === 'fi'">
@@ -483,16 +483,16 @@ const generarPDF = async () => {
                       <template v-else>
                         <img :src="getLanguageFlag('es').value" alt="es" class="w-5 h-5 object-contain" />
                       </template>
-                      <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100">
+                      <h3 class="text-lg font-semibold" style="color: var(--text-color);">
                         {{ t('Principal') }} (ES)
                       </h3>
                     </div>
-                    <h3 v-if="result.titular" class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2 flex items-center">
+                    <h3 v-if="result.titular" class="text-lg font-semibold  mb-2 flex items-center">
                       <span class="mr-2">{{ result.titular }}</span>
                     </h3>
                     <div 
                       v-html="formatMarkdown(result.sabias)" 
-                      class="prose prose-lg dark:prose-invert max-w-none markdown-content text-gray-700 dark:text-gray-300 italic leading-relaxed"
+                      class="prose prose-lg  max-w-none markdown-content  italic leading-relaxed"
                     ></div>
                   </div>
                 </div>
@@ -501,9 +501,9 @@ const generarPDF = async () => {
               <!-- Traducciones de Sabías que -->
               <template v-for="lang in availableLanguages" :key="lang">
                 <div v-if="result.translations?.sabias?.[lang]"
-                     class="bg-gradient-to-r from-amber-50 to-yellow-50 dark:from-amber-900/20 dark:to-yellow-900/20 p-5 rounded-xl border-l-4 border-amber-500">
+                     class="bg-gradient-to-r from-amber-50 to-yellow-50  p-5 rounded-xl border-l-4 border-amber-500">
                 <div class="flex items-start space-x-3">
-                  <i class="pi pi-lightbulb text-amber-600 dark:text-amber-400 text-xl mt-1"></i>
+                  <i class="pi pi-lightbulb text-amber-600  text-xl mt-1"></i>
                   <div class="flex-1">
                     <div class="flex items-center space-x-2 mb-3">
                       <template v-if="getLanguageFlag(lang).type === 'fi'">
@@ -512,16 +512,16 @@ const generarPDF = async () => {
                       <template v-else>
                         <img :src="getLanguageFlag(lang).value" :alt="lang" class="w-5 h-5 object-contain" />
                       </template>
-                      <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100">
+                      <h3 class="text-lg font-semibold" style="color: var(--text-color);">
                         {{ lang.toUpperCase() }}
                       </h3>
                     </div>
-                    <h3 v-if="result.translations?.titular?.[lang]" class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2 flex items-center">
+                    <h3 v-if="result.translations?.titular?.[lang]" class="text-lg font-semibold  mb-2 flex items-center">
                       <span class="mr-2">{{ result.translations.titular[lang] }}</span>
                     </h3>
                     <div 
                       v-html="formatMarkdown(result.translations.sabias[lang])" 
-                      class="prose prose-lg dark:prose-invert max-w-none markdown-content text-gray-700 dark:text-gray-300 italic leading-relaxed"
+                      class="prose prose-lg  max-w-none markdown-content  italic leading-relaxed"
                     ></div>
                   </div>
                 </div>
@@ -531,136 +531,136 @@ const generarPDF = async () => {
           </div>
 
           <!-- Configuración en 2 columnas -->
-          <div class="bg-white dark:bg-gray-800 p-5 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
+          <div class="p-5 rounded-xl shadow-sm border" style="background-color: var(--surface-card); border-color: var(--surface-border);">
             <div class="flex items-center space-x-2 mb-4">
-              <i class="pi pi-cog text-gray-600 dark:text-gray-400"></i>
-              <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100">
+              <i class="pi pi-cog "></i>
+              <h3 class="text-lg font-semibold" style="color: var(--text-color);">
                 {{ t('Configuración') }}
               </h3>
             </div>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <!-- Columna 1 -->
               <div class="space-y-3">
-                <div v-if="result.agent" class="flex items-center justify-between py-2 border-b border-gray-100 dark:border-gray-700 last:border-0">
-                  <span class="text-sm font-medium text-gray-600 dark:text-gray-400 flex items-center">
+                <div v-if="result.agent" class="flex items-center justify-between py-2 border-b last:border-0" style="border-color: var(--surface-border);"">
+                  <span class="text-sm font-medium flex items-center" style="color: var(--text-color-secondary);">
                     <i class="pi pi-server mr-2"></i>{{ t('Agente') }}
                   </span>
-                  <span class="px-3 py-1 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 rounded-lg text-sm font-semibold">
+                  <span class="px-3 py-1 bg-blue-100 text-blue-700 rounded-lg text-sm font-semibold">
                     {{ result.agent }}
                   </span>
                 </div>
-                <div v-if="result.model" class="flex items-center justify-between py-2 border-b border-gray-100 dark:border-gray-700 last:border-0">
-                  <span class="text-sm font-medium text-gray-600 dark:text-gray-400 flex items-center">
+                <div v-if="result.model" class="flex items-center justify-between py-2 border-b last:border-0" style="border-color: var(--surface-border);"">
+                  <span class="text-sm font-medium flex items-center" style="color: var(--text-color-secondary);">
                     <i class="pi pi-microchip mr-2"></i>{{ t('Modelo') }}
                   </span>
-                  <span class="px-3 py-1 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 rounded-lg text-sm font-semibold">
+                  <span class="px-3 py-1 bg-green-100 text-green-700 rounded-lg text-sm font-semibold">
                     {{ result.model }}
                   </span>
                 </div>
-                <div v-if="result.idioma" class="flex items-center justify-between py-2 border-b border-gray-100 dark:border-gray-700 last:border-0">
-                  <span class="text-sm font-medium text-gray-600 dark:text-gray-400 flex items-center">
+                <div v-if="result.idioma" class="flex items-center justify-between py-2 border-b last:border-0" style="border-color: var(--surface-border);"">
+                  <span class="text-sm font-medium flex items-center" style="color: var(--text-color-secondary);">
                     <i class="pi pi-globe mr-2"></i>{{ t('Idioma') }}
                   </span>
-                  <span class="px-3 py-1 bg-indigo-100 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300 rounded-lg text-sm font-semibold uppercase">
+                  <span class="px-3 py-1 bg-indigo-100 text-indigo-700 rounded-lg text-sm font-semibold uppercase">
                     {{ result.idioma }}
                   </span>
                 </div>
-                <div v-if="result.temperature !== undefined && result.temperature !== null" class="flex items-center justify-between py-2 border-b border-gray-100 dark:border-gray-700 last:border-0">
-                  <span class="text-sm font-medium text-gray-600 dark:text-gray-400 flex items-center">
+                <div v-if="result.temperature !== undefined && result.temperature !== null" class="flex items-center justify-between py-2 border-b last:border-0" style="border-color: var(--surface-border);"">
+                  <span class="text-sm font-medium flex items-center" style="color: var(--text-color-secondary);">
                     <i class="pi pi-sliders-h mr-2"></i>{{ t('Temperature') }}
                   </span>
-                  <span class="px-3 py-1 bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 rounded-lg text-sm font-semibold">
+                  <span class="px-3 py-1 bg-purple-100 text-purple-700 rounded-lg text-sm font-semibold">
                     {{ result.temperature }}
                   </span>
                 </div>
-                <div v-if="result.semantic !== undefined && result.semantic !== null" class="flex items-center justify-between py-2 border-b border-gray-100 dark:border-gray-700 last:border-0">
-                  <span class="text-sm font-medium text-gray-600 dark:text-gray-400 flex items-center">
+                <div v-if="result.semantic !== undefined && result.semantic !== null" class="flex items-center justify-between py-2 border-b last:border-0" style="border-color: var(--surface-border);"">
+                  <span class="text-sm font-medium flex items-center" style="color: var(--text-color-secondary);">
                     <i class="pi pi-search mr-2"></i>{{ t('Semantic') }}
                   </span>
-                  <span class="px-3 py-1" :class="result.semantic ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300' : 'bg-gray-100 dark:bg-gray-700/30 text-gray-700 dark:text-gray-300'">
+                  <span class="px-3 py-1" :class="result.semantic ? 'bg-green-100 text-green-700' : 'bg-gray-100  '">
                     {{ result.semantic ? t('Sí') : t('No') }}
                   </span>
                 </div>
-                <div v-if="result.bm25 !== undefined && result.bm25 !== null" class="flex items-center justify-between py-2 border-b border-gray-100 dark:border-gray-700 last:border-0">
-                  <span class="text-sm font-medium text-gray-600 dark:text-gray-400 flex items-center">
+                <div v-if="result.bm25 !== undefined && result.bm25 !== null" class="flex items-center justify-between py-2 border-b last:border-0" style="border-color: var(--surface-border);"">
+                  <span class="text-sm font-medium flex items-center" style="color: var(--text-color-secondary);">
                     <i class="pi pi-list mr-2"></i>{{ t('BM25') }}
                   </span>
-                  <span class="px-3 py-1" :class="result.bm25 ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300' : 'bg-gray-100 dark:bg-gray-700/30 text-gray-700 dark:text-gray-300'">
+                  <span class="px-3 py-1" :class="result.bm25 ? 'bg-green-100 text-green-700' : 'bg-gray-100  '">
                     {{ result.bm25 ? t('Sí') : t('No') }}
                   </span>
                 </div>
                 <div v-if="result.topN !== undefined && result.topN !== null" class="flex items-center justify-between py-2">
-                  <span class="text-sm font-medium text-gray-600 dark:text-gray-400 flex items-center">
+                  <span class="text-sm font-medium flex items-center" style="color: var(--text-color-secondary);">
                     <i class="pi pi-sort-numeric-up mr-2"></i>{{ t('Top N') }}
                   </span>
-                  <span class="px-3 py-1 bg-cyan-100 dark:bg-cyan-900/30 text-cyan-700 dark:text-cyan-300 rounded-lg text-sm font-semibold">
+                  <span class="px-3 py-1 bg-cyan-100 text-cyan-700 rounded-lg text-sm font-semibold">
                     {{ result.topN }}
                   </span>
                 </div>
               </div>
               <!-- Columna 2 -->
               <div class="space-y-3">
-                <div v-if="result.context !== undefined && result.context !== null" class="flex items-center justify-between py-2 border-b border-gray-100 dark:border-gray-700 last:border-0">
-                  <span class="text-sm font-medium text-gray-600 dark:text-gray-400 flex items-center">
+                <div v-if="result.context !== undefined && result.context !== null" class="flex items-center justify-between py-2 border-b last:border-0" style="border-color: var(--surface-border);"">
+                  <span class="text-sm font-medium flex items-center" style="color: var(--text-color-secondary);">
                     <i class="pi pi-book mr-2"></i>{{ t('Context') }}
                   </span>
-                  <span class="px-3 py-1" :class="result.context ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300' : 'bg-gray-100 dark:bg-gray-700/30 text-gray-700 dark:text-gray-300'">
+                  <span class="px-3 py-1" :class="result.context ? 'bg-green-100 text-green-700' : 'bg-gray-100  '">
                     {{ result.context ? t('Sí') : t('No') }}
                   </span>
                 </div>
-                <div v-if="result.num_queries !== undefined && result.num_queries !== null" class="flex items-center justify-between py-2 border-b border-gray-100 dark:border-gray-700 last:border-0">
-                  <span class="text-sm font-medium text-gray-600 dark:text-gray-400 flex items-center">
+                <div v-if="result.num_queries !== undefined && result.num_queries !== null" class="flex items-center justify-between py-2 border-b last:border-0" style="border-color: var(--surface-border);"">
+                  <span class="text-sm font-medium flex items-center" style="color: var(--text-color-secondary);">
                     <i class="pi pi-question-circle mr-2"></i>{{ t('Número de Consultas') }}
                   </span>
-                  <span class="px-3 py-1 bg-teal-100 dark:bg-teal-900/30 text-teal-700 dark:text-teal-300 rounded-lg text-sm font-semibold">
+                  <span class="px-3 py-1 bg-teal-100 text-teal-700 rounded-lg text-sm font-semibold">
                     {{ result.num_queries }}
                   </span>
                 </div>
-                <div v-if="result.filter !== undefined && result.filter !== null" class="flex items-center justify-between py-2 border-b border-gray-100 dark:border-gray-700 last:border-0">
-                  <span class="text-sm font-medium text-gray-600 dark:text-gray-400 flex items-center">
+                <div v-if="result.filter !== undefined && result.filter !== null" class="flex items-center justify-between py-2 border-b last:border-0" style="border-color: var(--surface-border);"">
+                  <span class="text-sm font-medium flex items-center" style="color: var(--text-color-secondary);">
                     <i class="pi pi-filter mr-2"></i>{{ t('Filtro') }}
                   </span>
-                  <span class="px-3 py-1 bg-pink-100 dark:bg-pink-900/30 text-pink-700 dark:text-pink-300 rounded-lg text-sm font-semibold">
+                  <span class="px-3 py-1 bg-pink-100 text-pink-700 rounded-lg text-sm font-semibold">
                     {{ result.filter || t('Ninguno') }}
                   </span>
                 </div>
-                <div v-if="result.min_count !== undefined && result.min_count !== null" class="flex items-center justify-between py-2 border-b border-gray-100 dark:border-gray-700 last:border-0">
-                  <span class="text-sm font-medium text-gray-600 dark:text-gray-400 flex items-center">
+                <div v-if="result.min_count !== undefined && result.min_count !== null" class="flex items-center justify-between py-2 border-b last:border-0" style="border-color: var(--surface-border);"">
+                  <span class="text-sm font-medium flex items-center" style="color: var(--text-color-secondary);">
                     <i class="pi pi-sort-amount-down mr-2"></i>{{ t('Min Count') }}
                   </span>
-                  <span class="px-3 py-1 bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300 rounded-lg text-sm font-semibold">
+                  <span class="px-3 py-1 bg-amber-100 text-amber-700 rounded-lg text-sm font-semibold">
                     {{ result.min_count }}
                   </span>
                 </div>
-                <div v-if="result.use_docs !== undefined && result.use_docs !== null" class="flex items-center justify-between py-2 border-b border-gray-100 dark:border-gray-700 last:border-0">
-                  <span class="text-sm font-medium text-gray-600 dark:text-gray-400 flex items-center">
+                <div v-if="result.use_docs !== undefined && result.use_docs !== null" class="flex items-center justify-between py-2 border-b last:border-0" style="border-color: var(--surface-border);"">
+                  <span class="text-sm font-medium flex items-center" style="color: var(--text-color-secondary);">
                     <i class="pi pi-file-edit mr-2"></i>{{ t('Use Docs') }}
                   </span>
-                  <span class="px-3 py-1 bg-violet-100 dark:bg-violet-900/30 text-violet-700 dark:text-violet-300 rounded-lg text-sm font-semibold">
+                  <span class="px-3 py-1 bg-violet-100  text-violet-700  rounded-lg text-sm font-semibold">
                     {{ result.use_docs }}
                   </span>
                 </div>
-                <div v-if="result.embedding" class="flex items-center justify-between py-2 border-b border-gray-100 dark:border-gray-700 last:border-0">
-                  <span class="text-sm font-medium text-gray-600 dark:text-gray-400 flex items-center">
+                <div v-if="result.embedding" class="flex items-center justify-between py-2 border-b last:border-0" style="border-color: var(--surface-border);"">
+                  <span class="text-sm font-medium flex items-center" style="color: var(--text-color-secondary);">
                     <i class="pi pi-code mr-2"></i>{{ t('Embedding') }}
                   </span>
-                  <span class="px-3 py-1 bg-indigo-100 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300 rounded-lg text-sm font-semibold text-xs max-w-xs truncate" :title="result.embedding">
+                  <span class="px-3 py-1 bg-indigo-100 text-indigo-700 rounded-lg text-sm font-semibold text-xs max-w-xs truncate" :title="result.embedding">
                     {{ result.embedding }}
                   </span>
                 </div>
-                <div v-if="result.clean_query !== undefined && result.clean_query !== null" class="flex items-center justify-between py-2 border-b border-gray-100 dark:border-gray-700 last:border-0">
-                  <span class="text-sm font-medium text-gray-600 dark:text-gray-400 flex items-center">
+                <div v-if="result.clean_query !== undefined && result.clean_query !== null" class="flex items-center justify-between py-2 border-b last:border-0" style="border-color: var(--surface-border);"">
+                  <span class="text-sm font-medium flex items-center" style="color: var(--text-color-secondary);">
                     <i class="pi pi-filter-slash mr-2"></i>{{ t('Clean Query') }}
                   </span>
-                  <span class="px-3 py-1" :class="result.clean_query ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300' : 'bg-gray-100 dark:bg-gray-700/30 text-gray-700 dark:text-gray-300'">
+                  <span class="px-3 py-1" :class="result.clean_query ? 'bg-green-100 text-green-700' : 'bg-gray-100  '">
                     {{ result.clean_query ? t('Sí') : t('No') }}
                   </span>
                 </div>
                 <div v-if="result.index" class="flex items-center justify-between py-2">
-                  <span class="text-sm font-medium text-gray-600 dark:text-gray-400 flex items-center">
+                  <span class="text-sm font-medium flex items-center" style="color: var(--text-color-secondary);">
                     <i class="pi pi-database mr-2"></i>{{ t('Index') }}
                   </span>
-                  <span class="px-3 py-1 bg-slate-100 dark:bg-slate-900/30 text-slate-700 dark:text-slate-300 rounded-lg text-sm font-semibold">
+                  <span class="px-3 py-1 bg-slate-100 text-slate-700 rounded-lg text-sm font-semibold">
                     {{ result.index }}
                   </span>
                 </div>
@@ -669,19 +669,19 @@ const generarPDF = async () => {
           </div>
 
           <!-- Entidades -->
-          <div v-if="result.entidades && result.entidades.length > 0" class="bg-white dark:bg-gray-800 p-5 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
+          <div v-if="result.entidades && result.entidades.length > 0" class="p-5 rounded-xl shadow-sm border" style="background-color: var(--surface-card); border-color: var(--surface-border);">
             <div class="flex items-center space-x-2 mb-4">
-              <i class="pi pi-tags text-purple-600 dark:text-purple-400"></i>
-              <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100">
+              <i class="pi pi-tags text-purple-600 "></i>
+              <h3 class="text-lg font-semibold" style="color: var(--text-color);">
                 {{ t('Entidades') }}
               </h3>
-              <span class="px-2 py-1 bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 rounded-full text-xs font-medium">
+              <span class="px-2 py-1 bg-purple-100 text-purple-700 rounded-full text-xs font-medium">
                 {{ result.entidades.length }}
               </span>
             </div>
             <div class="flex flex-wrap gap-2">
               <span v-for="(entidad, index) in result.entidades" :key="index" 
-                    class="px-3 py-1.5 bg-gradient-to-r from-purple-100 to-pink-100 dark:from-purple-900/30 dark:to-pink-900/30 text-purple-800 dark:text-purple-200 rounded-lg text-sm font-medium shadow-sm hover:shadow-md transition-shadow">
+                    class="px-3 py-1.5 bg-gradient-to-r from-purple-100 to-pink-100 text-purple-800 rounded-lg text-sm font-medium shadow-sm hover:shadow-md transition-shadow">
                 {{ entidad.nombre }}
                 <span v-if="entidad.tipo" class="ml-1 text-xs opacity-75">({{ entidad.tipo }})</span>
               </span>
@@ -689,66 +689,66 @@ const generarPDF = async () => {
           </div>
 
           <!-- Queries Generadas -->
-          <div v-if="result.queries && result.queries.length > 0" class="bg-white dark:bg-gray-800 p-5 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
+          <div v-if="result.queries && result.queries.length > 0" class="p-5 rounded-xl shadow-sm border" style="background-color: var(--surface-card); border-color: var(--surface-border);">
             <div class="flex items-center space-x-2 mb-4">
-              <i class="pi pi-list text-indigo-600 dark:text-indigo-400"></i>
-              <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100">
+              <i class="pi pi-list text-indigo-600 "></i>
+              <h3 class="text-lg font-semibold" style="color: var(--text-color);">
                 {{ t('Consultas Generadas') }}
               </h3>
-              <span class="px-2 py-1 bg-indigo-100 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300 rounded-full text-xs font-medium">
+              <span class="px-2 py-1 bg-indigo-100 text-indigo-700 rounded-full text-xs font-medium">
                 {{ result.queries.length }}
               </span>
             </div>
             <div class="space-y-2">
               <div v-for="(q, index) in result.queries" :key="index" 
-                   class="p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg border-l-3 border-indigo-500 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+                   class="p-3  rounded-lg border-l-3 border-indigo-500 hover:bg-gray-100 transition-colors">
                 <div class="flex items-center space-x-3">
-                  <span class="flex-shrink-0 w-7 h-7 bg-indigo-600 dark:bg-indigo-500 text-white rounded-full flex items-center justify-center text-sm font-semibold">
+                  <span class="flex-shrink-0 w-7 h-7 bg-indigo-600  text-white rounded-full flex items-center justify-center text-sm font-semibold">
                     {{ index + 1 }}
                   </span>
-                  <p class="text-gray-700 dark:text-gray-300 flex-1">{{ q }}</p>
+                  <p class=" flex-1">{{ q }}</p>
                 </div>
               </div>
             </div>
           </div>
 
           <!-- Sources -->
-          <div v-if="result.sources && result.sources.length > 0" class="bg-white dark:bg-gray-800 p-5 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
+          <div v-if="result.sources && result.sources.length > 0" class="p-5 rounded-xl shadow-sm border" style="background-color: var(--surface-card); border-color: var(--surface-border);">
             <div class="flex items-center space-x-2 mb-4">
-              <i class="pi pi-book text-teal-600 dark:text-teal-400"></i>
-              <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100">
+              <i class="pi pi-book text-teal-600 "></i>
+              <h3 class="text-lg font-semibold" style="color: var(--text-color);">
                 {{ t('Fuentes') }}
               </h3>
-              <span class="px-2 py-1 bg-teal-100 dark:bg-teal-900/30 text-teal-700 dark:text-teal-300 rounded-full text-xs font-medium">
+              <span class="px-2 py-1 bg-teal-100 text-teal-700 rounded-full text-xs font-medium">
                 {{ result.sources.length }}
               </span>
-              <span v-if="result.documents_used" class="px-2 py-1 bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-300 rounded-full text-xs font-medium flex items-center">
+              <span v-if="result.documents_used" class="px-2 py-1 bg-orange-100 text-orange-700 rounded-full text-xs font-medium flex items-center">
                 <i class="pi pi-file mr-1"></i>{{ t('Documentos') }}: {{ result.documents_used }}
               </span>
             </div>
             <div class="space-y-4">
               <div v-for="(source, index) in result.sources" :key="index" 
-                   class="p-4 bg-gray-50 dark:bg-gray-700/50 rounded-lg border-l-4 border-teal-500 hover:shadow-md transition-all">
+                   class="p-4  rounded-lg border-l-4 border-teal-500 hover:shadow-md transition-all">
                 <div v-if="source.title" class="mb-2">
                   <a 
                     v-if="source.collection && (source.friendly || source.title)"
                     :href="getPageLink(source.collection, source.friendly || source.title)" 
                     target="_blank"
-                    class="font-bold text-teal-600 dark:text-teal-400 hover:text-teal-800 dark:hover:text-teal-300 text-lg block mb-1 hover:underline flex items-center"
+                    class="font-bold text-teal-600  hover:text-teal-800  text-lg block mb-1 hover:underline flex items-center"
                   >
                     <i class="pi pi-external-link mr-2 text-sm"></i>
                     {{ source.title }}
                   </a>
-                  <div v-else class="font-bold text-gray-900 dark:text-gray-100 text-lg">
+                  <div v-else class="font-bold  text-lg">
                     {{ source.title }}
                   </div>
                 </div>
                 <div v-if="source.collection" class="mb-2">
-                  <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-teal-100 dark:bg-teal-900/30 text-teal-800 dark:text-teal-200">
+                  <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-teal-100  text-teal-800">
                     <i class="pi pi-folder mr-1"></i>{{ source.collection }}
                   </span>
                 </div>
-                <div v-if="source.content" class="text-sm text-gray-700 dark:text-gray-300 leading-relaxed line-clamp-4">
+                <div v-if="source.content" class="text-sm  leading-relaxed line-clamp-4">
                   {{ source.content }}
                 </div>
               </div>
@@ -756,50 +756,50 @@ const generarPDF = async () => {
           </div>
 
           <!-- Related -->
-          <div v-if="result.related && result.related.length > 0" class="bg-white dark:bg-gray-800 p-5 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
+          <div v-if="result.related && result.related.length > 0" class="p-5 rounded-xl shadow-sm border" style="background-color: var(--surface-card); border-color: var(--surface-border);">
             <div class="flex items-center space-x-2 mb-4">
-              <i class="pi pi-link text-indigo-600 dark:text-indigo-400"></i>
-              <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100">
+              <i class="pi pi-link text-indigo-600 "></i>
+              <h3 class="text-lg font-semibold" style="color: var(--text-color);">
                 {{ t('Relacionados') }}
               </h3>
-              <span class="px-2 py-1 bg-indigo-100 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300 rounded-full text-xs font-medium">
+              <span class="px-2 py-1 bg-indigo-100 text-indigo-700 rounded-full text-xs font-medium">
                 {{ result.related.length }}
               </span>
             </div>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div v-for="(item, index) in result.related" :key="index" 
-                   class="p-4 bg-gray-50 dark:bg-gray-700/50 rounded-lg border-l-4 border-indigo-500 hover:shadow-md transition-all">
+                   class="p-4  rounded-lg border-l-4 border-indigo-500 hover:shadow-md transition-all">
                 <div class="flex items-start gap-3">
                   <div v-if="item.image" class="flex-shrink-0">
-                    <img :src="item.image" :alt="item.title" class="w-20 h-20 object-cover rounded-lg border border-gray-200 dark:border-gray-600" />
+                    <img :src="item.image" :alt="item.title" class="w-20 h-20 object-cover rounded-lg border " />
                   </div>
                   <div class="flex-1 min-w-0">
                     <div v-if="item.title" class="mb-2">
                       <a 
                         :href="getPageLink(item.collection, item.friendly || item.title)" 
                         target="_blank"
-                        class="font-bold text-indigo-600 dark:text-indigo-400 hover:text-indigo-800 dark:hover:text-indigo-300 text-base block mb-1 hover:underline"
+                        class="font-bold text-indigo-600  hover:text-indigo-800  text-base block mb-1 hover:underline"
                       >
                         {{ item.title }}
                       </a>
                     </div>
                     <div v-if="item.collection" class="mb-2">
-                      <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-100 dark:bg-indigo-900/30 text-indigo-800 dark:text-indigo-200">
+                      <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-100  text-indigo-800">
                         <i class="pi pi-folder mr-1"></i>{{ item.collection }}
                       </span>
-                      <span v-if="item.weight" class="ml-2 inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-purple-100 dark:bg-purple-900/30 text-purple-800 dark:text-purple-200">
+                      <span v-if="item.weight" class="ml-2 inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-purple-100  text-purple-800">
                         <i class="pi pi-sort-amount-down mr-1"></i>{{ t('Peso') }}: {{ item.weight }}
                       </span>
                     </div>
-                    <div v-if="item.description" class="text-sm text-gray-700 dark:text-gray-300 leading-relaxed line-clamp-3">
+                    <div v-if="item.description" class="text-sm  leading-relaxed line-clamp-3">
                       {{ item.description }}
                     </div>
                     <div v-if="item.metadata && item.metadata !== '{}'" class="mt-2">
                       <details class="text-xs">
-                        <summary class="cursor-pointer text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300">
+                        <summary class="cursor-pointer  hover:text-gray-700">
                           {{ t('Ver metadata') }}
                         </summary>
-                        <pre class="mt-2 p-2 bg-gray-100 dark:bg-gray-800 rounded text-xs overflow-x-auto">{{ typeof item.metadata === 'string' ? item.metadata : JSON.stringify(item.metadata, null, 2) }}</pre>
+                        <pre class="mt-2 p-2 bg-gray-100 rounded text-xs overflow-x-auto">{{ typeof item.metadata === 'string' ? item.metadata : JSON.stringify(item.metadata, null, 2) }}</pre>
                       </details>
                     </div>
                   </div>
@@ -809,28 +809,28 @@ const generarPDF = async () => {
           </div>
 
           <!-- Documents (docs) -->
-          <div v-if="result.docs && result.docs.length > 0" class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
+          <div v-if="result.docs && result.docs.length > 0" class=" rounded-xl shadow-sm border ">
             <Accordion :multiple="true" :activeIndex="[]">
               <AccordionTab>
                 <template #header>
                   <div class="flex items-center space-x-3 w-full">
-                    <i class="pi pi-file-pdf text-cyan-600 dark:text-cyan-400"></i>
+                    <i class="pi pi-file-pdf text-cyan-600 "></i>
                     <div class="flex-1">
-                      <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100">
+                      <h3 class="text-lg font-semibold" style="color: var(--text-color);">
                         {{ t('Documentos Utilizados') }}
                       </h3>
-                      <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
+                      <p class="text-xs  mt-0.5">
                         {{ result.docs.length }} {{ result.docs.length === 1 ? t('documento') : t('documentos') }}
                       </p>
                     </div>
-                    <span class="px-2 py-1 bg-cyan-100 dark:bg-cyan-900/30 text-cyan-700 dark:text-cyan-300 rounded-full text-xs font-medium">
+                    <span class="px-2 py-1 bg-cyan-100 text-cyan-700 rounded-full text-xs font-medium">
                       {{ result.docs.length }}
                     </span>
                   </div>
                 </template>
                 <div class="space-y-3 pt-2">
                   <div v-for="(doc, index) in result.docs" :key="index" 
-                       class="p-4 bg-gray-50 dark:bg-gray-700/50 rounded-lg border-l-4 border-cyan-500 hover:shadow-md transition-all">
+                       class="p-4  rounded-lg border-l-4 border-cyan-500 hover:shadow-md transition-all">
                     <div class="flex items-start justify-between mb-2">
                       <div class="flex-1">
                         <div v-if="doc.title" class="mb-1">
@@ -838,48 +838,48 @@ const generarPDF = async () => {
                             v-if="doc.collection && (doc.friendly || doc.title)"
                             :href="getPageLink(doc.collection, doc.friendly || doc.title)" 
                             target="_blank"
-                            class="font-bold text-cyan-600 dark:text-cyan-400 hover:text-cyan-800 dark:hover:text-cyan-300 text-base block hover:underline flex items-center"
+                            class="font-bold text-cyan-600  hover:text-cyan-800  text-base block hover:underline flex items-center"
                           >
                             <i class="pi pi-external-link mr-2 text-sm"></i>
                             {{ doc.title }}
                           </a>
-                          <div v-else class="font-bold text-gray-900 dark:text-gray-100 text-base">
+                          <div v-else class="font-bold  text-base">
                             {{ doc.title }}
                           </div>
                         </div>
-                        <div v-if="doc.friendly" class="text-xs text-gray-500 dark:text-gray-400 mb-2 font-mono">
+                        <div v-if="doc.friendly" class="text-xs  mb-2 font-mono">
                           {{ doc.friendly }}
                         </div>
                       </div>
                       <div v-if="doc.id" class="ml-3">
-                        <span class="px-2 py-1 bg-cyan-100 dark:bg-cyan-900/30 text-cyan-700 dark:text-cyan-300 rounded text-xs font-mono">
+                        <span class="px-2 py-1 bg-cyan-100 text-cyan-700 rounded text-xs font-mono">
                           ID: {{ doc.id }}
                         </span>
                       </div>
                     </div>
                     <div class="flex flex-wrap gap-2 mb-3">
-                      <span v-if="doc.collection" class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-cyan-100 dark:bg-cyan-900/30 text-cyan-800 dark:text-cyan-200">
+                      <span v-if="doc.collection" class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-cyan-100 text-cyan-800">
                         <i class="pi pi-folder mr-1"></i>{{ doc.collection }}
                       </span>
-                      <span v-if="doc.count" class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-100 dark:bg-purple-900/30 text-purple-800 dark:text-purple-200">
+                      <span v-if="doc.count" class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-100  text-purple-800">
                         <i class="pi pi-hashtag mr-1"></i>{{ t('Usos') }}: {{ doc.count }}
                       </span>
                       
-                      <!--<span v-if="doc.chunk !== undefined" class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-100 dark:bg-indigo-900/30 text-indigo-800 dark:text-indigo-200">
+                      <!--<span v-if="doc.chunk !== undefined" class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-100  text-indigo-800">
                         <i class="pi pi-th-large mr-1"></i>{{ t('Chunk') }}: {{ doc.chunk }}
                       </span>-->
                     </div>
-                    <div v-if="doc.content" class="text-sm text-gray-700 dark:text-gray-300 leading-relaxed">
+                    <div v-if="doc.content" class="text-sm  leading-relaxed">
                       <div class="max-h-32 overflow-y-auto">
                         {{ doc.content }}
                       </div>
                     </div>
-                    <div v-if="doc.metadata" class="mt-2 pt-2 border-t border-gray-200 dark:border-gray-600">
+                    <div v-if="doc.metadata" class="mt-2 pt-2 border-t ">
                       <details class="text-xs">
-                        <summary class="cursor-pointer text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300">
+                        <summary class="cursor-pointer  hover:text-gray-700">
                           {{ t('Ver metadata') }}
                         </summary>
-                        <pre class="mt-2 p-2 bg-gray-100 dark:bg-gray-800 rounded text-xs overflow-x-auto">{{ JSON.stringify(doc.metadata, null, 2) }}</pre>
+                        <pre class="mt-2 p-2 bg-gray-100 rounded text-xs overflow-x-auto">{{ JSON.stringify(doc.metadata, null, 2) }}</pre>
                       </details>
                     </div>
                   </div>
@@ -891,20 +891,20 @@ const generarPDF = async () => {
           <!-- Métricas de Rendimiento -->
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <!-- Times -->
-            <div v-if="result.times" class="bg-white dark:bg-gray-800 p-5 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
+            <div v-if="result.times" class="p-5 rounded-xl shadow-sm border" style="background-color: var(--surface-card); border-color: var(--surface-border);">
               <div class="flex items-center space-x-2 mb-4">
-                <i class="pi pi-clock text-red-600 dark:text-red-400"></i>
-                <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100">
+                <i class="pi pi-clock text-red-600 "></i>
+                <h3 class="text-lg font-semibold" style="color: var(--text-color);">
                   {{ t('Tiempos de Ejecución') }}
                 </h3>
               </div>
               <div class="space-y-2">
                 <div v-for="(value, key) in result.times" :key="key" 
-                     class="flex items-center justify-between p-2 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
-                  <span class="text-sm font-medium text-gray-600 dark:text-gray-400 capitalize">
+                     class="flex items-center justify-between p-2  rounded-lg">
+                  <span class="text-sm font-medium  capitalize">
                     {{ String(key).replace(/_/g, ' ') }}:
                   </span>
-                  <span class="px-3 py-1 bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300 rounded-lg text-sm font-semibold">
+                  <span class="px-3 py-1 bg-red-100 text-red-700 rounded-lg text-sm font-semibold">
                     {{ typeof value === 'number' ? value.toFixed(4) : value }}s
                   </span>
                 </div>
@@ -912,63 +912,63 @@ const generarPDF = async () => {
             </div>
 
             <!-- Usage -->
-            <div v-if="result.usage" class="bg-white dark:bg-gray-800 p-5 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
+            <div v-if="result.usage" class="p-5 rounded-xl shadow-sm border" style="background-color: var(--surface-card); border-color: var(--surface-border);">
               <div class="flex items-center space-x-2 mb-4">
-                <i class="pi pi-chart-bar text-emerald-600 dark:text-emerald-400"></i>
-                <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100">
+                <i class="pi pi-chart-bar text-emerald-600 "></i>
+                <h3 class="text-lg font-semibold" style="color: var(--text-color);">
                   {{ t('Uso de Tokens') }}
                 </h3>
               </div>
               <div class="space-y-3">
-                <div class="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
-                  <span class="text-sm font-medium text-gray-600 dark:text-gray-400 flex items-center">
+                <div class="flex items-center justify-between p-3  rounded-lg">
+                  <span class="text-sm font-medium flex items-center" style="color: var(--text-color-secondary);">
                     <i class="pi pi-arrow-right mr-2 text-emerald-600"></i>{{ t('Prompt') }}
                   </span>
                   <div class="flex flex-col items-end">
-                    <span class="px-3 py-1 bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300 rounded-lg text-sm font-semibold">
+                    <span class="px-3 py-1 bg-emerald-100 text-emerald-700 rounded-lg text-sm font-semibold">
                       {{ result.usage.prompt_tokens?.toLocaleString() || 0 }}
                     </span>
-                    <span v-if="tokenCost" class="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                    <span v-if="tokenCost" class="text-xs  mt-1">
                       ${{ tokenCost.promptCost.toFixed(6) }}
                     </span>
                   </div>
                 </div>
-                <div class="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
-                  <span class="text-sm font-medium text-gray-600 dark:text-gray-400 flex items-center">
+                <div class="flex items-center justify-between p-3  rounded-lg">
+                  <span class="text-sm font-medium flex items-center" style="color: var(--text-color-secondary);">
                     <i class="pi pi-arrow-left mr-2 text-blue-600"></i>{{ t('Completación') }}
                   </span>
                   <div class="flex flex-col items-end">
-                    <span class="px-3 py-1 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 rounded-lg text-sm font-semibold">
+                    <span class="px-3 py-1 bg-blue-100 text-blue-700 rounded-lg text-sm font-semibold">
                       {{ result.usage.completion_tokens?.toLocaleString() || 0 }}
                     </span>
-                    <span v-if="tokenCost" class="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                    <span v-if="tokenCost" class="text-xs  mt-1">
                       ${{ tokenCost.completionCost.toFixed(6) }}
                     </span>
                   </div>
                 </div>
-                <div class="flex items-center justify-between p-3 bg-gradient-to-r from-emerald-50 to-blue-50 dark:from-emerald-900/20 dark:to-blue-900/20 rounded-lg border-2 border-emerald-200 dark:border-emerald-800">
-                  <span class="text-sm font-bold text-gray-700 dark:text-gray-300 flex items-center">
+                <div class="flex items-center justify-between p-3 bg-gradient-to-r from-emerald-50 to-blue-50  rounded-lg border-2 border-emerald-200">
+                  <span class="text-sm font-bold  flex items-center">
                     <i class="pi pi-calculator mr-2"></i>{{ t('Total') }}
                   </span>
                   <div class="flex flex-col items-end">
                     <span class="px-4 py-1.5 bg-gradient-to-r from-emerald-500 to-blue-500 text-white rounded-lg text-sm font-bold shadow-md">
                       {{ result.usage.total_tokens?.toLocaleString() || 0 }}
                     </span>
-                    <span v-if="tokenCost" class="text-xs text-gray-700 dark:text-white/90 mt-1 font-semibold">
+                    <span v-if="tokenCost" class="text-xs text-gray-700 mt-1 font-semibold">
                       ${{ tokenCost.totalCost.toFixed(6) }}
                     </span>
                   </div>
                 </div>
-                <div v-if="tokenCost && result.model" class="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
-                  <div class="flex items-center justify-between p-3 bg-gradient-to-r from-yellow-50 to-orange-50 dark:from-yellow-900/20 dark:to-orange-900/20 rounded-lg border-l-4 border-yellow-500">
-                    <span class="text-sm font-medium text-gray-700 dark:text-gray-300 flex items-center">
+                <div v-if="tokenCost && result.model" class="mt-4 pt-4 border-t ">
+                  <div class="flex items-center justify-between p-3 bg-gradient-to-r from-yellow-50 to-orange-50  rounded-lg border-l-4 border-yellow-500">
+                    <span class="text-sm font-medium flex items-center" style="color: var(--text-color-secondary);">
                       <i class="pi pi-dollar mr-2 text-yellow-600"></i>{{ t('Coste Total') }}
                     </span>
                     <span class="px-4 py-2 bg-gradient-to-r from-yellow-500 to-orange-500 text-white rounded-lg text-lg font-bold shadow-md">
                       ${{ tokenCost.totalCost.toFixed(6) }}
                     </span>
                   </div>
-                  <div class="mt-2 text-xs text-gray-500 dark:text-gray-400 text-center">
+                  <div class="mt-2 text-xs  text-center">
                     {{ t('Modelo') }}: {{ result.model }} ({{ t('Input') }}: ${{ tokenCost.modelInfo.input }}/1M, {{ t('Output') }}: ${{ tokenCost.modelInfo.output }}/1M)
                   </div>
                 </div>
@@ -977,10 +977,10 @@ const generarPDF = async () => {
           </div>
 
           <!-- Evaluación -->
-          <div v-if="showEvaluation" class="bg-white dark:bg-gray-800 p-5 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 no-print">
+          <div v-if="showEvaluation" class=" p-5 rounded-xl shadow-sm border  no-print">
             <div class="flex items-center space-x-2 mb-4">
-              <i class="pi pi-star text-yellow-600 dark:text-yellow-400"></i>
-              <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100">
+              <i class="pi pi-star text-yellow-600 "></i>
+              <h3 class="text-lg font-semibold" style="color: var(--text-color);">
                 {{ t('Evaluar Respuesta') }}
               </h3>
             </div>
@@ -988,7 +988,7 @@ const generarPDF = async () => {
               <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <!-- Rating Respuesta -->
                 <div class="flex flex-col space-y-2">
-                  <label class="text-sm font-medium text-gray-700 dark:text-gray-300 flex items-center">
+                  <label class="text-sm font-medium  flex items-center">
                     <i class="pi pi-comment mr-2 text-blue-600"></i>{{ t('Calidad de la Respuesta') }}
                   </label>
                   <Rating 
@@ -997,14 +997,14 @@ const generarPDF = async () => {
                     :cancel="false"
                     class="text-2xl"
                   />
-                  <span v-if="ratingRespuesta" class="text-xs text-gray-500 dark:text-gray-400">
+                  <span v-if="ratingRespuesta" class="text-xs ">
                     {{ ratingRespuesta }}/5 {{ t('estrellas') }}
                   </span>
                 </div>
 
                 <!-- Rating Velocidad -->
                 <div class="flex flex-col space-y-2">
-                  <label class="text-sm font-medium text-gray-700 dark:text-gray-300 flex items-center">
+                  <label class="text-sm font-medium  flex items-center">
                     <i class="pi pi-bolt mr-2 text-orange-600"></i>{{ t('Velocidad de Respuesta') }}
                   </label>
                   <Rating 
@@ -1013,7 +1013,7 @@ const generarPDF = async () => {
                     :cancel="false"
                     class="text-2xl"
                   />
-                  <span v-if="ratingVelocidad" class="text-xs text-gray-500 dark:text-gray-400">
+                  <span v-if="ratingVelocidad" class="text-xs ">
                     {{ ratingVelocidad }}/5 {{ t('estrellas') }}
                   </span>
                 </div>
@@ -1021,8 +1021,8 @@ const generarPDF = async () => {
 
               <!-- Comentario -->
               <div class="flex flex-col space-y-2">
-                <label class="text-sm font-medium text-gray-700 dark:text-gray-300 flex items-center">
-                  <i class="pi pi-pencil mr-2 text-green-600"></i>{{ t('Comentario') }} <span class="text-xs text-gray-500 dark:text-gray-400 ml-2">({{ t('Opcional') }})</span>
+                <label class="text-sm font-medium  flex items-center">
+                  <i class="pi pi-pencil mr-2 text-green-600"></i>{{ t('Comentario') }} <span class="text-xs  ml-2">({{ t('Opcional') }})</span>
                 </label>
                 <Textarea 
                   v-model="comentario" 
@@ -1034,7 +1034,7 @@ const generarPDF = async () => {
               </div>
 
               <!-- Botón Evaluar -->
-              <div class="pt-4 border-t border-gray-200 dark:border-gray-700">
+              <div class="pt-4 border-t ">
                 <Button 
                   :label="t('Evaluar')" 
                   icon="pi pi-send"
@@ -1045,17 +1045,17 @@ const generarPDF = async () => {
                   severity="success"
                 />
               </div>
-              <div v-if="evaluationSent" class="pt-4 border-t border-gray-200 dark:border-gray-700">  
+              <div v-if="evaluationSent" class="pt-4 border-t ">  
                 <div class="flex items-center space-x-2">
-                  <i class="pi pi-check-circle text-green-600 dark:text-green-400"></i>
-                  <span class="text-green-600 dark:text-green-400">{{ t('Evaluación enviada correctamente') }}</span>
+                  <i class="pi pi-check-circle text-green-600 "></i>
+                  <span class="text-green-600 ">{{ t('Evaluación enviada correctamente') }}</span>
                 </div>
               </div>
             </div>
           </div>
 
           <!-- Raw Result (for debugging) -->
-          <details v-if="showJson" class="bg-gray-900 dark:bg-gray-950 p-4 rounded-xl font-mono text-xs overflow-x-auto border border-gray-700 no-print">
+          <details v-if="showJson" class="bg-gray-900 p-4 rounded-xl font-mono text-xs overflow-x-auto border  no-print">
             <summary class="cursor-pointer text-green-400 hover:text-green-300 mb-2 flex items-center space-x-2 font-semibold">
               <i class="pi pi-code"></i>
               <span>{{ t('Ver JSON completo (debug)') }}</span>
