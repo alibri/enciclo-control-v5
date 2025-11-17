@@ -1,5 +1,10 @@
 # VERSIONES
 
+## 5.0.16
+
+- Añade la comntarios a las evaluaciones de las consultas RAG
+- Añade la visualización de las evaluaciones de las consultas RAG
+
 ## 5.0.15
 
 - Añade los precios de los modelos de IA en el formulario de configuración RAG

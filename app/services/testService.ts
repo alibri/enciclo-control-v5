@@ -31,4 +31,12 @@ export default class TestService {
     return await this.api.get('exportchat', data);
   }
 
+  async listRAG (data: any) {
+    return await this.api.get('listrag', data);
+  }
+
+  async getRAG (id: number) {
+    return await this.api.get('getrag', { id });
+  }
+
 };

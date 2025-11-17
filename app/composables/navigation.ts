@@ -40,6 +40,7 @@ export function useNavigationMenu () {
           { label: t('Repositorio'), icon: 'pi pi-file-pdf', to: '/repositorio/' },
           { label: t('Test RAG'), icon: 'pi pi-fw pi-code', to: '/utils/testrag' },
           { label: t('Test RAG A/B'), icon: 'pi pi-fw pi-code', to: '/utils/testragab' },
+          { label: t('Listado Test RAG'), icon: 'pi pi-fw pi-list', to: '/utils/listrag' },
           /* { label: t('Entidades'), icon: 'pi pi-id-card', to: '/chat/entidades' } */
         ]
       },

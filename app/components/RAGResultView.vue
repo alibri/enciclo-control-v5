@@ -52,6 +52,7 @@ const agentsModels = computed(() => agentsModelsData.value || { openai: {}, gemi
 // Ratings para evaluación
 const ratingRespuesta = ref<number | undefined>(undefined);
 const ratingVelocidad = ref<number | undefined>(undefined);
+const comentario = ref<string>('');
 const evaluating = ref(false);
 const evaluationSent = ref(false);
 const evaluationId = ref<number | null>(null);
@@ -61,6 +62,7 @@ watch(() => props.result, () => {
   evaluationSent.value = false;
   ratingRespuesta.value = undefined;
   ratingVelocidad.value = undefined;
+  comentario.value = '';
   evaluationId.value = null;
 });
 
@@ -155,13 +157,12 @@ const evaluateRAG = async () => {
 
   try {
     const response = await testService.evaluateRAG({
-      query: props.result.query,
-      config: props.config,
-      result: props.result,
+      id: props.result.test_id,
       rating: {
         respuesta: ratingRespuesta.value,
         velocidad: ratingVelocidad.value
-      }
+      },
+      comentario: comentario.value.trim() || undefined
     });
 
     if (checkLogged(response)) {
@@ -1018,8 +1019,22 @@ const generarPDF = async () => {
                 </div>
               </div>
 
+              <!-- Comentario -->
+              <div class="flex flex-col space-y-2">
+                <label class="text-sm font-medium text-gray-700 dark:text-gray-300 flex items-center">
+                  <i class="pi pi-pencil mr-2 text-green-600"></i>{{ t('Comentario') }} <span class="text-xs text-gray-500 dark:text-gray-400 ml-2">({{ t('Opcional') }})</span>
+                </label>
+                <Textarea 
+                  v-model="comentario" 
+                  class="w-full" 
+                  :rows="3"
+                  :placeholder="t('Añade un comentario sobre la respuesta...')"
+                  :disabled="evaluating"
+                />
+              </div>
+
               <!-- Botón Evaluar -->
-              <div v-if="!evaluationSent" class="pt-4 border-t border-gray-200 dark:border-gray-700">
+              <div class="pt-4 border-t border-gray-200 dark:border-gray-700">
                 <Button 
                   :label="t('Evaluar')" 
                   icon="pi pi-send"
@@ -1029,6 +1044,12 @@ const generarPDF = async () => {
                   class="w-full md:w-auto"
                   severity="success"
                 />
+              </div>
+              <div v-if="evaluationSent" class="pt-4 border-t border-gray-200 dark:border-gray-700">  
+                <div class="flex items-center space-x-2">
+                  <i class="pi pi-check-circle text-green-600 dark:text-green-400"></i>
+                  <span class="text-green-600 dark:text-green-400">{{ t('Evaluación enviada correctamente') }}</span>
+                </div>
               </div>
             </div>
           </div>
