@@ -1,5 +1,15 @@
 # VERSIONES
 
+## 5.0.17
+
+- Añade la visualización de las preguntas sugeridas en el resultado de la consulta RAG
+- Añade la visualización del resumen del turno actual en el resultado de la consulta RAG
+- Añade la visualización de la memoria en el resultado de la consulta RAG
+- Añade la visualización del último turno verbatim en el resultado de la consulta RAG
+- Añade la visualización de la pregunta reescrita autonoma en el resultado de la consulta RAG
+- Añade la visualización del tipo de flujo en el resultado de la consulta RAG
+- Añade la visualización del tono de audiencia en el resultado de la consulta RAG
+
 ## 5.0.16
 
 - Añade la comntarios a las evaluaciones de las consultas RAG

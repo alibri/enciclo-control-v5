@@ -65,7 +65,6 @@ watch(() => props.result, () => {
   comentario.value = '';
   evaluationId.value = null;
 });
-
 // Función para convertir markdown a HTML
 const formatMarkdown = (markdown: string | null | undefined): string => {
   if (!markdown) return '';
@@ -408,8 +407,6 @@ const generarPDF = async () => {
       </div>
     </div>
 
-
-
     <!-- Titular y Contenido Principal -->
     <div class="space-y-4">
       <div v-if="result.query" class="p-5 rounded-xl border-l-4 border-1" style="background-color: var(--highlight-bg); border-color: var(--primary-color);">
@@ -533,7 +530,6 @@ const generarPDF = async () => {
 
 
     </div>
-<!-- -->
 
     <!-- Configuración en 2 columnas -->
     <div class="p-5 rounded-xl shadow-sm border" style="background-color: var(--surface-card); border-color: var(--surface-border);">
@@ -669,6 +665,140 @@ const generarPDF = async () => {
             <span class="px-3 py-1 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 rounded-lg text-sm font-semibold">
               {{ result.index }}
             </span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Campos Adicionales -->
+    <div v-if="result.last_id_query !== undefined || result.tono_audiencia || result.memory || result.ultimo_turno_verbatim || result.pregunta_reescrita_autonoma || result.tipo_flujo || (result.preguntas_sugeridas && result.preguntas_sugeridas.length > 0)" class="p-5 rounded-xl shadow-sm border" style="background-color: var(--surface-card); border-color: var(--surface-border);">
+      <div class="flex items-center space-x-2 mb-4">
+        <i class="pi pi-info-circle text-orange-600 dark:text-orange-400"></i>
+        <h3 class="text-lg font-semibold" style="color: var(--text-color);">
+          {{ t('Información Adicional') }}
+        </h3>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <!-- Columna 1 -->
+        <div class="space-y-3">
+          <div v-if="result.last_id_query !== undefined && result.last_id_query !== null" class="flex items-center justify-between py-2 border-b last:border-0" style="border-color: var(--surface-border);">
+            <span class="text-sm font-medium flex items-center" style="color: var(--text-color-secondary);">
+              <i class="pi pi-hashtag mr-2 text-orange-600 dark:text-orange-400"></i>{{ t('ID Consulta Anterior') }}
+            </span>
+            <span class="px-3 py-1 bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-300 rounded-lg text-sm font-semibold">
+              {{ result.last_id_query }}
+            </span>
+          </div>
+          <div v-if="result.tono_audiencia" class="flex items-center justify-between py-2 border-b last:border-0" style="border-color: var(--surface-border);">
+            <span class="text-sm font-medium flex items-center" style="color: var(--text-color-secondary);">
+              <i class="pi pi-users mr-2 text-orange-600 dark:text-orange-400"></i>{{ t('Tono de Audiencia') }}
+            </span>
+            <span class="px-3 py-1 bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-300 rounded-lg text-sm font-semibold capitalize">
+              {{ result.tono_audiencia }}
+            </span>
+          </div>
+          <div v-if="result.tipo_flujo" class="flex items-center justify-between py-2 border-b last:border-0" style="border-color: var(--surface-border);">
+            <span class="text-sm font-medium flex items-center" style="color: var(--text-color-secondary);">
+              <i class="pi pi-sitemap mr-2 text-orange-600 dark:text-orange-400"></i>{{ t('Tipo de Flujo') }}
+            </span>
+            <span class="px-3 py-1 bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-300 rounded-lg text-sm font-semibold capitalize">
+              {{ result.tipo_flujo }}
+            </span>
+          </div>
+        </div>
+        <!-- Columna 2 -->
+        <div class="space-y-3">
+          <div v-if="result.pregunta_reescrita_autonoma" class="py-2 border-b last:border-0" style="border-color: var(--surface-border);">
+            <span class="text-sm font-medium flex items-center mb-2" style="color: var(--text-color-secondary);">
+              <i class="pi pi-pencil mr-2 text-orange-600 dark:text-orange-400"></i>{{ t('Pregunta Reescrita Autónoma') }}
+            </span>
+            <p class="text-sm leading-relaxed p-3 rounded-lg" style="background-color: var(--surface-hover); color: var(--text-color);">
+              {{ result.pregunta_reescrita_autonoma }}
+            </p>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Memory -->
+      <div v-if="result.memory && result.memory.length > 0" class="mt-4 pt-4 border-t" style="border-color: var(--surface-border);">
+        <div class="flex items-center space-x-2 mb-3">
+          <i class="pi pi-history text-orange-600 dark:text-orange-400"></i>
+          <h4 class="text-md font-semibold" style="color: var(--text-color);">
+            {{ t('Memoria') }}
+          </h4>
+          <span class="px-2 py-1 bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-300 rounded-full text-xs font-medium">
+            {{ result.memory.length }}
+          </span>
+        </div>
+        <div class="space-y-2">
+          <div v-for="(mem, index) in result.memory" :key="index" 
+               class="p-3 rounded-lg border-l-4 border-1 border-orange-500 dark:border-orange-400" style="background-color: var(--surface-hover);">
+            <div class="flex items-start space-x-3">
+              <span class="flex-shrink-0 w-6 h-6 bg-orange-600 dark:bg-orange-500 text-white rounded-full flex items-center justify-center text-xs font-semibold">
+                {{ index + 1 }}
+              </span>
+              <p
+                class="flex-1 text-sm leading-relaxed"
+                :class="!mem || mem.length === 0 ? 'italic' : ''"
+                :style="!mem || mem.length === 0 ? 'color: var(--text-color-secondary);' : 'color: var(--text-color);'"
+              >
+                {{ mem && mem.length > 0 ? mem : t('<sin nada que recordar>') }}
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Último Turno Verbatim -->
+      <div v-if="result.ultimo_turno_verbatim" class="mt-4 pt-4 border-t" style="border-color: var(--surface-border);">
+        <div class="flex items-center space-x-2 mb-3">
+          <i class="pi pi-comments text-orange-600 dark:text-orange-400"></i>
+          <h4 class="text-md font-semibold" style="color: var(--text-color);">
+            {{ t('Último Turno Verbatim') }}
+          </h4>
+        </div>
+        <div class="space-y-3">
+          <div v-if="result.ultimo_turno_verbatim.pregunta" class="p-4 rounded-lg border-l-4 border-1 border-orange-500 dark:border-orange-400" style="background-color: var(--surface-hover);">
+            <div class="flex items-start space-x-2 mb-2">
+              <i class="pi pi-user text-orange-600 dark:text-orange-400 mt-0.5"></i>
+              <span class="text-sm font-semibold" style="color: var(--text-color);">{{ t('Usuario') }}</span>
+            </div>
+            <p class="text-sm leading-relaxed ml-6" style="color: var(--text-color);">
+              {{ result.ultimo_turno_verbatim.pregunta }}
+            </p>
+          </div>
+          <div v-if="result.ultimo_turno_verbatim.respuesta" class="p-4 rounded-lg border-l-4 border-1 border-orange-500 dark:border-orange-400" style="background-color: var(--surface-hover);">
+            <div class="flex items-start space-x-2 mb-2">
+              <i class="pi pi-robot text-orange-600 dark:text-orange-400 mt-0.5"></i>
+              <span class="text-sm font-semibold" style="color: var(--text-color);">{{ t('Asistente') }}</span>
+            </div>
+            <p class="text-sm leading-relaxed ml-6" style="color: var(--text-color);">
+              {{ result.ultimo_turno_verbatim.respuesta }}
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Preguntas Sugeridas -->
+      <div v-if="result.preguntas_sugeridas && result.preguntas_sugeridas.length > 0" class="mt-4 pt-4 border-t" style="border-color: var(--surface-border);">
+        <div class="flex items-center space-x-2 mb-3">
+          <i class="pi pi-question-circle text-orange-600 dark:text-orange-400"></i>
+          <h4 class="text-md font-semibold" style="color: var(--text-color);">
+            {{ t('Preguntas Sugeridas') }}
+          </h4>
+          <span class="px-2 py-1 bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-300 rounded-full text-xs font-medium">
+            {{ result.preguntas_sugeridas.length }}
+          </span>
+        </div>
+        <div class="space-y-2">
+          <div v-for="(pregunta, index) in result.preguntas_sugeridas" :key="index" 
+               class="p-3 rounded-lg border-l-4 border-1 border-orange-500 dark:border-orange-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors" style="background-color: var(--surface-hover);">
+            <div class="flex items-start space-x-3">
+              <span class="flex-shrink-0 w-7 h-7 bg-orange-600 dark:bg-orange-500 text-white rounded-full flex items-center justify-center text-sm font-semibold">
+                {{ index + 1 }}
+              </span>
+              <p class="flex-1 text-sm leading-relaxed" style="color: var(--text-color);">{{ pregunta }}</p>
+            </div>
           </div>
         </div>
       </div>

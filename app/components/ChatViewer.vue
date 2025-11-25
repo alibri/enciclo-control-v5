@@ -57,7 +57,7 @@ const transformedResult = computed(() => {
       entidades = entidades.map((ent: string) => {
         // Intentar parsear si tiene formato "Nombre: X, Tipo: Y"
         const match = ent.match(/Nombre:\s*(.+?)(?:,\s*Tipo:\s*(.+))?/);
-        if (match) {
+        if (match && match[1]) {
           return { nombre: match[1].trim(), tipo: match[2]?.trim() || '' };
         }
         return { nombre: ent, tipo: '' };
@@ -72,6 +72,14 @@ const transformedResult = computed(() => {
     response: response.content || '',
     sabias: response.sabias || '',
     titular: response.titular || '',
+    preguntas_sugeridas: response.preguntas_sugeridas || [],
+    resumen_turno_actual: response.resumen_turno_actual || '',
+    memory: response.memory || '',
+    ultimo_turno_verbatim: response.ultimo_turno_verbatim || '',
+    pregunta_reescrita_autonoma: response.pregunta_reescrita_autonoma || '',
+    tipo_flujo: response.tipo_flujo || '',
+    last_id_query: chat.value?.last_id_query || null,
+    tono_audiencia: response.tono_audiencia || null,
     clasificacion: response.clasificacion,
     razonamiento_breve: response.razonamiento_breve,
     es_pregunta: response.es_pregunta,
