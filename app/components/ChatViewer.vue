@@ -140,6 +140,7 @@ const transformedResult = computed(() => {
     ultimo_turno_verbatim: parsedResponse?.ultimo_turno_verbatim || '',
     pregunta_reescrita_autonoma: toString(parsedResponse?.pregunta_reescrita_autonoma),
     tipo_flujo: toString(parsedResponse?.tipo_flujo),
+    requiere_contexto: parsedResponse?.requiere_contexto,
     last_id_query: chatData?.last_id_query || null,
     tono_audiencia: parsedResponse?.tono_audiencia ? toString(parsedResponse.tono_audiencia) : null,
     clasificacion: parsedResponse?.clasificacion ? toString(parsedResponse.clasificacion) : undefined,

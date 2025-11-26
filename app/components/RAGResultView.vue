@@ -674,7 +674,7 @@ const generarPDF = async () => {
     </div>
 
     <!-- Campos Adicionales -->
-    <div v-if="result.last_id_query !== undefined || result.tono_audiencia || result.memory || result.ultimo_turno_verbatim || result.pregunta_reescrita_autonoma || result.tipo_flujo || (result.preguntas_sugeridas && result.preguntas_sugeridas.length > 0)" class="p-5 rounded-xl shadow-sm border" style="background-color: var(--surface-card); border-color: var(--surface-border);">
+    <div v-if="result.last_id_query !== undefined || result.tono_audiencia || result.memory || result.requiere_contexto || result.ultimo_turno_verbatim || result.pregunta_reescrita_autonoma || result.tipo_flujo || (result.preguntas_sugeridas && result.preguntas_sugeridas.length > 0)" class="p-5 rounded-xl shadow-sm border" style="background-color: var(--surface-card); border-color: var(--surface-border);">
       <div class="flex items-center space-x-2 mb-4">
         <i class="pi pi-info-circle text-orange-600 dark:text-orange-400"></i>
         <h3 class="text-lg font-semibold" style="color: var(--text-color);">
@@ -749,6 +749,21 @@ const generarPDF = async () => {
               </p>
             </div>
           </div>
+        </div>
+      </div>
+
+      <!-- Requiere Contexto -->
+      <div v-if="result.requiere_contexto !== undefined && result.requiere_contexto !== null" class="mt-4 pt-4 border-t" style="border-color: var(--surface-border);">
+        <div class="flex items-center space-x-2 mb-3">
+          <i class="pi pi-info-circle text-orange-600 dark:text-orange-400"></i>
+          <h4 class="text-md font-semibold" style="color: var(--text-color);">
+            {{ t('Requiere Contexto') }}
+          </h4>
+        </div>
+        <div class="flex items-center justify-between p-3 rounded-lg" style="background-color: var(--surface-hover);">
+          <span class="px-3 py-1" :class="result.requiere_contexto ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300' : 'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300'">
+            {{ result.requiere_contexto ? t('Sí') : t('No') }}
+          </span>
         </div>
       </div>
 
