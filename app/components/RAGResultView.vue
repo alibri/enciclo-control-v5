@@ -391,7 +391,7 @@ const generarPDF = async () => {
                 {{ item.categoria }}
               </span>
               <span class="px-3 py-1 rounded-lg text-sm font-semibold" style="background-color: var(--primary-color); color: white;">
-                {{ item.porcentaje }}%
+                {{ item.confianza }}%
               </span>
             </div>
           </div>
