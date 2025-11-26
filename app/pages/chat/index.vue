@@ -56,7 +56,6 @@ const loadData = async () => {
     data.no_respuesta = true;
   }
 
-  console.log('DATA', data);
   const response = await statsService.getChats(data);
   if (checkLogged(response)) {
     // stats.value = response?.data?.value?.list;
@@ -71,7 +70,6 @@ const loadData = async () => {
       return item;
     });
     stats.value = mappedData || [];
-    console.log('STATS', stats.value);
     totalRecords.value = response?.data?.value?.total || 0;
   } else {
     stats.value = [];
@@ -94,7 +92,6 @@ const openChatDrawer = async (id: number) => {
 // Función para cargar los datos del chat
 const loadChatData = async (id: number) => {
   loadingChat.value = true;
-  console.log('LOAD CHAT DATA', id);
   try {
     const response = await chatService.getChat(id);
     if (checkLogged(response)) {

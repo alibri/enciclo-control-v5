@@ -10,8 +10,8 @@ export interface ConfigApiCall {
 export function useApiClient (longTask: boolean = false) {
   // const runtimeConfig = useRuntimeConfig();
   const apiBaseUrl = getApiUrl(longTask);
-  console.log('longTask', longTask);
-  console.log('apiBaseUrl', apiBaseUrl);
+  // console.log('longTask', longTask);
+  // console.log('apiBaseUrl', apiBaseUrl);
 
   const { session_id } = storeToRefs(useAuthStore());
 
@@ -38,17 +38,28 @@ export function useApiClient (longTask: boolean = false) {
 
     // Convertimos los datos a JSON antes de enviarlos
     const dataString = JSON.stringify(data);
-    const response = await useFetch(apiBaseUrl + '/' + method, {
-      method: 'POST',
-      headers: config.headers,
-      body: dataString,
-      key: `${method}-${Date.now()}-${Math.random()}`, // Clave única para cada llamada
-      //server: false, // Solo ejecutar en el cliente
-      //default: () => null, // Valor por defecto
-      //transform: (data: any) => data, // Transformación directa
-      //getCachedData: () => null // No usar datos cacheados
-    });
-    return response as Record<string, any>;
+    try {
+      const responseData = await $fetch(apiBaseUrl + '/' + method, {
+        method: 'POST',
+        headers: config.headers,
+        body: dataString,
+      });
+      // Devolvemos la misma estructura que useFetch
+      return {
+        data: ref(responseData),
+        error: ref(null),
+        pending: ref(false),
+        status: ref('success'),
+      } as Record<string, any>;
+    } catch (error: any) {
+      // En caso de error, devolvemos la estructura similar a useFetch
+      return {
+        data: ref(null),
+        error: ref(error),
+        pending: ref(false),
+        status: ref('error'),
+      } as Record<string, any>;
+    }
   }
 
   return {

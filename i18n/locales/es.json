@@ -549,5 +549,9 @@
     "Anterior": "Anterior",
     "Siguiente": "Siguiente",
     "Detalle del Chat": "Detalle del Chat",
-    "No se pudo cargar el chat": "No se pudo cargar el chat"
+    "No se pudo cargar el chat": "No se pudo cargar el chat",
+    "Doble clic en una ficha para ver detalles": "Doble clic en una ficha para ver detalles",
+    "RAG": "RAG",
+    "Pregúntame (listado)": "Pregúntame (listado)",
+    "Nuevo Usuario": "Nuevo Usuario"
 }
