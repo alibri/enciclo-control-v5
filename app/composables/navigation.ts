@@ -37,6 +37,7 @@ export function useNavigationMenu () {
         label: t('Authoritas'),
         items: [
           { label: t('Pregúntame'), icon: 'pi pi-comment', to: '/chat/' },
+          { label: t('Pregúntame (listado)'), icon: 'pi pi-comment', to: '/chat/list' },
           { label: t('Repositorio'), icon: 'pi pi-file-pdf', to: '/repositorio/' },
           { label: t('Test RAG'), icon: 'pi pi-fw pi-code', to: '/utils/testrag' },
           { label: t('Test RAG A/B'), icon: 'pi pi-fw pi-code', to: '/utils/testragab' },

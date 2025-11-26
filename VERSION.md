@@ -9,7 +9,9 @@
 - Añade la visualización de la pregunta reescrita autonoma en el resultado de la consulta RAG
 - Añade la visualización del tipo de flujo en el resultado de la consulta RAG
 - Añade la visualización del tono de audiencia en el resultado de la consulta RAG
-
+- Se añade el exportador de chats
+- Visualización de los chats como Cards
+  
 ## 5.0.16
 
 - Añade la comntarios a las evaluaciones de las consultas RAG

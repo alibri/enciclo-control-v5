@@ -382,12 +382,12 @@ const generarPDF = async () => {
             <div v-for="(item, index) in result.clasificacion_top3" :key="index" 
                  class="flex items-center justify-between p-2 rounded-lg" style="background-color: var(--surface-card);">
               <span class="text-sm capitalize flex items-center" style="color: var(--text-color);">
-                <span class="px-2 py-0.5 rounded text-xs font-semibold mr-2" style="background-color: var(--primary-color); color: var(--primary-color-text);">
+                <span class="px-2 py-0.5 rounded text-xs font-semibold mr-2" style="background-color: var(--primary-color); color: white;">
                   {{ index + 1 }}
                 </span>
                 {{ item.categoria }}
               </span>
-              <span class="px-3 py-1 rounded-lg text-sm font-semibold" style="background-color: var(--primary-color); color: var(--primary-color-text);">
+              <span class="px-3 py-1 rounded-lg text-sm font-semibold" style="background-color: var(--primary-color); color: white;">
                 {{ item.porcentaje }}%
               </span>
             </div>
@@ -742,7 +742,7 @@ const generarPDF = async () => {
                 :class="!mem || mem.length === 0 ? 'italic' : ''"
                 :style="!mem || mem.length === 0 ? 'color: var(--text-color-secondary);' : 'color: var(--text-color);'"
               >
-                {{ mem && mem.length > 0 ? mem : t('<sin nada que recordar>') }}
+                {{ mem && mem.length > 0 ? mem : t('sin nada que recordar') }}
               </p>
             </div>
           </div>
@@ -862,7 +862,7 @@ const generarPDF = async () => {
           <i class="pi pi-file mr-1"></i>{{ t('Documentos') }}: {{ result.documents_used }}
         </span>
       </div>
-      <div class="space-y-4">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div v-for="(source, index) in result.sources" :key="index" 
              class="p-4 rounded-lg border-l-4 border-1 border-teal-500 dark:border-teal-400 hover:shadow-md transition-all">
           <div v-if="source.title" class="mb-2">
@@ -964,7 +964,7 @@ const generarPDF = async () => {
               </span>
             </div>
           </template>
-          <div class="space-y-3 pt-2">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
             <div v-for="(doc, index) in result.docs" :key="index" 
                  class="p-4 rounded-lg border-l-4 border-1 border-cyan-500 dark:border-cyan-400 hover:shadow-md transition-all">
               <div class="flex items-start justify-between mb-2">

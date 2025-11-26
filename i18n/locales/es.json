@@ -533,5 +533,15 @@
     "Cargando": "Cargando",
     "Obteniendo listado de testRAG...": "Obteniendo listado de testRAG...",
     "Obteniendo detalles del testRAG...": "Obteniendo detalles del testRAG...",
-    "Ver": "Ver"
+    "Ver": "Ver",
+    "Último Turno Verbatim": "Último Turno Verbatim",
+    "Asistente": "Asistente",
+    "Preguntas Sugeridas": "Preguntas Sugeridas",
+    "Información Adicional": "Información Adicional",
+    "ID Consulta Anterior": "ID Consulta Anterior",
+    "Tono de Audiencia": "Tono de Audiencia",
+    "Tipo de Flujo": "Tipo de Flujo",
+    "Pregunta Reescrita Autónoma": "Pregunta Reescrita Autónoma",
+    "Memoria": "Memoria",
+    "sin nada que recordar": "sin nada que recordar"
 }
