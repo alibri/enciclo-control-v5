@@ -12,6 +12,7 @@
 - Se añade el exportador de chats
 - Visualización de los chats como Cards
 - Se añade el tono de audiencia en el formulario de configuración RAG para test RAG y test A/B
+- Cambio de useFetch a $fetch en la llamada a la API
   
 ## 5.0.16
 
