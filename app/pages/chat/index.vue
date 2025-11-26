@@ -2,12 +2,16 @@
 // import { FilterMatchMode, FilterOperator } from 'primevue/api';
 import ChatLink from '@/components/ChatLink.vue';
 import StatsService from '@/services/statsService';
-import { showChat } from '@/utils/page';
+import ChatService from '@/services/chatService';
+import ChatViewer from '@/components/ChatViewer.vue';
+import { getChatLanguages } from '@/utils/page';
 
 import IconField from 'primevue/iconfield';
 import InputIcon from 'primevue/inputicon';
 import DataView from 'primevue/dataview';
 import Card from 'primevue/card';
+import Drawer from 'primevue/drawer';
+import ProgressSpinner from 'primevue/progressspinner';
 
 const { filters } = usePrimeDataTable();
 const { t } = useI18n();
@@ -29,7 +33,15 @@ const totalRecords = ref(0);
 const searchTerm = ref('');
 const no_respuesta = ref(false);
 const first = ref(0);
-const rows = ref(25);
+const rows = ref(24);
+
+// Estado del Drawer
+const drawerVisible = ref(false);
+const currentChatId = ref<number | null>(null);
+const currentChatIndex = ref(-1);
+const currentChat = ref<any>(null);
+const loadingChat = ref(false);
+const chatService = new ChatService();
 
 const loadData = async () => {
   loading.value = true;
@@ -68,7 +80,92 @@ const loadData = async () => {
   loading.value = false;
 };
 
-const dialog = useDialog();
+// Función para abrir el Drawer con un chat específico
+const openChatDrawer = async (id: number) => {
+  // Encontrar el índice del chat en el array actual
+  const index = stats.value?.findIndex((item: any) => item.id === id) ?? -1;
+  currentChatIndex.value = index;
+  currentChatId.value = id;
+  
+  await loadChatData(id);
+  drawerVisible.value = true;
+};
+
+// Función para cargar los datos del chat
+const loadChatData = async (id: number) => {
+  loadingChat.value = true;
+  console.log('LOAD CHAT DATA', id);
+  try {
+    const response = await chatService.getChat(id);
+    if (checkLogged(response)) {
+      const chatData = response?.data?.value?.chat ?? {};
+      
+      // Asegurarse de que response esté parseado si es necesario
+      if (chatData.response && typeof chatData.response === 'string') {
+        try {
+          chatData.response = JSON.parse(chatData.response);
+          chatData.response.langs = getChatLanguages(chatData.response);
+        } catch (e) {
+          console.error('Error parsing response:', e);
+          chatData.response = {};
+        }
+      } else if (chatData.response && typeof chatData.response === 'object') {
+        // Si ya es un objeto, asegurarse de que tenga langs
+        if (!chatData.response.langs) {
+          chatData.response.langs = getChatLanguages(chatData.response);
+        }
+      }
+      
+      currentChat.value = chatData;
+    } else {
+      const { showMessage } = useMessages();
+      showMessage('error', t('Error'), t('No tienes permisos para ver este chat'));
+      drawerVisible.value = false;
+    }
+  } catch (error) {
+    console.error('Error loading chat:', error);
+    const { showMessage } = useMessages();
+    showMessage('error', t('Error'), t('Error al cargar el chat'));
+    drawerVisible.value = false;
+  } finally {
+    loadingChat.value = false;
+  }
+};
+
+// Función para navegar al chat anterior
+const goToPrevious = async () => {
+  if (currentChatIndex.value > 0 && stats.value) {
+    const previousIndex = currentChatIndex.value - 1;
+    const previousChat = stats.value[previousIndex];
+    if (previousChat?.id) {
+      currentChatIndex.value = previousIndex;
+      await loadChatData(previousChat.id);
+    }
+  }
+};
+
+// Función para navegar al siguiente chat
+const goToNext = async () => {
+  if (stats.value && currentChatIndex.value >= 0 && currentChatIndex.value < stats.value.length - 1) {
+    const nextIndex = currentChatIndex.value + 1;
+    const nextChat = stats.value[nextIndex];
+    if (nextChat?.id) {
+      currentChatIndex.value = nextIndex;
+      await loadChatData(nextChat.id);
+    }
+  }
+};
+
+// Computed para verificar si hay anterior/siguiente
+const hasPrevious = computed(() => {
+  return currentChatIndex.value > 0 && stats.value && stats.value.length > 0;
+});
+
+const hasNext = computed(() => {
+  return stats.value && 
+         currentChatIndex.value >= 0 && 
+         currentChatIndex.value < stats.value.length - 1;
+});
 
 const exportFunction = async (data: any) => {
   if (no_respuesta.value) {
@@ -102,7 +199,7 @@ const onFilter = (event: any) => {
 };
 
 const onRowDoubleClick = (event: any) => {
-  showChat(dialog, event.data.id);
+  openChatDrawer(event.data.id);
 };
 
 onMounted(() => {
@@ -192,7 +289,7 @@ onMounted(() => {
                   backgroundColor: 'var(--surface-card)',
                   borderColor: 'var(--surface-border)'
                 }"
-                @dblclick="showChat(dialog, item.id)">
+                @dblclick="openChatDrawer(item.id)">
                 <template #content>
                   <div class="flex flex-col gap-3">
                     <!-- Header con ID y acciones -->
@@ -203,7 +300,7 @@ onMounted(() => {
                           icon="pi pi-eye" 
                           class="p-button-text p-button-sm"
                           v-tooltip.top="t('Ver detalle')"
-                          @click.stop="showChat(dialog, item.id)" />
+                          @click.stop="openChatDrawer(item.id)" />
                       </div>
                       <div class="flex items-center gap-2">
                         <span v-html="formatLike(item.like)" class="text-lg" />
@@ -213,7 +310,7 @@ onMounted(() => {
 
                     <!-- Pregunta - DESTACADA -->
                     <div class="flex flex-col gap-2 -mx-2 px-4 py-4 rounded-lg cursor-pointer transition-all hover:shadow-lg question-highlight"
-                      @click.stop="showChat(dialog, item.id)">
+                      @click.stop="openChatDrawer(item.id)">
                       <div class="flex items-center gap-2 mb-1">
                         <i class="pi pi-question-circle text-base" style="color: var(--primary-color);"></i>
                         <span class="text-xs font-bold uppercase tracking-wide" style="color: var(--primary-color);">{{ t('Pregunta') }}</span>
@@ -332,6 +429,44 @@ onMounted(() => {
         </DataView>
       </div>
     </div>
+
+    <!-- Drawer para mostrar el chat -->
+    <Drawer 
+      v-model:visible="drawerVisible" 
+      position="right"
+      :style="{ width: '75vw' }"
+      :breakpoints="{ '960px': '75vw', '640px': '90vw' }">
+      <template #header>
+        <div class="flex items-center justify-between w-full pr-4">
+          <span class="font-semibold text-lg">{{ currentChat?.query || t('Detalle del Chat') }}</span>
+          <div class="flex items-center gap-2">
+            <Button 
+              icon="pi pi-chevron-left" 
+              :label="t('Anterior')"
+              class="p-button-outlined p-button-sm"
+              :disabled="!hasPrevious"
+              @click="goToPrevious" />
+            <Button 
+              icon="pi pi-chevron-right" 
+              :label="t('Siguiente')"
+              iconPos="right"
+              class="p-button-outlined p-button-sm"
+              :disabled="!hasNext"
+              @click="goToNext" />
+          </div>
+        </div>
+      </template>
+      
+      <div v-if="loadingChat" class="flex justify-center items-center p-8">
+        <ProgressSpinner />
+      </div>
+      <template v-else>
+        <ChatViewer v-if="currentChat && currentChat.id" :key="currentChat.id" :chat="currentChat" />
+        <div v-else class="flex justify-center items-center p-8">
+          <p style="color: var(--text-color-secondary);">{{ t('No se pudo cargar el chat') }}</p>
+        </div>
+      </template>
+    </Drawer>
   </div>
 </template>
 

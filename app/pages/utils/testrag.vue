@@ -50,7 +50,8 @@ const config = ref({
   min_count: -1,
   collection: defaultCollection,
   temperature: 1.0,
-  classification: 'auto'
+  classification: 'auto',
+  tono_audiencia: 'UNIVERSIDAD/PROFESIONAL'
 });
 
 const testRAG = async () => {
@@ -79,7 +80,8 @@ const testRAG = async () => {
         min_count: config.value.min_count,
         db: config.value.collection,
         temperature: config.value.temperature,
-        classification: config.value.classification
+        classification: config.value.classification,
+        tono_audiencia: config.value.tono_audiencia
       }
     });
     
@@ -136,7 +138,7 @@ const testRAG = async () => {
     </div>
 
     <!-- Results Section -->
-    <RAGResultView v-if="result" :result="result" :config="config" />
+    <RAGResultView v-if="result" :result="result" :config="config" :show-json="false"/>
 
     <!-- Empty State -->
     <div v-else-if="!blocked" class="mt-6">

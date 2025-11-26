@@ -11,6 +11,7 @@
 - Añade la visualización del tono de audiencia en el resultado de la consulta RAG
 - Se añade el exportador de chats
 - Visualización de los chats como Cards
+- Se añade el tono de audiencia en el formulario de configuración RAG para test RAG y test A/B
   
 ## 5.0.16
 

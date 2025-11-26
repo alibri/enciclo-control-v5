@@ -66,9 +66,12 @@ watch(() => props.result, () => {
   evaluationId.value = null;
 });
 // Función para convertir markdown a HTML
-const formatMarkdown = (markdown: string | null | undefined): string => {
+const formatMarkdown = (markdown: string | null | undefined | any): string => {
   if (!markdown) return '';
-  return formatStringPre(markdown);
+  // Asegurarse de que sea un string
+  const markdownString = typeof markdown === 'string' ? markdown : String(markdown);
+  if (!markdownString || markdownString === 'null' || markdownString === 'undefined') return '';
+  return formatStringPre(markdownString);
 };
 
 // Obtener idiomas disponibles de las traducciones
@@ -1062,7 +1065,7 @@ const generarPDF = async () => {
             </span>
             <div class="flex flex-col items-end">
               <span class="px-3 py-1 bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300 rounded-lg text-sm font-semibold">
-                {{ result.usage.prompt_tokens?.toLocaleString() || 0 }}
+                {{ formatIntNumber(result.usage.prompt_tokens ?? 0) }}
               </span>
               <span v-if="tokenCost" class="text-xs mt-1" style="color: var(--text-color-secondary);">
                 ${{ tokenCost.promptCost.toFixed(6) }}
@@ -1075,7 +1078,7 @@ const generarPDF = async () => {
             </span>
             <div class="flex flex-col items-end">
               <span class="px-3 py-1 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 rounded-lg text-sm font-semibold">
-                {{ result.usage.completion_tokens?.toLocaleString() || 0 }}
+                {{ formatIntNumber(result.usage.completion_tokens ?? 0) }}
               </span>
               <span v-if="tokenCost" class="text-xs mt-1" style="color: var(--text-color-secondary);">
                 ${{ tokenCost.completionCost.toFixed(6) }}
@@ -1087,8 +1090,8 @@ const generarPDF = async () => {
               <i class="pi pi-calculator mr-2" style="color: var(--primary-color);"></i>{{ t('Total') }}
             </span>
             <div class="flex flex-col items-end">
-              <span class="px-4 py-1.5 rounded-lg text-sm font-bold shadow-md" style="background-color: var(--primary-color); color: var(--primary-color-text);">
-                {{ result.usage.total_tokens?.toLocaleString() || 0 }}
+              <span class="px-4 py-1.5 rounded-lg text-sm font-bold shadow-md text-white" style="background-color: var(--primary-color);">
+                {{ formatIntNumber(result.usage.total_tokens ?? 0) }}
               </span>
               <span v-if="tokenCost" class="text-xs mt-1 font-semibold" style="color: var(--text-color-secondary);">
                 ${{ tokenCost.totalCost.toFixed(6) }}
@@ -1100,7 +1103,7 @@ const generarPDF = async () => {
               <span class="text-sm font-medium flex items-center" style="color: var(--text-color-secondary);">
                 <i class="pi pi-dollar mr-2" style="color: var(--primary-color);"></i>{{ t('Coste Total') }}
               </span>
-              <span class="px-4 py-2 rounded-lg text-lg font-bold shadow-md" style="background-color: var(--primary-color); color: var(--secondary-color-text);">
+              <span class="px-4 py-2 rounded-lg text-lg font-bold shadow-md" style="background-color: var(--primary-color); color: white;">
                 ${{ tokenCost.totalCost.toFixed(6) }}
               </span>
             </div>

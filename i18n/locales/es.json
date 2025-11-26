@@ -540,8 +540,14 @@
     "Información Adicional": "Información Adicional",
     "ID Consulta Anterior": "ID Consulta Anterior",
     "Tono de Audiencia": "Tono de Audiencia",
+    "Seleccione el tono de audiencia": "Seleccione el tono de audiencia",
+    "Escribe tu comentario aquí (opcional)": "Escribe tu comentario aquí (opcional)",
     "Tipo de Flujo": "Tipo de Flujo",
     "Pregunta Reescrita Autónoma": "Pregunta Reescrita Autónoma",
     "Memoria": "Memoria",
-    "sin nada que recordar": "sin nada que recordar"
+    "sin nada que recordar": "sin nada que recordar",
+    "Anterior": "Anterior",
+    "Siguiente": "Siguiente",
+    "Detalle del Chat": "Detalle del Chat",
+    "No se pudo cargar el chat": "No se pudo cargar el chat"
 }

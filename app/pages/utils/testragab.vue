@@ -54,7 +54,8 @@ const configA = ref({
   min_count: -1,
   collection: defaultCollection,
   temperature: 1.0,
-  classification: 'auto'
+  classification: 'auto',
+  tono_audiencia: 'UNIVERSIDAD/PROFESIONAL'
 });
 
 // Parámetros de configuración B con valores por defecto
@@ -71,7 +72,8 @@ const configB = ref({
   min_count: -1,
   collection: defaultCollection,
   temperature: 1.0,
-  classification: 'auto'
+  classification: 'auto',
+  tono_audiencia: 'UNIVERSIDAD/PROFESIONAL'
 });
 
 const testRAGAB = async () => {
@@ -97,7 +99,8 @@ const testRAGAB = async () => {
     configAValues.min_count === configBValues.min_count &&
     configAValues.temperature === configBValues.temperature &&
     configAValues.collection === configBValues.collection &&
-    configAValues.classification === configBValues.classification;
+    configAValues.classification === configBValues.classification &&
+    configAValues.tono_audiencia === configBValues.tono_audiencia;
 
   if (areConfigsEqual) {
     showMessage('error', t('Error'), t('Las configuraciones A y B deben ser diferentes para realizar una comparación'), 5000);
@@ -128,7 +131,8 @@ const testRAGAB = async () => {
           min_count: configA.value.min_count,
           db: configA.value.collection,
           temperature: configA.value.temperature,
-          classification: configA.value.classification
+          classification: configA.value.classification,
+          tono_audiencia: configA.value.tono_audiencia
         }
       }),
       testService.testRAG({
@@ -146,7 +150,8 @@ const testRAGAB = async () => {
           min_count: configB.value.min_count,
           db: configB.value.collection,
           temperature: configB.value.temperature,
-          classification: configB.value.classification
+          classification: configB.value.classification,
+          tono_audiencia: configB.value.tono_audiencia
         }
       })
     ]);
@@ -280,7 +285,7 @@ const canEvaluateAB = computed(() => {
     <div v-if="resultA || resultB" class="grid grid-cols-1 xl:grid-cols-2 gap-6">
       <!-- Result A -->
       <div v-if="resultA && !resultA.error">
-        <RAGResultView :result="resultA" :config="configA" @evaluated="handleEvaluationA" />
+        <RAGResultView :result="resultA" :config="configA" :show-json="false" @evaluated="handleEvaluationA" />
       </div>
       <Card v-else-if="resultA?.error">
         <template #title>
@@ -298,7 +303,7 @@ const canEvaluateAB = computed(() => {
 
       <!-- Result B -->
       <div v-if="resultB && !resultB.error">
-        <RAGResultView :result="resultB" :config="configB" @evaluated="handleEvaluationB" />
+        <RAGResultView :result="resultB" :config="configB" :show-json="false" @evaluated="handleEvaluationB" />
       </div>
       <Card v-else-if="resultB?.error">
         <template #title>

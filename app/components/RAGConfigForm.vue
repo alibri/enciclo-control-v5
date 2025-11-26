@@ -25,6 +25,7 @@ interface RAGConfig {
   use_docs: number;
   min_count: number;
   temperature: number;
+  tono_audiencia: string;
 }
 
 interface Props {
@@ -112,6 +113,17 @@ const classificationOptions = [
   { label: 'declaración/tema general', value: 'declaración/tema general' }
 ];
 
+// Opciones para el tono de audiencia
+const tonoAudienciaOptions = [
+  { label: 'INFANTIL', value: 'INFANTIL' },
+  { label: 'PRIMARIA', value: 'PRIMARIA' },
+  { label: 'SECUNDARIA', value: 'SECUNDARIA' },
+  { label: 'BACHILLERATO', value: 'BACHILLERATO' },
+  { label: 'UNIVERSIDAD/PROFESIONAL', value: 'UNIVERSIDAD/PROFESIONAL' },
+  { label: 'REFUERZO/INCLUSIVA', value: 'REFUERZO/INCLUSIVA' },
+  { label: 'TÉCNICO_APLICADO', value: 'TÉCNICO_APLICADO' }
+];
+
 
 
 // Computed para el valor local que emite actualizaciones
@@ -141,6 +153,13 @@ watch(() => localConfig.value.agent, (newAgent) => {
 watch(() => localConfig.value.collection, (newCollection) => {
   if (!newCollection || newCollection === '') {
     localConfig.value = { ...localConfig.value, collection: defaultCollection };
+  }
+}, { immediate: true });
+
+// Watcher para establecer el valor por defecto del tono de audiencia
+watch(() => localConfig.value.tono_audiencia, (newTonoAudiencia) => {
+  if (!newTonoAudiencia || newTonoAudiencia === '') {
+    localConfig.value = { ...localConfig.value, tono_audiencia: 'UNIVERSIDAD/PROFESIONAL' };
   }
 }, { immediate: true });
 
@@ -281,6 +300,26 @@ const getModelOption = (value: string) => {
             {{ t('Clasificación') }}
           </label>
 
+        </IftaLabel>
+        </div>
+
+        <!-- Tono de Audiencia -->
+        <div class="space-y-2">
+          <IftaLabel>
+          <Select 
+            :id="getId('tono_audiencia')" 
+            v-model="localConfig.tono_audiencia" 
+            :options="tonoAudienciaOptions"
+            optionLabel="label"
+            optionValue="value"
+            class="w-full"
+            :disabled="disabled"
+            :placeholder="t('Seleccione el tono de audiencia')"
+          />
+          <label :for="getId('tono_audiencia')" class="block text-sm font-medium" style="color: var(--text-color);">
+            <i class="pi pi-users text-gray-400 mr-2"></i>
+            {{ t('Tono de Audiencia') }}
+          </label>
         </IftaLabel>
         </div>
 
