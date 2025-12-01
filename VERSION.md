@@ -1,5 +1,9 @@
 # VERSIONES
 
+## 5.0.18
+
+- Añade la visualización de las notas preventivas en el resultado de la consulta RAG
+
 ## 5.0.17
 
 - Añade la visualización de las preguntas sugeridas en el resultado de la consulta RAG
