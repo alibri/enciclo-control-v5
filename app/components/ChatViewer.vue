@@ -146,6 +146,7 @@ const transformedResult = computed(() => {
     clasificacion: parsedResponse?.clasificacion ? toString(parsedResponse.clasificacion) : undefined,
     razonamiento_breve: parsedResponse?.razonamiento_breve ? toString(parsedResponse.razonamiento_breve) : undefined,
     es_pregunta: parsedResponse?.es_pregunta,
+    notas_preventivas: parsedResponse?.notas_preventivas,
     porcentaje_asignacion: parsedResponse?.porcentaje_asignacion,
     clasificacion_top3: parsedResponse?.clasificacion_top3,
     agent: parsedResponse?.agent ? toString(parsedResponse.agent) : undefined,

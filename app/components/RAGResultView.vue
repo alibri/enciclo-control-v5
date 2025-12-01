@@ -470,6 +470,34 @@ const generarPDF = async () => {
         </div>
       </div>
 
+      <!-- Notas Preventivas -->
+      <div v-if="result.notas_preventivas && result.notas_preventivas.length > 0" class="space-y-4">
+        <div class="p-5 rounded-xl border-l-4 border-1" style="background-color: var(--highlight-bg); border-color: var(--primary-color);">
+          <div class="flex items-start space-x-3">
+            <i class="pi pi-exclamation-triangle text-xl mt-1" style="color: var(--primary-color);"></i>
+            <div class="flex-1">
+              <h3 class="text-lg font-semibold mb-3" style="color: var(--text-color);">
+                {{ t('Notas Preventivas') }}
+              </h3>
+              <div class="space-y-3">
+                <div 
+                  v-for="(nota, index) in result.notas_preventivas" 
+                  :key="index"
+                  class="prose prose-lg max-w-none markdown-content"
+                  style="color: var(--text-color);"
+                >
+                  <div 
+                    v-html="formatMarkdown(nota)" 
+                    class="leading-relaxed italic"
+                    style="color: var(--text-color);"
+                  ></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <!-- Sabías que -->
       <div v-if="result.sabias || (result.translations?.sabias && availableLanguages.length > 0)" class="space-y-4">
         <!-- Sabías que Principal -->
