@@ -157,7 +157,7 @@ export const formatStatusRepositoryIcon = (type: string) => {
     deleted: 'pi pi-trash',
     error: 'pi pi-exclamation-triangle',
       uploaded: 'pi pi-upload',
-    importing: 'pi pi-spinner',
+    importing: 'pi pi-spinner pi-spin',
     imported: 'pi pi-check-circle',
   };
 
