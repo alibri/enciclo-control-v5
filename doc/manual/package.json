@@ -1,0 +1,16 @@
+{
+  "name": "enciclo-control-manual",
+  "version": "1.0.0",
+  "description": "Manual de usuario de Enciclo Control 5.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vitepress dev",
+    "build": "vitepress build",
+    "preview": "vitepress preview",
+    "screenshots": "node scripts/capture-screenshots.js"
+  },
+  "devDependencies": {
+    "vitepress": "^1.0.0",
+    "playwright": "^1.40.0"
+  }
+}
