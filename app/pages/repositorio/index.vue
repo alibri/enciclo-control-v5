@@ -1,6 +1,6 @@
 <script setup lang='ts'>
 // import { FilterMatchMode, FilterOperator } from 'primevue';
-import { onMounted } from 'vue';
+import { onMounted, nextTick, onUnmounted } from 'vue';
 import IconField from 'primevue/iconfield';
 import InputIcon from 'primevue/inputicon';
 import RepositoryService from '@/services/repositoryService';
@@ -26,9 +26,12 @@ const stats = ref();
 const dt = ref();
 const totalRecords = ref(0);
 const searchTerm = ref('');
+const updatedTitleId = ref<number | null>(null);
 
-const loadData = async () => {
-  loading.value = true;
+const loadData = async (showLoading: boolean = true) => {
+  if (showLoading) {
+    loading.value = true;
+  }
 
   const data = getParamsData(lazyParams.value) as any;
 
@@ -58,7 +61,9 @@ const loadData = async () => {
   } catch (e: any) {
     showMessage('error', t('Error'), e.message);
   } finally {
-    loading.value = false;
+    if (showLoading) {
+      loading.value = false;
+    }
   }
 };
 
@@ -85,9 +90,36 @@ const onFilter = (event: any) => {
   loadData();
 };
 
+let timer: any = null;
+const isTimerPaused = ref(false);
+
+const pauseTimer = () => {
+  if (timer && !isTimerPaused.value) {
+    clearInterval(timer);
+    isTimerPaused.value = true;
+  }
+};
+
+const resumeTimer = () => {
+  if (isTimerPaused.value) {
+    timer = setInterval(() => {
+      loadData(false);
+    }, 1000);
+    isTimerPaused.value = false;
+  }
+};
+
 onMounted(() => {
   resetLazyParams(dt?.value?.rows, filters.value);
   loadData();
+  timer = setInterval(() => {
+    loadData(false);
+  }, 1000);
+});
+
+
+onUnmounted(() => {
+  clearInterval(timer);
 });
 
 const deleteFile = async (data: any) => {
@@ -118,6 +150,33 @@ const viewOriginal = async (data: any) => {
   } else {
     showMessage('error', t('Error'), response.data.value.message);
   }
+};
+
+const updateTitle = async (data: any, newTitle: string) => {
+  const response = await repositoryService.updateTitle({ id: data.id, title: newTitle });
+  if (response.data.value.success) {
+    updatedTitleId.value = data.id;
+    showMessage('success', t('Actualizado'), t('El título ha sido actualizado correctamente'));
+    // Resetear el tooltip después de 2 segundos
+    setTimeout(() => {
+      updatedTitleId.value = null;
+    }, 2000);
+    loadData();
+  } else {
+    showMessage('error', t('Error'), response.data.value.message);
+  }
+};
+
+const copyFilenameToTitle = (data: any, event: Event) => {
+  data.title = data.original_filename.replace(/\.[^/.]+$/, '').replaceAll('_', ' ');
+  // updateTitle(data, data.title);
+  // Hacer focus en el InputText después de copiar
+  nextTick(() => {
+    const inputElement = (event.currentTarget as HTMLElement)?.parentElement?.querySelector('input') as HTMLInputElement;
+    if (inputElement) {
+      inputElement.focus();
+    }
+  });
 };
 
 const menu = ref();
@@ -302,9 +361,32 @@ const onUploadError = (error: string) => {
             </template>
           </Column>
           <Column field="original_filename" :header="t('Fichero')" :sortable="true" class="text-blue-400" />
+          <Column field="title" :header="t('Título')" :sortable="true">
+            <template #body="slotProps">
+              <div class="flex items-center gap-1">
+                <IconField iconPosition="left" class="flex-1">
+                  <InputIcon class="pi pi-copy cursor-pointer" @click="(e: Event) => copyFilenameToTitle(slotProps.data, e)" v-tooltip="t('Copiar nombre del archivo')" />
+                  <InputText
+                    v-model="slotProps.data.title"
+                    :placeholder="t('Sin título')"
+                    class="w-full"
+                    @focus="pauseTimer"
+                    @blur="resumeTimer"
+                    @keydown.enter="updateTitle(slotProps.data, slotProps.data.title || '')"
+                  />
+                </IconField>
+                <Button
+                  icon="pi pi-check"
+                  class="p-button-sm p-button-text"
+                  @click="updateTitle(slotProps.data, slotProps.data.title || '')"
+                  v-tooltip="updatedTitleId === slotProps.data.id ? t('Título actualizado correctamente') : t('Actualizar título')"
+                />
+              </div>
+            </template>
+          </Column>
           <Column field="status" :header="t('Estado')" :sortable="true" class="text-center">
             <template #body="slotProps">
-              <Tag :severity="formatStatusRepository(slotProps.data.status)" class="text-sm" :value="slotProps.data.status" :icon="formatStatusRepositoryIcon(slotProps.data.status)" />
+              <Tag v-tooltip="slotProps.data.message" :severity="formatStatusRepository(slotProps.data.status)" class="text-sm" :value="slotProps.data.status" :icon="formatStatusRepositoryIcon(slotProps.data.status)" />
             </template>
           </Column>
           <Column field="mime_type" :header="t('Tipo')" :sortable="true" class="text-center">

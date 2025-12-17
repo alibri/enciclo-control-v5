@@ -30,4 +30,8 @@ export default class RepositoryService {
   async getFileUrl (data: any) {
     return await this.api.get('repository/fileurl',  data );
   }
+
+  async updateTitle (data: any) {
+    return await this.api.get('repository/update', data);
+  }
 };

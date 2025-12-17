@@ -38,13 +38,18 @@ export function useNavigationMenu () {
         items: [
           { label: t('Pregúntame'), icon: 'pi pi-comment', to: '/chat/' },
           { label: t('Pregúntame (listado)'), icon: 'pi pi-comment', to: '/chat/list' },
-          { label: t('Repositorio'), icon: 'pi pi-file-pdf', to: '/repositorio/' },
           { label: t('Test RAG'), icon: 'pi pi-fw pi-code', to: '/utils/testrag' },
           { label: t('Test RAG A/B'), icon: 'pi pi-fw pi-code', to: '/utils/testragab' },
           { label: t('Listado Test RAG'), icon: 'pi pi-fw pi-list', to: '/utils/listrag' },
           /* { label: t('Entidades'), icon: 'pi pi-id-card', to: '/chat/entidades' } */
         ]
       },
+      {
+        label: t('Repositorio'),
+        items: [
+          { label: t('Documentos'), icon: 'pi pi-file-pdf', to: '/repositorio/' }
+        ]
+      }, 
       {
         label: t('Utilidades'),
         items: [

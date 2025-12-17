@@ -143,10 +143,12 @@ export const formatSabias = (value: string) => {
 export const formatStatusRepository = (type: string) => {
   const types: Record<string, string> = {
     deleted: 'danger',
-    error: 'warning',
+    error: 'danger',
     uploaded: 'info',
     importing: 'warning',
     imported: 'success',
+    converting: 'warning',
+    title: 'danger',
   };
 
   return types[type] ?? 'secondary';
@@ -156,9 +158,11 @@ export const formatStatusRepositoryIcon = (type: string) => {
   const types: Record<string, string> = {
     deleted: 'pi pi-trash',
     error: 'pi pi-exclamation-triangle',
-      uploaded: 'pi pi-upload',
+    uploaded: 'pi pi-upload',
     importing: 'pi pi-spinner pi-spin',
     imported: 'pi pi-check-circle',
+    converting: 'pi pi-spinner pi-spin',
+    title: 'pi pi-info-circle',
   };
 
   return types[type] ?? 'pi pi-file';
