@@ -1,5 +1,12 @@
 # VERSIONES
 
+## 5.0.19
+
+- Repositorio en su propio menú
+- Mejora de la visualización de los archivos en el repositorio
+- Añade la actualización del título de los archivos en el repositorio
+- Refresca el listado de archivos en el repositorio dos segundos
+
 ## 5.0.18
 
 - Añade la visualización de las notas preventivas en el resultado de la consulta RAG
