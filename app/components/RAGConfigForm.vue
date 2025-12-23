@@ -1,32 +1,7 @@
 <script setup lang='ts'>
-interface ModelInfo {
-  input: number;
-  output: number;
-  max_tokens: number;
-}
-
-interface AgentsModels {
-  [agent: string]: {
-    [model: string]: ModelInfo;
-  };
-}
-
-interface RAGConfig {
-  agent: string;
-  model: string;
-  collection: string;
-  classification: string;
-  semantic: boolean;
-  bm25: boolean;
-  context: boolean;
-  clean_query: boolean;
-  topN: number;
-  num_queries: number;
-  use_docs: number;
-  min_count: number;
-  temperature: number;
-  tono_audiencia: string;
-}
+import type { ModelInfo } from '~/interfaces/ModelInfo';
+import type { AgentsModels } from '~/interfaces/AgentsModels';
+import type { RAGConfig } from '~/interfaces/RAGConfig';
 
 interface Props {
   modelValue: RAGConfig;
@@ -60,7 +35,7 @@ const agentsModels = computed(() => agentsModelsData.value || { openai: {}, gemi
 
 // Obtener valores por defecto desde variables de entorno
 const defaultAgent = runtimeConfig.public?.DEFAULT_LLM_AGENT || 'gemini';
-const defaultModel = runtimeConfig.public?.DEFAULT_LLM_MODEL || 'gemini-2.0-flash';
+const defaultModel: string = String(runtimeConfig.public?.DEFAULT_LLM_MODEL || 'gemini-2.0-flash');
 const defaultCollection: string = String(runtimeConfig.public?.COLLECTION_NAME || 'chunks');
 
 // Crear opciones para agentes basadas en las claves del objeto
@@ -136,7 +111,7 @@ const localConfig = computed({
 watch(() => localConfig.value.agent, (newAgent) => {
   const agentModels = agentsModels.value[newAgent] || {};
   const modelNames = Object.keys(agentModels);
-  const currentModel = localConfig.value.model || defaultModel;
+  const currentModel: string = localConfig.value.model || defaultModel;
   if (modelNames.length > 0 && !modelNames.includes(currentModel)) {
     const firstModel = modelNames[0];
     if (firstModel) {

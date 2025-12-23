@@ -1,16 +1,8 @@
 <script lang="ts" setup>
 import type { PropType } from 'vue';
-const { t } = useI18n();
+import type { UserStats } from '~/interfaces/UserStats';
 
-interface UserStats {
-  user: string;
-  logins: number;
-  pages: number;
-  chats: number;
-  ts: number;
-  min: string;
-  max: string;
-}
+const { t } = useI18n();
 
 defineProps({
   value: {

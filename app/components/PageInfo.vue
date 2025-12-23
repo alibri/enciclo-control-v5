@@ -1,17 +1,15 @@
 <script setup lang="ts">
 import StatsService from '~/services/statsService';
 import PageService from '~/services/pageService';
+import type { Stats } from '~/interfaces/Stats';
+import type { PageInfo } from '~/interfaces/PageInfo';
+import type { Entidad } from '~/interfaces/Entidad';
 
 const statsService = new StatsService();
 const pageService = new PageService();
 
 const dialog = useDialog();
 const { t } = useI18n();
-interface Stats {
-  pages: any[];
-  previews: any[];
-  prints: any[];
-}
 
 const stats = ref<Stats | null>(null);
 
@@ -26,23 +24,8 @@ const props = defineProps({
   }
 });
 
-interface PageInfo {
-  title: string;
-  description: string;
-  img: string;
-  url: string;
-}
-
 const info = ref<PageInfo | null>(null);
 const dates = ref();
-interface Entidad {
-  entity: string;
-  alias: string;
-  type: string;
-  complete_name: string;
-  weight: number;
-}
-
 const entidades = ref<Entidad[]>([]);
 
 const desde = new Date();
@@ -120,7 +103,7 @@ onMounted(() => {
               severity="danger"
               @click="openPage(getEditorLink(collection, info.title))"
             />
-            <Button icon="pi pi-pencil" severity="primary" @click="info && editOnFly(dialog, info)" />
+            <Button icon="pi pi-pencil" severity="primary" @click="info && editOnFly(dialog, { collection, title: info.title })" />
           </p>
         </div>
       </div>

@@ -12,21 +12,11 @@ import {
 } from 'chart.js';
 import html2pdf from 'html2pdf.js';
 
+import type { StatsData } from '~/interfaces/StatsData';
+import type { UserPageStats } from '~/interfaces/UserPageStats';
+
 const { t } = useI18n();
 const { showMessage } = useMessages();
-
-interface StatsData {
-  logins: number;
-  pages: number;
-  preguntas: number;
-  ts: string;
-}
-
-interface UserPageStats {
-  [year: string]: {
-    [month: string]: StatsData;
-  };
-}
 
 // Registrar los componentes de Chart.js
 ChartJS.register(

@@ -6,18 +6,8 @@ import { getApiUrl } from '~/utils/api';
 import { useAuthStore } from '~/stores/auth';
 import { storeToRefs } from 'pinia';
 import 'flag-icons/css/flag-icons.min.css';
-
-interface ModelInfo {
-  input: number;
-  output: number;
-  max_tokens: number;
-}
-
-interface AgentsModels {
-  [agent: string]: {
-    [model: string]: ModelInfo;
-  };
-}
+import type { ModelInfo } from '~/interfaces/ModelInfo';
+import type { AgentsModels } from '~/interfaces/AgentsModels';
 
 interface Props {
   result: any;
@@ -386,7 +376,7 @@ const generarPDF = async () => {
                  class="flex items-center justify-between p-2 rounded-lg" style="background-color: var(--surface-card);">
               <span class="text-sm capitalize flex items-center" style="color: var(--text-color);">
                 <span class="px-2 py-0.5 rounded text-xs font-semibold mr-2" style="background-color: var(--primary-color); color: white;">
-                  {{ index + 1 }}
+                  {{ Number(index) + 1 }}
                 </span>
                 {{ item.categoria }}
               </span>
@@ -766,7 +756,7 @@ const generarPDF = async () => {
                class="p-3 rounded-lg border-l-4 border-1 border-orange-500 dark:border-orange-400" style="background-color: var(--surface-hover);">
             <div class="flex items-start space-x-3">
               <span class="flex-shrink-0 w-6 h-6 bg-orange-600 dark:bg-orange-500 text-white rounded-full flex items-center justify-center text-xs font-semibold">
-                {{ index + 1 }}
+                {{ Number(index) + 1 }}
               </span>
               <p
                 class="flex-1 text-sm leading-relaxed"
@@ -841,7 +831,7 @@ const generarPDF = async () => {
                class="p-3 rounded-lg border-l-4 border-1 border-orange-500 dark:border-orange-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors" style="background-color: var(--surface-hover);">
             <div class="flex items-start space-x-3">
               <span class="flex-shrink-0 w-7 h-7 bg-orange-600 dark:bg-orange-500 text-white rounded-full flex items-center justify-center text-sm font-semibold">
-                {{ index + 1 }}
+                {{ Number(index) + 1 }}
               </span>
               <p class="flex-1 text-sm leading-relaxed" style="color: var(--text-color);">{{ pregunta }}</p>
             </div>
@@ -886,7 +876,7 @@ const generarPDF = async () => {
              class="p-3 rounded-lg border-l-3 border-1 border-indigo-500 dark:border-indigo-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
           <div class="flex items-center space-x-3">
             <span class="flex-shrink-0 w-7 h-7 bg-indigo-600 dark:bg-indigo-500 text-white rounded-full flex items-center justify-center text-sm font-semibold">
-              {{ index + 1 }}
+              {{ Number(index) + 1 }}
             </span>
             <p class="flex-1" style="color: var(--text-color);">{{ q }}</p>
           </div>
