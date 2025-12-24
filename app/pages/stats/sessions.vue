@@ -59,7 +59,7 @@ const {
     </div>
 
     <!-- Tabla mejorada -->
-    <div class="rounded-lg shadow-sm border" style="background-color: var(--surface-card); border-color: var(--surface-border);">
+    <div class="rounded-lg shadow-sm border surface-card border-surface">
       <DataTable
         ref="dt"
         v-model:filters="filters"
@@ -87,13 +87,13 @@ const {
       >
         <!-- Header de la tabla -->
         <template #header>
-          <div class="flex flex-wrap justify-between items-center gap-4 p-4 border-b" style="background-color: var(--surface-card); border-color: var(--surface-border);">
+          <div class="flex flex-wrap justify-between items-center gap-4 p-4 border-b surface-card border-surface">
             <div class="flex items-center gap-2">
               <i class="pi pi-table" style="color: var(--primary-color);"></i>
-              <span class="font-semibold" style="color: var(--text-color);">{{ t('Lista de Sesiones') }}</span>
+              <span class="font-semibold text-primary">{{ t('Lista de Sesiones') }}</span>
             </div>
             <div class="flex items-center gap-2">
-              <span class="text-sm" style="color: var(--text-color-secondary);">{{ totalRecords }} {{ t('registros') }}</span>
+              <span class="text-sm text-secondary">{{ totalRecords }} {{ t('registros') }}</span>
             </div>
           </div>
         </template>

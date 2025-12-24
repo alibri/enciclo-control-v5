@@ -86,13 +86,13 @@ const {
       >
         <!-- Header de la tabla -->
         <template #header>
-          <div class="flex flex-wrap justify-between items-center gap-4 p-4 border-b" style="background-color: var(--surface-card); border-color: var(--surface-border);">
+          <div class="flex flex-wrap justify-between items-center gap-4 p-4 border-b surface-card border-surface">
             <div class="flex items-center gap-2">
               <i class="pi pi-table text-blue-500"></i>
-              <span class="font-semibold text-gray-700">{{ t('Lista de Consultas') }}</span>
+              <span class="font-semibold text-primary">{{ t('Lista de Consultas') }}</span>
             </div>
             <div class="flex items-center gap-2">
-              <span class="text-sm text-gray-500">{{ formatIntNumber(totalRecords) }} {{ t('registros') }}</span>
+              <span class="text-sm text-secondary">{{ formatIntNumber(totalRecords) }} {{ t('registros') }}</span>
             </div>
           </div>
         </template>
