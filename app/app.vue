@@ -1,4 +1,7 @@
 <script setup>
+import { useLogger } from '~/utils/logger';
+import { getApiUrl } from '~/utils/api';
+
 // En app.vue o en un plugin
 /*
 import 'primevue/resources/primevue.css';
@@ -209,7 +212,7 @@ primevue.config.locale.allDayText = 'Todo el día';
 primevue.config.locale.dateFormat = 'dd/mm/yy';
 primevue.config.locale.firstDayOfWeek = 1;
 
-const { logger } = useLogger();
+const logger = useLogger();
 logger.debug('APP_VERSION', runtimeConfig.public.APP_VERSION);
 const apiBaseUrl = getApiUrl();
 logger.debug('apiBaseUrl', apiBaseUrl);
