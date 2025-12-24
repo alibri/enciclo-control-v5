@@ -1,5 +1,9 @@
 # VERSIONES
 
+## 5.0.20
+
+- Refactorización del código
+
 ## 5.0.19
 
 - Repositorio en su propio menú
