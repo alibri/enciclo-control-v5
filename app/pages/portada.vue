@@ -8,7 +8,7 @@ const pageService = new PageService();
 const { showMessage } = useMessages();
 const confirm = useConfirm();
 const { t } = useI18n();
-const { logger } = useLogger();
+const logger = useLogger();
 
 const loading = ref(true);
 const collections = ref<any[]>([]);

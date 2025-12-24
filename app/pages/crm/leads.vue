@@ -6,7 +6,7 @@ const { filters } = usePrimeDataTable();
 const { t } = useI18n();
 const { getParamsData, lazyParams, exportDataGeneric, resetLazyParams } = useUtilsData();
 const { showMessage } = useMessages();
-const { logger } = useLogger();
+const logger = useLogger();
 
 const crmService = new CRMService();
 const messageService = new MessageService();

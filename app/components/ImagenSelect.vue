@@ -5,7 +5,7 @@ import ImageInfo from './ImageInfo.vue';
 const mediaService = new MediaService();
 const { t } = useI18n();
 const { showMessage, removeGroup } = useMessages();
-const { logger } = useLogger();
+const logger = useLogger();
 
 const blocked = ref(false);
 const props = defineProps({

@@ -148,7 +148,7 @@ const formatMonthName = (monthNumber: number): string => {
 
 // Función para exportar la tabla a CSV
 const exportarCSV = () => {
-  const { logger } = useLogger();
+  const logger = useLogger();
   
   logger.debug('exportarCSV', sortedUserPageStats.value);
   if (!sortedUserPageStats.value) {
@@ -195,7 +195,7 @@ const generarPDF = async () => {
   // Obtener el contenido del componente
   printing.value = true;
   const contenido = document.querySelector('.print-area');
-  const { logger } = useLogger();
+  const logger = useLogger();
   logger.debug('contenido', contenido);
 
   if (!contenido) {
@@ -265,7 +265,7 @@ const generarPDF = async () => {
     showMessage('success', t('Éxito'), t('PDF generado correctamente'));
 
   } catch (error: unknown) {
-    const { logger } = useLogger();
+    const logger = useLogger();
     logger.error('Error generando PDF:', error);
     showMessage('error', t('Error'), t('No se pudo generar el PDF'));
   } finally {

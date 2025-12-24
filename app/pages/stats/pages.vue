@@ -101,7 +101,7 @@ const {
                 <div class="flex items-center gap-2">
                   <Button type="button" icon="pi pi-filter-slash" class="p-button-outlined"
                     @click="clearFilter()" />
-                  <IconField iconPosition="left">
+                  <IconField iconPosition="left" v-if="filters && filters.global">
                     <InputIcon class="pi pi-search"> </InputIcon>
                     <InputText v-model="filters.global.value" :placeholder="t('Búsqueda')" @keydown.enter="onFilter" />
                   </IconField>

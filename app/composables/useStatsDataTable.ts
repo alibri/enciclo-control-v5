@@ -66,6 +66,9 @@ export function useStatsDataTable(options: UseStatsDataTableOptions) {
     }
   };
 
+  // Inicializar filtros inmediatamente para que estén disponibles en el template
+  initFilters();
+
   // Limpiar filtros
   const clearFilter = () => {
     initFilters();

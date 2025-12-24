@@ -7,7 +7,7 @@ const messageService = new MessageService();
 const { showMessage } = useMessages();
 const confirm = useConfirm();
 const { t } = useI18n();
-const { logger } = useLogger();
+const logger = useLogger();
 
 const loading = ref(false);
 const messages = ref([]);

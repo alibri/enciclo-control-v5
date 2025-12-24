@@ -4,8 +4,15 @@ import { consola } from 'consola';
  * Logger wrapper alrededor de consola con niveles y control de producción
  */
 export function useLogger() {
-  const runtimeConfig = useRuntimeConfig();
-  const isProduction = runtimeConfig.public?.APP_MODE === 'production';
+  let isProduction = false;
+  
+  try {
+    const runtimeConfig = useRuntimeConfig();
+    isProduction = runtimeConfig.public?.APP_MODE === 'production';
+  } catch (error) {
+    // Si useRuntimeConfig no está disponible, asumimos que estamos en desarrollo
+    isProduction = false;
+  }
 
   return {
     /**

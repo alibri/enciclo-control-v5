@@ -32,7 +32,7 @@ const exportWiki = async () => {
 };
 
 const exportFunction = async () => {
-  const { logger } = useLogger();
+  const logger = useLogger();
   logger.debug('exportFunction dt.value', dt.value);
   return await pageService.exportWiki(dt.value);
 };
