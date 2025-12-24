@@ -39,8 +39,8 @@ const printslength = computed(() => stats?.value?.prints?.length);
 const loadData = async () => {
   const response = await pageService.getPageInfo(props.collection, props.page);
   if (checkLogged(response)) {
-    info.value = response?.data?.value?.page;
-    entidades.value = response?.data?.value?.entidades;
+    info.value = response?.data?.value?.page ?? null;
+    entidades.value = response?.data?.value?.entidades ?? [];
   }
   const response2 = await statsService.getPageStats({
     title: props.page,

@@ -1,6 +1,8 @@
 <script setup lang='ts'>
 import { formatStringPre, formatIntNumber } from '~/utils/format';
 import { getPageLink } from '~/utils/openExternal';
+import { getLanguageFlag } from '~/utils/language';
+import { useLogger } from '~/utils/logger';
 import TestService from '~/services/testService';
 import { getApiUrl } from '~/utils/api';
 import { useAuthStore } from '~/stores/auth';
@@ -79,19 +81,7 @@ const availableLanguages = computed(() => {
   return languages;
 });
 
-// Función para obtener la bandera del idioma
-const getLanguageFlag = (lang: string) => {
-  const flagMap: { [key: string]: { type: 'fi' | 'img', value: string } } = {
-    'es': { type: 'fi', value: 'es' },
-    'en': { type: 'fi', value: 'gb' },
-    'fr': { type: 'fi', value: 'fr' },
-    'pt': { type: 'fi', value: 'pt' },
-    'cat': { type: 'img', value: '/flags/catalonia.svg' },
-    'eu': { type: 'img', value: '/flags/basque.svg' },
-    'gl': { type: 'img', value: '/flags/galicia.svg' }
-  };
-  return flagMap[lang] || { type: 'fi', value: 'es' };
-};
+// getLanguageFlag ahora se importa desde utils/language
 
 // Computed para el contenido HTML
 const contentHtml = computed(() => {
@@ -158,9 +148,9 @@ const evaluateRAG = async () => {
 
     if (checkLogged(response)) {
       // Extraer el ID de la evaluación de la respuesta
-      // La respuesta puede estar en response.data.value o response.data.result
-      const resultData = response?.data?.result || response?.data?.value;
-      const id = resultData?.id || response?.data?.id;
+      // response.data es un Ref, accedemos al valor con .value
+      const resultData = response?.data?.value;
+      const id = resultData?.id;
       if (id) {
         evaluationId.value = id;
         emit('evaluated', id);
@@ -171,7 +161,7 @@ const evaluateRAG = async () => {
       // ratingRespuesta.value = null;
       // ratingVelocidad.value = null;
     } else {
-      showMessage('error', t('Error'), response?.data?.result?.message || response?.data?.value?.message || t('Error al enviar la evaluación'), -1);
+      showMessage('error', t('Error'), response?.data?.value?.message || t('Error al enviar la evaluación'), -1);
     }
   } catch (error: any) {
     showMessage('error', t('Error'), error?.message || t('Error al enviar la evaluación'), -1);
@@ -253,7 +243,7 @@ const generarPDF = async () => {
     removeGroup('pdf');
 
   } catch (error: unknown) {
-    const { logger } = useLogger();
+    const logger = useLogger();
     logger.error('Error generando PDF:', error);
     const errorMessage = error instanceof Error ? error.message : t('No se pudo generar el PDF');
     showMessage('error', t('Error'), errorMessage, -1);
