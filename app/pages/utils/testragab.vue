@@ -15,12 +15,12 @@ const abEvaluated = ref(false);
 const evaluatingAB = ref(false);
 
 // Obtener valores por defecto desde variables de entorno
-const defaultAgent = runtimeConfig.public?.DEFAULT_LLM_AGENT || 'gemini';
-const defaultModel = runtimeConfig.public?.DEFAULT_LLM_MODEL || 'gemini-2.0-flash';
+const defaultAgent: string = String(runtimeConfig.public?.DEFAULT_LLM_AGENT || 'gemini');
+const defaultModel: string = String(runtimeConfig.public?.DEFAULT_LLM_MODEL || 'gemini-2.0-flash');
 const defaultCollection: string = String(runtimeConfig.public?.COLLECTION_NAME || 'chunks');
 
 // Cargar AGENTS_MODELS para validar el modelo inicial
-const agentsModelsJson = runtimeConfig.public?.AGENTS_MODELS || '{}';
+const agentsModelsJson: string = String(runtimeConfig.public?.AGENTS_MODELS || '{}');
 let agentsModels: Record<string, string[]> = {};
 try {
   agentsModels = JSON.parse(agentsModelsJson);
@@ -160,18 +160,22 @@ const testRAGAB = async () => {
     
     // Procesar resultado A
     if (checkLogged(responseA)) {
-      const resultData = responseA?.data?.result || responseA?.data?.value?.result || responseA?.data?.value;
+      const dataA = responseA?.data?.value as any;
+      const resultData = dataA?.result || dataA?.value?.result || dataA?.value;
       resultA.value = resultData ? { ...resultData, query: query.value } : null;
     } else {
-      resultA.value = { error: responseA?.data?.result?.message || responseA?.data?.value?.message || t('Error al ejecutar la consulta A') };
+      const dataA = responseA?.data?.value as any;
+      resultA.value = { error: dataA?.result?.message || dataA?.value?.message || t('Error al ejecutar la consulta A') };
     }
     
     // Procesar resultado B
     if (checkLogged(responseB)) {
-      const resultData = responseB?.data?.result || responseB?.data?.value?.result || responseB?.data?.value;
+      const dataB = responseB?.data?.value as any;
+      const resultData = dataB?.result || dataB?.value?.result || dataB?.value;
       resultB.value = resultData ? { ...resultData, query: query.value } : null;
     } else {
-      resultB.value = { error: responseB?.data?.result?.message || responseB?.data?.value?.message || t('Error al ejecutar la consulta B') };
+      const dataB = responseB?.data?.value as any;
+      resultB.value = { error: dataB?.result?.message || dataB?.value?.message || t('Error al ejecutar la consulta B') };
     }
     
     if (resultA.value && !resultA.value.error && resultB.value && !resultB.value.error) {
@@ -221,7 +225,8 @@ const evaluateAB = async (winner: 'A' | 'B') => {
       abEvaluated.value = true;
       showMessage('success', t('Éxito'), t('Test A/B evaluado correctamente'), 3000);
     } else {
-      showMessage('error', t('Error'), response?.data?.result?.message || response?.data?.value?.message || t('Error al evaluar el test A/B'), -1);
+      const data = response?.data?.value as any;
+      showMessage('error', t('Error'), data?.result?.message || data?.value?.message || t('Error al evaluar el test A/B'), -1);
     }
   } catch (error: any) {
     showMessage('error', t('Error'), error?.message || t('Error al evaluar el test A/B'), -1);

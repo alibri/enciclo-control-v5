@@ -1,5 +1,4 @@
-import { useApiClient } from '~/stores/api';
-import type { ApiClient, ApiResponse } from '~/interfaces/ApiResponse';
+import type { ApiResponse } from '~/interfaces/ApiResponse';
 import type { UserInterface } from '~/interfaces/User';
 import type {
   GetUsersParams,
@@ -10,59 +9,56 @@ import type {
   DesactivarGrupoParams
 } from '~/interfaces/services/UserServiceParams';
 import type { Collection } from '~/interfaces/Collection';
+import { BaseService } from './BaseService';
 
-export default class UserService {
-  api: ApiClient;
-  apiLongTask: ApiClient;
-
+export default class UserService extends BaseService {
   constructor () {
-    this.api = useApiClient();
-    this.apiLongTask = useApiClient(true);
+    super(true); // Inicializa apiLongTask
   }
 
   async getUsers (data: GetUsersParams): Promise<ApiResponse<UserInterface[]>> {
-    return await this.api.get<UserInterface[]>('user', data);
+    return await this.get<UserInterface[]>('user', data);
   }
 
   async getCollections (): Promise<ApiResponse<Collection[]>> {
-    return await this.api.get<Collection[]>('collections');
+    return await this.get<Collection[]>('collections');
   }
 
   async delete (id: number): Promise<ApiResponse<{ success: boolean; message?: string }>> {
-    return await this.api.get<{ success: boolean; message?: string }>('deleteuser', { id });
+    return await this.get<{ success: boolean; message?: string }>('deleteuser', { id });
   }
 
   async add (id: number | null, data: CreateUserData): Promise<ApiResponse<UserInterface>> {
-    return await this.api.get<UserInterface>('user', { id, data });
+    return await this.get<UserInterface>('user', { id, data });
   }
 
   async createFromExcel(file: string): Promise<ApiResponse<{ success: boolean; message?: string }>> {
-    return await this.api.get<{ success: boolean; message?: string }>('importexcel', { file });
+    return await this.get<{ success: boolean; message?: string }>('importexcel', { file });
   }
 
   async createFromProcess(processId: string): Promise<ApiResponse<{ success: boolean; message?: string }>> {
-    return await this.api.get<{ success: boolean; message?: string }>('importexcel', { process: processId });
+    return await this.get<{ success: boolean; message?: string }>('importexcel', { process: processId });
   }
 
   async resetPassword(id: number): Promise<ApiResponse<{ success: boolean; message?: string }>> {
-    return await this.api.get<{ success: boolean; message?: string }>('resetpasswordvarios', { id });
+    return await this.get<{ success: boolean; message?: string }>('resetpasswordvarios', { id });
   }
 
   async sendAccessData(id: number): Promise<ApiResponse<{ success: boolean; message?: string }>> {
-    return await this.api.get<{ success: boolean; message?: string }>('sendinfologin', { id });
+    return await this.get<{ success: boolean; message?: string }>('sendinfologin', { id });
   }
 
   async getFakeStats(user: string): Promise<ApiResponse<{ list: unknown[] }>> {
     const params: GetFakeStatsParams = { user };
-    return await this.api.get<{ list: unknown[] }>('fake_stats', params);
+    return await this.get<{ list: unknown[] }>('fake_stats', params);
   }
 
   async createFakeStats(data: CreateFakeStatsData): Promise<ApiResponse<{ id: number; message?: string; success?: boolean }>> {
-    return await this.api.get<{ id: number; message?: string; success?: boolean }>('create_fake_stats', data);
+    return await this.get<{ id: number; message?: string; success?: boolean }>('create_fake_stats', data);
   }
 
   async deleteFakeStats(id: number): Promise<ApiResponse<{ success: boolean; message?: string }>> {
-    return await this.api.get<{ success: boolean; message?: string }>('delete_fake_stats', { id });
+    return await this.get<{ success: boolean; message?: string }>('delete_fake_stats', { id });
   }
 
   async importFakeStats(user: string, file: File): Promise<ApiResponse<{ success: boolean; message?: string; imported?: number; errors?: string[]; duplicates?: string[] }>> {
@@ -76,11 +72,11 @@ export default class UserService {
     const base64Content = btoa(binaryString);
     
     const params: ImportFakeStatsParams = { file: base64Content, user, name: file.name };
-    return await this.api.get<{ success: boolean; message?: string; imported?: number; errors?: string[]; duplicates?: string[] }>('import_fake_news', params);
+    return await this.get<{ success: boolean; message?: string; imported?: number; errors?: string[]; duplicates?: string[] }>('import_fake_news', params);
   }
 
   async desactivarGrupo(grupo: string): Promise<ApiResponse<{ success: boolean; message?: string }>> {
     const params: DesactivarGrupoParams = { grupo };
-    return await this.api.get<{ success: boolean; message?: string }>('desactivargrupo', params);
+    return await this.get<{ success: boolean; message?: string }>('desactivargrupo', params);
   }
 }

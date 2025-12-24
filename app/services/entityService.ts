@@ -1,23 +1,17 @@
-import { useApiClient } from '~/stores/api';
-import type { ApiClient, ApiResponse } from '~/interfaces/ApiResponse';
+import type { ApiResponse } from '~/interfaces/ApiResponse';
 import type { EntityParams } from '~/interfaces/services/EntityServiceParams';
+import { BaseService } from './BaseService';
 
-export default class EntityService {
-  api: ApiClient;
-
-  constructor () {
-    this.api = useApiClient();
-  }
-
+export default class EntityService extends BaseService {
   async getEntities (data: EntityParams | null = null): Promise<ApiResponse<unknown[]>> {
-    return await this.api.get<unknown[]>('entities/list', data);
+    return await this.get<unknown[]>('entities/list', data);
   }
 
   async getPagesFromEntities (data: EntityParams | null = null): Promise<ApiResponse<unknown[]>> {
-    return await this.api.get<unknown[]>('entities/pages', data);
+    return await this.get<unknown[]>('entities/pages', data);
   }
 
   async getEntitiesFromText (data: EntityParams | null = null): Promise<ApiResponse<unknown[]>> {
-    return await this.api.get<unknown[]>('entities/find', data);
+    return await this.get<unknown[]>('entities/find', data);
   }
 }

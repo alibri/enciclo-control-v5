@@ -1,24 +1,18 @@
-import { useApiClient } from '~/stores/api';
-import type { ApiClient, ApiResponse } from '~/interfaces/ApiResponse';
+import type { ApiResponse } from '~/interfaces/ApiResponse';
 import type { UploadMediaParams } from '~/interfaces/services/MediaServiceParams';
+import { BaseService } from './BaseService';
 
-export default class MediaService {
-  api: ApiClient;
-
-  constructor () {
-    this.api = useApiClient();
-  }
-
+export default class MediaService extends BaseService {
   async uploadMedia (image: string): Promise<ApiResponse<{ url: string; success: boolean }>> {
     const params: UploadMediaParams = { image };
-    return await this.api.get<{ url: string; success: boolean }>('setmedia', params);
+    return await this.get<{ url: string; success: boolean }>('setmedia', params);
   }
 
   async getImages (): Promise<ApiResponse<unknown[]>> {
-    return await this.api.get<unknown[]>('getlistmedia');
+    return await this.get<unknown[]>('getlistmedia');
   }
 
   async getRepository (): Promise<ApiResponse<unknown[]>> {
-    return await this.api.get<unknown[]>('getlistrepositories');
+    return await this.get<unknown[]>('getlistrepositories');
   }
 }
