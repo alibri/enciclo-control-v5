@@ -1,6 +1,8 @@
 <script setup lang='ts'>
 import { formatSize, formatFileIcon } from '@/utils/format';
 import RepositoryService from '@/services/repositoryService';
+import type { FileUploadEvent, RemoveFileCallback } from '~/interfaces/FileUpload';
+import { FILE_SIZES, FILE_ACCEPT_FORMATS } from '~/utils/constants';
 
 interface Props {
   maxFileSize?: number;
@@ -14,8 +16,8 @@ interface Emits {
 }
 
 const props = withDefaults(defineProps<Props>(), {
-  maxFileSize: 100000000, // 100MB por defecto
-  accept: '.pdf,.doc,.docx,.txt',
+  maxFileSize: FILE_SIZES.MAX_DEFAULT,
+  accept: FILE_ACCEPT_FORMATS.DOCUMENTS,
   multiple: true
 });
 
@@ -33,30 +35,30 @@ const files = ref<File[]>([]);
 const uploading = ref(false);
 
 // Funciones internas
-const onRemoveTemplatingFile = (file: any, removeFileCallback: any, index: number) => {
+const onRemoveTemplatingFile = (file: File, removeFileCallback: RemoveFileCallback, index: number): void => {
   removeFileCallback(index);
   totalSize.value -= file.size;
   const maxSize = props.maxFileSize;
   totalSizePercent.value = Math.min((totalSize.value / maxSize) * 100, 100);
 };
 
-const onSelectedFiles = (event: any) => {
+const onSelectedFiles = (event: FileUploadEvent): void => {
   files.value = event.files;
   totalSize.value = 0;
-  files.value.forEach((file: any) => {
+  files.value.forEach((file: File) => {
     totalSize.value += file.size;
   });
   const maxSize = props.maxFileSize;
   totalSizePercent.value = Math.min((totalSize.value / maxSize) * 100, 100);
 };
 
-const uploadEvent = (callback: any) => {
+const uploadEvent = (callback: () => void): void => {
   const maxSize = props.maxFileSize;
   totalSizePercent.value = Math.min((totalSize.value / maxSize) * 100, 100);
   callback();
 };
 
-const onTemplatedUpload = async (event: any) => {
+const onTemplatedUpload = async (event: FileUploadEvent): Promise<void> => {
   uploading.value = true;
   try {
     let uploadedSize = 0;
@@ -100,12 +102,9 @@ const onTemplatedUpload = async (event: any) => {
                   totalSize.value -= file.size;
                 }
               } else {
-                if (response.message) {
-                  showMessage('error', t('Error'), response.message);
-                  emit('upload-error', response.message);
-                } else {
-                  emit('upload-error', t('Error interno del servidor'));
-                }
+                const errorMessage = response.error?.value?.message || t('Error interno del servidor');
+                showMessage('error', t('Error'), errorMessage);
+                emit('upload-error', errorMessage);
               }
               totalSizePercent.value = (uploadedSize / totalUploaded) * 100;
               resolve();
@@ -115,9 +114,10 @@ const onTemplatedUpload = async (event: any) => {
         }
       }
     }
-  } catch (e: any) {
-    showMessage('error', t('Error'), e.message);
-    emit('upload-error', e.message);
+  } catch (e: unknown) {
+    const errorMessage = e instanceof Error ? e.message : t('Error desconocido');
+    showMessage('error', t('Error'), errorMessage);
+    emit('upload-error', errorMessage);
   } finally {
     uploading.value = false;
   }

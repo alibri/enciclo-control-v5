@@ -5,6 +5,7 @@ import ImageInfo from './ImageInfo.vue';
 const mediaService = new MediaService();
 const { t } = useI18n();
 const { showMessage, removeGroup } = useMessages();
+const { logger } = useLogger();
 
 const blocked = ref(false);
 const props = defineProps({
@@ -28,7 +29,7 @@ const url = ref('');
 const src = ref('');
 
 const editImage = (image: string) => {
-  console.log('edit', image);
+  logger.debug('edit', image);
   src.value = image;
   openEditor.value = true;
 };
@@ -37,16 +38,16 @@ const onCloseEditor = () => {
   openEditor.value = false;
 };
 
-const onClose = (status: any) => {
-  console.error('onClose', status);
+const onClose = (status: unknown) => {
+  logger.error('onClose', status);
   onCloseEditor();
 };
 
-const onBeforeComplete = async (element: any) => {
-  console.info('onBeforeComplete', element);
-  if (element && element.canvas) {
-    url.value = element.canvas.toDataURL();
-    //console.info('onBeforeComplete', url.value.toString());
+const onBeforeComplete = async (element: unknown) => {
+  logger.debug('onBeforeComplete', element);
+  if (element && typeof element === 'object' && 'canvas' in element && element.canvas) {
+    url.value = (element.canvas as HTMLCanvasElement).toDataURL();
+    logger.debug('onBeforeComplete url', url.value.toString());
     const response = await mediaService.uploadMedia(url.value.toString());
     if (checkLogged(response)) {
       selectImage(response?.data?.value.url);
@@ -55,16 +56,16 @@ const onBeforeComplete = async (element: any) => {
   }
 };
 
-const onComplete = (element: any, file: any) => {
-  console.info('onComplete', element, file);
-  // console.log(url )
-  url.value = element.canvas.toDataURL();
-
+const onComplete = (element: unknown, file: unknown) => {
+  logger.debug('onComplete', element, file);
+  if (element && typeof element === 'object' && 'canvas' in element && element.canvas) {
+    url.value = (element.canvas as HTMLCanvasElement).toDataURL();
+  }
   onCloseEditor();
 };
 
-const onError = (error: any) => {
-  console.error('onError', error);
+const onError = (error: unknown) => {
+  logger.error('onError', error);
   onCloseEditor();
 };
 
@@ -97,7 +98,7 @@ const formatFileSize = (bytes: number): string => {
 
 const loadData = async () => {
   const response = await mediaService.getImages();
-  //console.log('images', response.data);
+  logger.debug('images', response.data);
   if (checkLogged(response)) {
     media.value = response?.data?.value?.list;
   }
@@ -106,7 +107,7 @@ const loadData = async () => {
 const repositorio = ref();
 const loadRepositorioData = async () => {
   const response = await mediaService.getRepository();
-  //console.log('repositorio', response.data);
+  logger.debug('repositorio', response.data);
   if (checkLogged(response)) {
     repositorio.value = response?.data?.value?.list;
   }
@@ -121,7 +122,7 @@ const onAdvancedUpload = async (event: any) => {
   blocked.value = true;
 
   const file = event.files[0];
-  //console.log('onAdvancedUpload', event.files);
+  logger.debug('onAdvancedUpload', event.files);
   showMessage('info', t('Media'), `${t('Subiendo archivo')}<br/><strong>${file.name}</strong><i class="pi pi-spin pi-spinner" style="font-size: 2rem"></i>`, -1, 'tc');
   const reader = new FileReader();
   const blob = await fetch(file.objectURL).then(r => r.blob()); // blob:url
@@ -130,7 +131,7 @@ const onAdvancedUpload = async (event: any) => {
 
   reader.onloadend = async () => {
     const base64data = reader.result;
-    //console.info('onAdvancedUpload', base64data);
+    logger.debug('onAdvancedUpload', base64data);
     const response = await mediaService.uploadMedia(base64data);
     if (checkLogged(response)) {
       loadData();
@@ -144,7 +145,7 @@ const onAdvancedUpload = async (event: any) => {
 // Configuración del editor de imágenes
 const config = {
   source: src,
-  onSave: (editedImageObject: any, designState: any) => console.log('saved', editedImageObject, designState),
+  onSave: (editedImageObject: unknown, designState: unknown) => logger.debug('saved', editedImageObject, designState),
   annotationsCommon: {
     fill: '#ff0000'
   },

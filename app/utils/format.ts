@@ -41,7 +41,6 @@ export const formatPageType = (type: string) => {
 };
 
 export const formatStatus = (type: string) => {
-  console.log('formatStatus', type);
   const types: Record<string, string> = {
     importado: 'danger',
     inactive: 'warning',

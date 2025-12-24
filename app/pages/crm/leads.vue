@@ -1,5 +1,4 @@
 <script setup  lang="ts">
-// import { FilterMatchMode, FilterOperator } from 'primevue/api';
 import CRMService from '~/services/crmService';
 import MessageService from '~/services/messageService';
 
@@ -7,6 +6,7 @@ const { filters } = usePrimeDataTable();
 const { t } = useI18n();
 const { getParamsData, lazyParams, exportDataGeneric, resetLazyParams } = useUtilsData();
 const { showMessage } = useMessages();
+const { logger } = useLogger();
 
 const crmService = new CRMService();
 const messageService = new MessageService();
@@ -30,7 +30,7 @@ const showEnviarMensaje = ref(false);
 
 const enviarMensaje = async () => {
   loading.value = true;
-  console.log('enviarMensaje', lastId, selectedMensaje?.value, selectedStatus?.value);
+  logger.debug('enviarMensaje', lastId, selectedMensaje?.value, selectedStatus?.value);
 
   const response = await crmService.sendMessage(lastId, selectedMensaje?.value?.id, selectedStatus?.value);
   if (checkLogged(response)) {

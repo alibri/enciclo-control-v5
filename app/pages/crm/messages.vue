@@ -7,6 +7,7 @@ const messageService = new MessageService();
 const { showMessage } = useMessages();
 const confirm = useConfirm();
 const { t } = useI18n();
+const { logger } = useLogger();
 
 const loading = ref(false);
 const messages = ref([]);
@@ -36,7 +37,7 @@ const loadData = async () => {
 };
 
 const loadMessage = async (name: string) => {
-  console.log('loadMessage', name);
+  logger.debug('loadMessage', name);
   loading.value = true;
   const response = await messageService.getMessages(name);
   if (checkLogged(response)) {
@@ -48,7 +49,7 @@ const loadMessage = async (name: string) => {
 };
 
 const saveData = async () => {
-  console.log('saveData', editData.value);
+  logger.debug('saveData', editData.value);
   loading.value = true;
   const response = await messageService.updMessage(message?.value?.id, editData.value);
   if (checkLogged(response)) {

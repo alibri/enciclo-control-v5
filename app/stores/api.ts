@@ -1,31 +1,31 @@
-// import { consola } from 'consola';
-import { useAuthStore } from '~/stores/auth'; // import the auth store we just created
+import { useAuthStore } from '~/stores/auth';
 import { getApiUrl } from '~/utils/api';
+import type { ApiResponse, ApiRequestParams, ApiError } from '~/interfaces/ApiResponse';
+import { API_TIMEOUTS } from '~/utils/constants';
 
 export interface ConfigApiCall {
-    timeout?: number,
-    headers?: Record<string, string>
+  timeout?: number;
+  headers?: Record<string, string>;
 }
 
 export function useApiClient (longTask: boolean = false) {
-  // const runtimeConfig = useRuntimeConfig();
   const apiBaseUrl = getApiUrl(longTask);
-  // console.log('longTask', longTask);
-  // console.log('apiBaseUrl', apiBaseUrl);
-
   const { session_id } = storeToRefs(useAuthStore());
 
-  async function get (method: string, data?: Record<string, any> | null, config: ConfigApiCall = {}): Promise<Record<string, any>> {
-    if (data == null) {
-      data = {};
-    }
+  async function get<T = unknown>(
+    method: string,
+    data?: ApiRequestParams | null,
+    config: ConfigApiCall = {}
+  ): Promise<ApiResponse<T>> {
+    const requestData: ApiRequestParams = data ?? {};
 
     if (!session_id.value) {
-      const token = useCookie('token'); // get token from cookies
+      const token = useCookie('token');
       session_id.value = token.value ?? null;
     }
 
-    data.session_id = session_id.value;
+    requestData.session_id = session_id.value;
+
     if (!config.headers) {
       config.headers = {};
     }
@@ -36,33 +36,44 @@ export function useApiClient (longTask: boolean = false) {
       };
     }
 
-    // Convertimos los datos a JSON antes de enviarlos
-    const dataString = JSON.stringify(data);
+    const dataString = JSON.stringify(requestData);
     try {
-      const responseData = await $fetch(apiBaseUrl + '/' + method, {
+      const responseData = await $fetch<T>(apiBaseUrl + '/' + method, {
         method: 'POST',
         headers: config.headers,
         body: dataString,
       });
-      // Devolvemos la misma estructura que useFetch
+
       return {
         data: ref(responseData),
-        error: ref(null),
+        error: ref<ApiError | null>(null),
         pending: ref(false),
-        status: ref('success'),
-      } as Record<string, any>;
-    } catch (error: any) {
-      // En caso de error, devolvemos la estructura similar a useFetch
+        status: ref<'success' | 'error'>('success'),
+      };
+    } catch (error: unknown) {
+      const apiError: ApiError = error instanceof Error
+        ? { message: error.message }
+        : { message: 'Error desconocido', details: error };
+
       return {
-        data: ref(null),
-        error: ref(error),
+        data: ref<T | null>(null),
+        error: ref<ApiError | null>(apiError),
         pending: ref(false),
-        status: ref('error'),
-      } as Record<string, any>;
+        status: ref<'success' | 'error'>('error'),
+      };
     }
   }
 
+  async function post<T = unknown>(
+    method: string,
+    data?: ApiRequestParams | null,
+    config: ConfigApiCall = {}
+  ): Promise<ApiResponse<T>> {
+    return get<T>(method, data, config);
+  }
+
   return {
-    get
+    get,
+    post
   };
 }

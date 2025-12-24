@@ -1,5 +1,5 @@
-// @ts-ignore - defineI18nConfig is auto-imported by Nuxt i18n module
-export default defineI18nConfig(nuxt => ({
+// @ts-expect-error - defineI18nConfig is auto-imported by Nuxt i18n module and may not have complete type definitions
+export default defineI18nConfig((nuxt) => ({
   numberFormats: {
 
     en: {

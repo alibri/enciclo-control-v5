@@ -14,7 +14,6 @@ const props = defineProps({
 
 const openEditor = async () => {
   const response = await pageService.getPageInfo(props.page.collection, props.page.title);
-  console.log(response.data);
   if (checkLogged(response)) {
     openPage(getEditorLink(props.page.collection, response.data.value.page.title));
   }

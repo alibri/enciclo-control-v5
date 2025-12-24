@@ -22,7 +22,7 @@ declare const process: {
 };
 
 export default defineNuxtConfig({
-  // @ts-ignore - PrimeVue module configuration
+  // @ts-expect-error - compatibilityDate puede no estar en los tipos de defineNuxtConfig en esta versión
   compatibilityDate: '2025-07-15',
   devtools: { enabled: true },
   ssr: false,
@@ -80,7 +80,7 @@ export default defineNuxtConfig({
     options: {
       ripple: true,
       inputVariant: 'filled',
-      // @ts-ignore
+      // @ts-expect-error - darkModeSelector puede no estar en los tipos de PrimeVue options
       darkModeSelector: '.p-dark'
     },
     autoImport: true

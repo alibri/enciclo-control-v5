@@ -252,9 +252,11 @@ const generarPDF = async () => {
     showMessage('success', t('Éxito'), t('PDF generado correctamente'), 3000);
     removeGroup('pdf');
 
-  } catch (error: any) {
-    console.error('Error generando PDF:', error);
-    showMessage('error', t('Error'), error?.message || t('No se pudo generar el PDF'), -1);
+  } catch (error: unknown) {
+    const { logger } = useLogger();
+    logger.error('Error generando PDF:', error);
+    const errorMessage = error instanceof Error ? error.message : t('No se pudo generar el PDF');
+    showMessage('error', t('Error'), errorMessage, -1);
     removeGroup('pdf');
   } finally {
     printing.value = false;

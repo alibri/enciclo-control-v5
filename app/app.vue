@@ -209,9 +209,10 @@ primevue.config.locale.allDayText = 'Todo el día';
 primevue.config.locale.dateFormat = 'dd/mm/yy';
 primevue.config.locale.firstDayOfWeek = 1;
 
-console.log(runtimeConfig.public.APP_VERSION);
+const { logger } = useLogger();
+logger.debug('APP_VERSION', runtimeConfig.public.APP_VERSION);
 const apiBaseUrl = getApiUrl();
-console.log(apiBaseUrl);
+logger.debug('apiBaseUrl', apiBaseUrl);
 </script>
 
 <template>

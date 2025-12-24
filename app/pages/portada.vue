@@ -8,6 +8,7 @@ const pageService = new PageService();
 const { showMessage } = useMessages();
 const confirm = useConfirm();
 const { t } = useI18n();
+const { logger } = useLogger();
 
 const loading = ref(true);
 const collections = ref<any[]>([]);
@@ -51,7 +52,7 @@ const loadDashboard = async (name: string) => {
     items.value = [];
     dashboard.value = response.data?.value;
     if (dashboard.value) {
-      console.log('dashboard', dashboard.value);
+      logger.debug('dashboard', dashboard.value);
       grupos.value = Object.keys(dashboard.value?.dashboard).map((key) => {
         return { name: key, code: key };
       });
@@ -62,8 +63,8 @@ const loadDashboard = async (name: string) => {
   loading.value = false;
 };
 
-const openDialog = async (data: any) => {
-  console.log('openDialog', data);
+const openDialog = async (data: unknown) => {
+  logger.debug('openDialog', data);
   editData.value = { ...data };
   if (editData.value.friendly) {
     const response = await pageService.getPageImages(editData.value.collection, editData.value.friendly);
@@ -182,19 +183,19 @@ const deleteItem = (data: any) => {
     rejectLabel: t('Cancelar'),
     acceptLabel: t('Eliminar'),
     accept: () => {
-      console.log('eliminando', data.id);
+      logger.debug('eliminando', data.id);
       const id = parseInt(data.id);
       items.value = items.value.filter(item => item.id !== id);
-      console.log('grupo', grupo.value.code);
-      console.log('items', items.value);
+      logger.debug('grupo', grupo.value.code);
+      logger.debug('items', items.value);
       dashboard.value.dashboard[grupo.value.code] = { ...items.value };
-      console.log('dashboard', dashboard.value?.dashboard[grupo.value.code]);
+      logger.debug('dashboard', dashboard.value?.dashboard[grupo.value.code]);
 
       dirty.value = true;
       confirm.close();
     },
     reject: () => {
-      console.log('cancelado');
+      logger.debug('cancelado');
       confirm.close();
     }
   });
@@ -206,8 +207,8 @@ const searchEntrada = async (e: any) => {
   const response = await pageService.searchByTitle(collection.value.name, query);
   if (checkLogged(response)) {
     if (response.data?.value.search) {
-      console.log('search', response.data?.value.search);
-      response.data?.value.search.forEach((item: any) => {
+      logger.debug('search', response.data?.value.search);
+      response.data?.value.search.forEach((item: unknown) => {
         filtered.push(item);
       });
     }
@@ -215,8 +216,8 @@ const searchEntrada = async (e: any) => {
   filteredEntradas.value = filtered;
 };
 
-const selectImage = (image: any) => {
-  console.log('selectImage', image);
+const selectImage = (image: string) => {
+  logger.debug('selectImage', image);
   editData.value.imagen = image;
 };
 

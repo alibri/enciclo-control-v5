@@ -1,62 +1,73 @@
 import { useApiClient } from '~/stores/api';
+import type { ApiClient, ApiResponse } from '~/interfaces/ApiResponse';
+import type { UserInterface } from '~/interfaces/User';
+import type {
+  GetUsersParams,
+  CreateUserData,
+  GetFakeStatsParams,
+  CreateFakeStatsData,
+  ImportFakeStatsParams,
+  DesactivarGrupoParams
+} from '~/interfaces/services/UserServiceParams';
+import type { Collection } from '~/interfaces/Collection';
 
 export default class UserService {
-  api: any;
-  apiLongTask: any;
+  api: ApiClient;
+  apiLongTask: ApiClient;
 
   constructor () {
     this.api = useApiClient();
     this.apiLongTask = useApiClient(true);
   }
 
-  async getUsers (data: any) {
-    return await this.api.get('user', data);
+  async getUsers (data: GetUsersParams): Promise<ApiResponse<UserInterface[]>> {
+    return await this.api.get<UserInterface[]>('user', data);
   }
 
-  async getCollections () {
-    return await this.api.get('collections');
+  async getCollections (): Promise<ApiResponse<Collection[]>> {
+    return await this.api.get<Collection[]>('collections');
   }
 
-  async delete (id: number) {
-    return await this.api.get('deleteuser', { id });
+  async delete (id: number): Promise<ApiResponse<{ success: boolean; message?: string }>> {
+    return await this.api.get<{ success: boolean; message?: string }>('deleteuser', { id });
   }
 
-  async add (id: number|null, data: any) {
-    return await this.api.get('user', { id, data });
+  async add (id: number | null, data: CreateUserData): Promise<ApiResponse<UserInterface>> {
+    return await this.api.get<UserInterface>('user', { id, data });
   }
 
-  async createFromExcel(file: string) {
-    return await this.api.get('importexcel', { file: file });
+  async createFromExcel(file: string): Promise<ApiResponse<{ success: boolean; message?: string }>> {
+    return await this.api.get<{ success: boolean; message?: string }>('importexcel', { file });
   }
 
-  async createFromProcess(processId: string) {
-    return await this.api.get('importexcel', { process: processId });
+  async createFromProcess(processId: string): Promise<ApiResponse<{ success: boolean; message?: string }>> {
+    return await this.api.get<{ success: boolean; message?: string }>('importexcel', { process: processId });
   }
 
-  async resetPassword(id: number) {
-    return await this.api.get('resetpasswordvarios', { id });
+  async resetPassword(id: number): Promise<ApiResponse<{ success: boolean; message?: string }>> {
+    return await this.api.get<{ success: boolean; message?: string }>('resetpasswordvarios', { id });
   }
 
-  async sendAccessData(id: number) {
-    return await this.api.get('sendinfologin', { id });
+  async sendAccessData(id: number): Promise<ApiResponse<{ success: boolean; message?: string }>> {
+    return await this.api.get<{ success: boolean; message?: string }>('sendinfologin', { id });
   }
 
-  async getFakeStats(user: string) {
-    return await this.api.get('fake_stats', { user });
+  async getFakeStats(user: string): Promise<ApiResponse<{ list: unknown[] }>> {
+    const params: GetFakeStatsParams = { user };
+    return await this.api.get<{ list: unknown[] }>('fake_stats', params);
   }
 
-  async createFakeStats(data: any) {
-    return await this.api.get('create_fake_stats', { data });
+  async createFakeStats(data: CreateFakeStatsData): Promise<ApiResponse<{ id: number; message?: string; success?: boolean }>> {
+    return await this.api.get<{ id: number; message?: string; success?: boolean }>('create_fake_stats', data);
   }
 
-  async deleteFakeStats(id: number) {
-    return await this.api.get('delete_fake_stats', { id });
+  async deleteFakeStats(id: number): Promise<ApiResponse<{ success: boolean; message?: string }>> {
+    return await this.api.get<{ success: boolean; message?: string }>('delete_fake_stats', { id });
   }
 
-  async importFakeStats(user: string, file: File) {
+  async importFakeStats(user: string, file: File): Promise<ApiResponse<{ success: boolean; message?: string; imported?: number; errors?: string[]; duplicates?: string[] }>> {
     // Leer el contenido del archivo
     const fileContent = await file.arrayBuffer();
-    console.log('fileContent', fileContent);
     
     // Convertir ArrayBuffer a base64
     // Funciona tanto para archivos binarios (XLSX) como texto (CSV)
@@ -64,10 +75,12 @@ export default class UserService {
     const binaryString = Array.from(uint8Array, byte => String.fromCharCode(byte)).join('');
     const base64Content = btoa(binaryString);
     
-    return await this.api.get('import_fake_news', { file: base64Content, user, name: file.name });
+    const params: ImportFakeStatsParams = { file: base64Content, user, name: file.name };
+    return await this.api.get<{ success: boolean; message?: string; imported?: number; errors?: string[]; duplicates?: string[] }>('import_fake_news', params);
   }
 
-  async desactivarGrupo(grupo: string) {
-    return await this.api.get('desactivargrupo', { grupo });
+  async desactivarGrupo(grupo: string): Promise<ApiResponse<{ success: boolean; message?: string }>> {
+    const params: DesactivarGrupoParams = { grupo };
+    return await this.api.get<{ success: boolean; message?: string }>('desactivargrupo', params);
   }
-};
+}
