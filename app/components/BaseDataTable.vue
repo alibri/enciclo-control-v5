@@ -1,12 +1,9 @@
 <script lang="ts" setup>
-import type { Column } from 'primevue/column';
-
 interface Props {
   rows?: number;
   value?: any[];
   showUser?: boolean;
   paginator?: boolean;
-  columns?: Column[];
   exportEnabled?: boolean;
 }
 
@@ -49,21 +46,9 @@ defineExpose({
     <!-- Slot para columnas personalizadas -->
     <slot />
     
-    <!-- Columna de usuario por defecto si showUser es true -->
+    <!-- Columna de usuario por defecto si showUser es true y no hay slot personalizado -->
     <Column
-      v-if="showUser && $slots.userColumn"
-      field="user"
-      :header="t('Usuario')"
-      :sortable="true"
-      style="width: 15%"
-    >
-      <template #body="slotProps">
-        <slot name="userColumn" :data="slotProps.data" />
-      </template>
-    </Column>
-    
-    <Column
-      v-else-if="showUser"
+      v-if="showUser && !$slots.userColumn"
       field="user"
       :header="t('Usuario')"
       :sortable="true"
@@ -73,6 +58,19 @@ defineExpose({
         <NuxtLink :to="'/users/'+slotProps.data.user" class="text-red-500 border-none border-b border-dotted">
           {{ slotProps.data.user }}
         </NuxtLink>
+      </template>
+    </Column>
+    
+    <!-- Slot para columna de usuario personalizada -->
+    <Column
+      v-if="showUser && $slots.userColumn"
+      field="user"
+      :header="t('Usuario')"
+      :sortable="true"
+      style="width: 15%"
+    >
+      <template #body="slotProps">
+        <slot name="userColumn" :data="slotProps.data" />
       </template>
     </Column>
   </DataTable>

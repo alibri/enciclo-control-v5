@@ -1,60 +1,31 @@
 <script lang="ts" setup>
 const { t } = useI18n();
 
-defineProps({
-  rows: {
-    type: Number,
-    default: 5
-  },
+interface Props {
+  rows?: number;
+  value?: any[];
+  showUser?: boolean;
+  showTitle?: boolean;
+  paginator?: boolean;
+}
 
-  value: {
-    type: Array,
-    default: null
-  },
-
-  showUser: {
-    type: Boolean,
-    default: true
-  },
-
-  showTitle: {
-    type: Boolean,
-    default: true
-  },
-
-  paginator: {
-    type: Boolean,
-    default: false
-  }
+withDefaults(defineProps<Props>(), {
+  rows: 5,
+  value: () => [],
+  showUser: true,
+  showTitle: true,
+  paginator: false
 });
-
-const dt = ref();
-const exportCSV = () => {
-  dt.value.exportCSV();
-};
 </script>
 
 <template>
-  <DataTable ref="dt" :value="value" :rows="rows" :paginator="paginator" responsive-layout="scroll">
-    <template #header>
-      <div class="text-right">
-        <Button size="small" icon="pi pi-file-excel" :label="t('Exportar')" @click="exportCSV($event)" outlined />
-      </div>
+  <BaseDataTable :rows="rows" :value="value" :show-user="showUser" :paginator="paginator">
+    <template #userColumn="{ data }">
+      <NuxtLink :to="'/users/'+data.user" class="text-red-500 border-none border-b border-dotted">
+        {{ data.user }}
+      </NuxtLink>
     </template>
-    <Column
-      v-if="showUser"
-      field="user"
-      :header="t('Usuario')"
-      :sortable="true"
-      style="width: 15%"
-      class="text-gray-600"
-    >
-      <template #body="slotProps">
-        <NuxtLink :to="'/users/'+slotProps.data.user" class="text-red-500 border-none border-b border-dotted">
-          {{ slotProps.data.user }}
-        </NuxtLink>
-      </template>
-    </Column>
+    
     <Column v-if="showTitle" field="title" :header="t('Título')" :sortable="true" style="width: 50%">
       <template #body="slotProps">
         <PageLink :page="slotProps.data" />
@@ -75,5 +46,5 @@ const exportCSV = () => {
         <Tag :severity="formatPageType(slotProps.data.type)" :value="slotProps.data.type" />
       </template>
     </Column>
-  </DataTable>
+  </BaseDataTable>
 </template>

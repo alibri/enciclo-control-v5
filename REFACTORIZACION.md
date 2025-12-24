@@ -195,12 +195,12 @@ No requiere refactorización adicional, pero se recomienda su uso consistente en
 ### Alta Prioridad
 1. ✅ Extraer `getLanguageFlag` a utilidad (COMPLETADO)
 2. ✅ Crear `BaseDataTable` para componentes Simple* (COMPLETADO)
-3. ⏳ Refactorizar componentes Simple*DataTable para usar BaseDataTable
-4. ⏳ Refactorizar páginas para usar `useDataTableConfig`
+3. ✅ Refactorizar componentes Simple*DataTable para usar BaseDataTable (COMPLETADO)
+4. ⏳ Refactorizar páginas para usar `useDataTableConfig` (EN PROGRESO - requiere integración con useUtilsData)
 
 ### Media Prioridad
-5. ⏳ Crear clases CSS utilitarias para estilos repetidos
-6. ⏳ Aplicar clases CSS en componentes existentes
+5. ✅ Crear clases CSS utilitarias para estilos repetidos (COMPLETADO)
+6. ✅ Aplicar clases CSS en componentes existentes (COMPLETADO - parcialmente en RAGResultView, UsersStatsTable, UserInfoTable)
 
 ### Baja Prioridad
 7. ⏳ Evaluar creación de BaseService para servicios
@@ -215,14 +215,16 @@ No requiere refactorización adicional, pero se recomienda su uso consistente en
 - Función `getLanguageFlag` duplicada
 - ~12 páginas con configuración de DataTable duplicada
 
-### Después (Estimado)
-- 1 componente BaseDataTable (~60 líneas) + 5 componentes específicos (~30 líneas cada uno) = ~210 líneas
-- 1 utilidad `language.ts` reutilizable
-- 1 composable `useDataTableConfig` reutilizable en ~12 páginas
+### Después (Realizado)
+- ✅ 1 componente BaseDataTable (~60 líneas) + 5 componentes específicos (~20-30 líneas cada uno) = ~180 líneas
+- ✅ 1 utilidad `language.ts` reutilizable
+- ✅ 1 composable `useDataTableConfig` creado (pendiente aplicar en páginas)
+- ✅ Clases CSS utilitarias creadas y aplicadas parcialmente
 
-### Reducción Estimada
-- **~50% menos código** en componentes Simple*DataTable
-- **Eliminación de duplicación** en configuración de DataTables
+### Reducción Real
+- **~55% menos código** en componentes Simple*DataTable (de ~400 líneas a ~180 líneas)
+- **Eliminación de duplicación** en función getLanguageFlag
+- **Clases CSS reutilizables** para estilos comunes
 - **Mejor mantenibilidad** con código centralizado
 
 ---

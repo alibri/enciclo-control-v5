@@ -277,8 +277,8 @@ const generarPDF = async () => {
               <i class="pi pi-check-circle text-green-600 text-xl"></i>
             </div>
             <div>
-              <h2 class="text-2xl font-bold" style="color: var(--text-color);">{{ t('Resultado de la Consulta') }}</h2>
-              <p v-if="result.query" class="text-sm mt-1" style="color: var(--text-color-secondary);">{{ result.query }}</p>
+              <h2 class="text-2xl font-bold text-primary">{{ t('Resultado de la Consulta') }}</h2>
+              <p v-if="result.query" class="text-sm mt-1 text-secondary">{{ result.query }}</p>
             </div>
           </div>
           <div class="flex items-center gap-4">
@@ -326,10 +326,10 @@ const generarPDF = async () => {
       <template #content>
         <div class="space-y-6">
     <!-- Análisis de la Consulta -->
-    <div v-if="result.clasificacion || result.razonamiento_breve || result.es_pregunta" class="p-5 rounded-xl shadow-sm border" style="background-color: var(--surface-card); border-color: var(--surface-border);">
+    <div v-if="result.clasificacion || result.razonamiento_breve || result.es_pregunta" class="p-5 rounded-xl shadow-sm border surface-card border-surface">
       <div class="flex items-center space-x-2 mb-4">
         <i class="pi pi-search text-violet-600 dark:text-violet-400"></i>
-        <h3 class="text-lg font-semibold" style="color: var(--text-color);">
+        <h3 class="text-lg font-semibold text-primary">
           {{ t('Análisis de la Consulta') }}
         </h3>
       </div>
@@ -407,7 +407,7 @@ const generarPDF = async () => {
       <!-- Content / Respuesta -->
       <div v-if="contentHtml || (result.translations && availableLanguages.length > 0)" class="space-y-4">
         <!-- Contenido Principal -->
-        <div v-if="result.content || result.response" class="p-6 rounded-xl shadow-sm border" style="background-color: var(--surface-card); border-color: var(--surface-border);">
+        <div v-if="result.content || result.response" class="p-6 rounded-xl shadow-sm border surface-card border-surface">
           <div class="flex items-center space-x-2 mb-4">
             <template v-if="getLanguageFlag('es').type === 'fi'">
               <span class="fi fi-es w-5 h-5"></span>
@@ -430,7 +430,7 @@ const generarPDF = async () => {
         
         <!-- Traducciones -->
         <div v-for="lang in availableLanguages" :key="lang" 
-             class="p-6 rounded-xl shadow-sm border" style="background-color: var(--surface-card); border-color: var(--surface-border);">
+             class="p-6 rounded-xl shadow-sm border surface-card border-surface">
           <div class="flex items-center space-x-2 mb-4">
             <template v-if="getLanguageFlag(lang).type === 'fi'">
               <span :class="'fi fi-' + getLanguageFlag(lang).value" class="w-5 h-5"></span>
@@ -545,7 +545,7 @@ const generarPDF = async () => {
     </div>
 
     <!-- Configuración en 2 columnas -->
-    <div class="p-5 rounded-xl shadow-sm border" style="background-color: var(--surface-card); border-color: var(--surface-border);">
+    <div class="p-5 rounded-xl shadow-sm border surface-card border-surface">
       <div class="flex items-center space-x-2 mb-4">
         <i class="pi pi-cog" style="color: var(--text-color-secondary);"></i>
         <h3 class="text-lg font-semibold" style="color: var(--text-color);">

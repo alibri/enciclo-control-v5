@@ -1,60 +1,25 @@
 <script lang="ts" setup>
 const { t } = useI18n();
 
-defineProps({
-  rows: {
-    type: Number,
-    default: 5
-  },
+interface Props {
+  rows?: number;
+  value?: any[];
+  showEnd?: boolean;
+  showUser?: boolean;
+  paginator?: boolean;
+}
 
-  value: {
-    type: Array,
-    default: null
-  },
-
-  showEnd: {
-    type: Boolean,
-    default: false
-  },
-
-  showUser: {
-    type: Boolean,
-    default: true
-  },
-
-  paginator: {
-    type: Boolean,
-    default: false
-  }
+withDefaults(defineProps<Props>(), {
+  rows: 5,
+  value: () => [],
+  showEnd: false,
+  showUser: true,
+  paginator: false
 });
-
-const dt = ref();
-const exportCSV = () => {
-  dt.value.exportCSV();
-};
 </script>
 
 <template>
-  <DataTable ref="dt" :value="value" :rows="rows" :paginator="paginator" responsive-layout="scroll">
-    <template #header>
-      <div class="text-right">
-        <Button size="small" icon="pi pi-file-excel" :label="t('Exportar')" @click="exportCSV()" outlined />
-      </div>
-    </template>
-    <Column
-      v-if="showUser"
-      field="user"
-      :header="t('Usuario')"
-      :sortable="true"
-      style="width: 35%"
-    >
-      <template #body="slotProps">
-        <NuxtLink :to="'/users/'+slotProps.data.user" class="text-red-500 border-none border-b border-dotted">
-          {{ slotProps.data.user }}
-        </NuxtLink>
-      </template>
-    </Column>
-
+  <BaseDataTable :rows="rows" :value="value" :show-user="showUser" :paginator="paginator">
     <Column field="mode" :header="t('Modo')" :sortable="true" style="width: 35%">
       <template #body="slotProps">
         <Tag :severity="formatLoginMode(slotProps.data.mode)" :value="slotProps.data.mode" />
@@ -85,5 +50,5 @@ const exportCSV = () => {
         </NuxtLink>
       </template>
     </Column>
-  </DataTable>
+  </BaseDataTable>
 </template>

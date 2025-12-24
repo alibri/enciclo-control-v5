@@ -31,14 +31,14 @@ const gestionEstadisticas = (user: any) => {
   
   <!-- Header con información principal del usuario -->
   <div class="mb-6">
-    <div class="border rounded-xl p-6 shadow-sm" style="background-color: var(--surface-card); border-color: var(--surface-border);">
+    <div class="border rounded-xl p-6 shadow-sm surface-card border-surface">
       <div class="flex items-center justify-between">
         <div class="flex items-center space-x-4">
           <div class="w-16 h-16 rounded-full flex items-center justify-center" style="background-color: var(--primary-color);">
             <i class="pi pi-user text-white text-2xl"></i>
           </div>
           <div>
-            <h2 class="text-2xl font-bold mb-1" style="color: var(--text-color);">{{ user?.name }}</h2>
+            <h2 class="text-2xl font-bold mb-1 text-primary">{{ user?.name }}</h2>
             <p class="text-lg font-medium" style="color: var(--primary-color);">{{ user?.user }}</p>
             <div class="flex items-center space-x-2 mt-2">
               <Badge v-if="user?.isenabled" value="Activo" severity="success" class="text-xs" />
@@ -72,9 +72,9 @@ const gestionEstadisticas = (user: any) => {
 
   <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
     <!-- Información del Usuario -->
-    <div class="border rounded-xl shadow-sm overflow-hidden" style="border-color: var(--surface-border); background-color: var(--surface-card);">
-      <div class="px-6 py-4 border-b" style="border-color: var(--surface-border); background-color: var(--surface-hover);">
-          <h3 class="text-lg font-semibold flex items-center" style="color: var(--text-color);">
+    <div class="border rounded-xl shadow-sm overflow-hidden border-surface surface-card">
+      <div class="px-6 py-4 border-b border-surface surface-hover">
+          <h3 class="text-lg font-semibold flex items-center text-primary">
           <i class="pi pi-user mr-2" style="color: var(--primary-color);"></i>
           {{ t('Información del Usuario') }}
         </h3>
@@ -85,7 +85,7 @@ const gestionEstadisticas = (user: any) => {
           <div class="flex items-center justify-between py-3 border-b last:border-b-0" style="border-color: var(--surface-border);">
             <div class="flex items-center">
               <i class="pi pi-users mr-3"></i>
-              <span class="font-medium" style="color: var(--text-color-secondary);">{{ t('Grupo') }}</span>
+              <span class="font-medium text-secondary">{{ t('Grupo') }}</span>
             </div>
             <div class="text-right">
               <NuxtLink v-if="user?.grupo" :to="'/users/g__' + user?.grupo" 
@@ -101,7 +101,7 @@ const gestionEstadisticas = (user: any) => {
           <div class="flex items-start justify-between py-3 border-b last:border-b-0" style="border-color: var(--surface-border);">
             <div class="flex items-center">
               <i class="pi pi-folder mr-3 mt-1"></i>
-              <span class="font-medium" style="color: var(--text-color-secondary);">{{ t('Colecciones') }}</span>
+              <span class="font-medium text-secondary">{{ t('Colecciones') }}</span>
             </div>
             <div class="text-right flex flex-wrap gap-2 max-w-xs">
               <Tag v-for="item in user?.collections" :key="item" 
@@ -118,7 +118,7 @@ const gestionEstadisticas = (user: any) => {
           <div class="flex items-center justify-between py-3 border-b last:border-b-0" style="border-color: var(--surface-border);">
             <div class="flex items-center">
               <i class="pi pi-shield mr-3"></i>
-              <span class="font-medium" style="color: var(--text-color-secondary);">{{ t('Estado de la cuenta') }}</span>
+              <span class="font-medium text-secondary">{{ t('Estado de la cuenta') }}</span>
             </div>
             <div class="text-right">
               <div class="flex items-center space-x-2">
@@ -135,9 +135,9 @@ const gestionEstadisticas = (user: any) => {
     </div>
 
     <!-- Información de Licencias y Acceso -->
-    <div class="border rounded-xl shadow-sm overflow-hidden" style="border-color: var(--surface-border); background-color: var(--surface-card);">
-      <div class="px-6 py-4 border-b" style="border-color: var(--surface-border); background-color: var(--surface-hover);">
-          <h3 class="text-lg font-semibold flex items-center" style="color: var(--text-color);">
+    <div class="border rounded-xl shadow-sm overflow-hidden border-surface surface-card">
+      <div class="px-6 py-4 border-b border-surface surface-hover">
+          <h3 class="text-lg font-semibold flex items-center text-primary">
           <i class="pi pi-key mr-2" style="color: var(--primary-color);"></i>
           {{ t('Licencias y Acceso') }}
         </h3>
@@ -148,7 +148,7 @@ const gestionEstadisticas = (user: any) => {
           <div class="flex items-center justify-between py-3 border-b last:border-b-0" style="border-color: var(--surface-border);">
             <div class="flex items-center">
               <i class="pi pi-ticket mr-3"></i>
-              <span class="font-medium" style="color: var(--text-color-secondary);">{{ t('Licencias') }}</span>
+              <span class="font-medium text-secondary">{{ t('Licencias') }}</span>
             </div>
             <div class="text-right">
               <Badge :value="user?.licenses || '0'" severity="success" class="text-sm font-bold" />
@@ -159,7 +159,7 @@ const gestionEstadisticas = (user: any) => {
           <div class="flex items-center justify-between py-3 border-b last:border-b-0" style="border-color: var(--surface-border);">
             <div class="flex items-center">
               <i class="pi pi-calendar mr-3"></i>
-              <span class="font-medium" style="color: var(--text-color-secondary);">{{ t('Período de validez') }}</span>
+              <span class="font-medium text-secondary">{{ t('Período de validez') }}</span>
             </div>
             <div class="text-right">
               <div class="text-sm">
@@ -173,7 +173,7 @@ const gestionEstadisticas = (user: any) => {
           <div class="flex items-center justify-between py-3 border-b last:border-b-0" style="border-color: var(--surface-border);">
             <div class="flex items-center">
               <i class="pi pi-clock mr-3"></i>
-              <span class="font-medium" style="color: var(--text-color-secondary);">{{ t('Expira') }}</span>
+              <span class="font-medium text-secondary">{{ t('Expira') }}</span>
             </div>
             <div class="text-right">
               <div class="text-sm">
@@ -187,7 +187,7 @@ const gestionEstadisticas = (user: any) => {
           <div class="flex items-center justify-between py-3 border-b last:border-b-0" style="border-color: var(--surface-border);">
             <div class="flex items-center">
               <i class="pi pi-globe mr-3"></i>
-              <span class="font-medium" style="color: var(--text-color-secondary);">{{ t('Rango de IP') }}</span>
+              <span class="font-medium text-secondary">{{ t('Rango de IP') }}</span>
             </div>
             <div class="text-right">
               <code class="px-2 py-1 rounded text-sm font-mono" style="background-color: var(--surface-hover); color: var(--primary-color);">
@@ -200,7 +200,7 @@ const gestionEstadisticas = (user: any) => {
           <div class="flex items-center justify-between py-3 border-b last:border-b-0" style="border-color: var(--surface-border);">
             <div class="flex items-center">
               <i class="pi pi-map-marker mr-3"></i>
-              <span class="font-medium" style="color: var(--text-color-secondary);">{{ t('Ubicación') }}</span>
+              <span class="font-medium text-secondary">{{ t('Ubicación') }}</span>
             </div>
             <div class="text-right">
               <span class="font-medium" style="color: var(--text-color);">{{ user?.geoip || t('No disponible') }}</span>
@@ -211,7 +211,7 @@ const gestionEstadisticas = (user: any) => {
           <div class="flex items-center justify-between py-3 border-b last:border-b-0" style="border-color: var(--surface-border);">
             <div class="flex items-center">
               <i class="pi pi-link mr-3"></i>
-              <span class="font-medium" style="color: var(--text-color-secondary);">{{ t('Referer') }}</span>
+              <span class="font-medium text-secondary">{{ t('Referer') }}</span>
             </div>
             <div class="text-right">
               <span class="font-medium text-sm break-all max-w-xs block" style="color: var(--text-color-secondary);">
@@ -224,7 +224,7 @@ const gestionEstadisticas = (user: any) => {
           <div class="flex items-center justify-between py-3 border-b last:border-b-0" style="border-color: var(--surface-border);">
             <div class="flex items-center">
               <i class="pi pi-chart-bar mr-3"></i>
-              <span class="font-medium" style="color: var(--text-color-secondary);">{{ t('Estadísticas manuales') }}</span>
+              <span class="font-medium text-secondary">{{ t('Estadísticas manuales') }}</span>
             </div>
             <div class="text-right">
               <div class="flex items-center space-x-2">
@@ -241,7 +241,7 @@ const gestionEstadisticas = (user: any) => {
           <div class="flex items-center justify-between py-3 border-b last:border-b-0" style="border-color: var(--surface-border);">
             <div class="flex items-center">
               <i class="pi pi-calendar-plus mr-3"></i>
-              <span class="font-medium" style="color: var(--text-color-secondary);">{{ t('Inicio estadísticas') }}</span>
+              <span class="font-medium text-secondary">{{ t('Inicio estadísticas') }}</span>
             </div>
             <div class="text-right">
               <span class="font-medium" style="color: var(--primary-color);">
@@ -254,9 +254,9 @@ const gestionEstadisticas = (user: any) => {
     </div>
 
     <!-- Información de Roles -->
-    <div class="border rounded-xl shadow-sm overflow-hidden" style="border-color: var(--surface-border); background-color: var(--surface-card);">
-      <div class="px-6 py-4 border-b" style="border-color: var(--surface-border); background-color: var(--surface-hover);">
-          <h3 class="text-lg font-semibold flex items-center" style="color: var(--text-color);">
+    <div class="border rounded-xl shadow-sm overflow-hidden border-surface surface-card">
+      <div class="px-6 py-4 border-b border-surface surface-hover">
+          <h3 class="text-lg font-semibold flex items-center text-primary">
           <i class="pi pi-shield mr-2" style="color: var(--primary-color);"></i>
           {{ t('Roles y Permisos') }}
         </h3>
@@ -267,7 +267,7 @@ const gestionEstadisticas = (user: any) => {
           <div class="flex items-center justify-between py-3 border-b last:border-b-0" style="border-color: var(--surface-border);">
             <div class="flex items-center">
               <i class="pi pi-shield mr-3"></i>
-              <span class="font-medium" style="color: var(--text-color-secondary);">{{ t('Administrador') }}</span>
+              <span class="font-medium text-secondary">{{ t('Administrador') }}</span>
             </div>
             <div class="text-right">
               <div class="flex items-center space-x-2">
@@ -284,7 +284,7 @@ const gestionEstadisticas = (user: any) => {
           <div class="flex items-center justify-between py-3 border-b last:border-b-0" style="border-color: var(--surface-border);">
             <div class="flex items-center">
               <i class="pi pi-pencil mr-3"></i>
-              <span class="font-medium" style="color: var(--text-color-secondary);">{{ t('Editor') }}</span>
+              <span class="font-medium text-secondary">{{ t('Editor') }}</span>
             </div>
             <div class="text-right">
               <div class="flex items-center space-x-2">
@@ -301,7 +301,7 @@ const gestionEstadisticas = (user: any) => {
           <div class="flex items-center justify-between py-3 border-b last:border-b-0" style="border-color: var(--surface-border);">
             <div class="flex items-center">
               <i class="pi pi-comment mr-3"></i>
-              <span class="font-medium" style="color: var(--text-color-secondary);">{{ t('Tester') }}</span>
+              <span class="font-medium text-secondary">{{ t('Tester') }}</span>
             </div>
             <div class="text-right">
               <div class="flex items-center space-x-2">
@@ -318,7 +318,7 @@ const gestionEstadisticas = (user: any) => {
           <div class="flex items-center justify-between py-3 border-b last:border-b-0" style="border-color: var(--surface-border);">
             <div class="flex items-center">
               <i class="pi pi-chart-line mr-3"></i>
-              <span class="font-medium" style="color: var(--text-color-secondary);">{{ t('Acceso al Dashboard') }}</span>
+              <span class="font-medium text-secondary">{{ t('Acceso al Dashboard') }}</span>
             </div>
             <div class="text-right">
               <div class="flex items-center space-x-2">

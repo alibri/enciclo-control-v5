@@ -14,10 +14,10 @@ defineProps({
 </script>
 
 <template>
-  <div class="shadow-md p-6" style="background-color: var(--surface-card);">
+  <div class="shadow-md p-6 surface-card">
     <ul class="list-none p-0 m-0">
       <li class="flex items-center py-3 px-2 border-t flex-wrap" style="border-color: var(--surface-border);">
-        <div class="flex-grow font-medium font-bold" style="color: var(--text-color-secondary);">
+        <div class="flex-grow font-medium font-bold text-secondary">
           {{ t('Usuario') }}
         </div>
         <div class="w-50 md:order-0 order-1 font-medium font-bold text-center" style="color: var(--text-color-secondary);">
@@ -43,24 +43,24 @@ defineProps({
       <span v-if="value && value.length > 0">
         <template v-for="item in value" :key="item">
           <li class="flex items-center py-3 px-2 border-t flex-wrap" style="border-color: var(--surface-border);">
-            <div class="flex-grow font-medium font-bold" style="color: var(--text-color-secondary);">
+            <div class="flex-grow font-medium font-bold text-secondary">
               <NuxtLink :to="'/users/'+item.user" class="border-none border-b border-dotted" style="color: var(--primary-color); border-color: var(--surface-border);">
                 {{ item.user }}
               </NuxtLink>
             </div>
-            <div class="w-50 md:order-0 order-1 text-center" style="color: var(--text-color);">
+            <div class="w-50 md:order-0 order-1 text-center text-primary">
               {{ item.logins }}
             </div>
             <div class="w-50 md:order-0 order-1 text-center" style="color: var(--primary-color);">
               {{ item.pages }}
             </div>
-            <div class="w-50 md:order-0 order-1 text-center" style="color: var(--text-color);">
+            <div class="w-50 md:order-0 order-1 text-center text-primary">
               {{ item.chats }}
             </div>
             <div class="w-50 md:order-0 order-1 text-center" style="color: var(--primary-color);">
               {{ formatSegundosAHora(item.ts) }}
             </div>
-            <div class="w-50 md:order-0 order-1 text-center" style="color: var(--text-color-secondary);">
+            <div class="w-50 md:order-0 order-1 text-center text-secondary">
               {{ formatDateTime(Number(item.min)) }}
             </div>
             <div class="w-full md:w-32 md:order-0 order-1 text-center" style="color: var(--text-color-secondary);">
