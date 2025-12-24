@@ -1,74 +1,33 @@
-<script setup  lang="ts">
-// import { FilterMatchMode, FilterOperator } from 'primevue/api';
+<script setup lang="ts">
+import { FilterMatchMode } from '~/utils/primevue';
 import StatsService from '~/services/statsService';
+import { useStatsDataTable } from '~/composables/useStatsDataTable';
+import type { ApiResponse } from '~/interfaces/ApiResponse';
 
-const { filters } = usePrimeDataTable();
 const { t } = useI18n();
-const { getParamsData, lazyParams, exportDataGeneric, resetLazyParams } = useUtilsData();
-
 const statsService = new StatsService();
 
-filters.value = {
-  global: { value: null, matchMode: FilterMatchMode.CONTAINS },
-  user: { value: null, matchMode: FilterMatchMode.CONTAINS } /* ,
-  code: { value: null, matchMode: FilterMatchMode.CONTAINS },
-  inventoryStatus: { value: null, matchMode: FilterMatchMode.STARTS_WITH } */
-};
-
-const clearFilter = () => {
-  initFilters();
-};
-
-const initFilters = () => {
-  filters.value = {
+const {
+  loading,
+  stats,
+  dt,
+  totalRecords,
+  filters,
+  loadData,
+  exportData,
+  clearFilter,
+  onPage,
+  onSort,
+  onFilter
+} = useStatsDataTable({
+  loadFunction: (data: any) => statsService.getQueries(data) as Promise<ApiResponse<any>>,
+  exportFunction: (data: any) => statsService.exportQueries(data) as Promise<ApiResponse<any>>,
+  exportMessage: t('Exportando datos consultas'),
+  globalFilterFields: ['user', 'term', 'collections'],
+  initialFilters: {
     global: { value: null, matchMode: FilterMatchMode.CONTAINS },
-    user: { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }] }
-  };
-};
-
-const loading = ref(true);
-const stats = ref();
-const dt = ref();
-const totalRecords = ref(0);
-
-const loadData = async () => {
-  loading.value = true;
-
-  const data = getParamsData(lazyParams.value);
-  const response = await statsService.getQueries(data);
-  if (checkLogged(response)) {
-    stats.value = response?.data?.value?.list;
-    totalRecords.value = response?.data?.value?.total;
+    user: { value: null, matchMode: FilterMatchMode.CONTAINS }
   }
-  loading.value = false;
-};
-
-const exportFunction = async (data: any) => {
-  return await statsService.exportQueries(data);
-};
-
-const exportData = async () => {
-  await exportDataGeneric(t('Exportando datos sesiones'), exportFunction);
-};
-
-const onPage = (event: any) => {
-  lazyParams.value = event;
-  loadData();
-};
-
-const onSort = (event: any) => {
-  lazyParams.value = event;
-  loadData();
-};
-
-const onFilter = (event: any) => {
-  lazyParams.value.filters = filters.value;
-  loadData();
-};
-
-onMounted(() => {
-  resetLazyParams(dt.value.rows, filters.value);
-  loadData();
 });
 </script>
 

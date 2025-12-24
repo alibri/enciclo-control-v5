@@ -1,75 +1,33 @@
 <script setup lang="ts">
-import { FilterMatchMode, FilterOperator } from '~/utils/primevue';
+import { FilterMatchMode } from '~/utils/primevue';
 import StatsService from '~/services/statsService';
+import { useStatsDataTable } from '~/composables/useStatsDataTable';
+import type { ApiResponse } from '~/interfaces/ApiResponse';
 
-const { filters } = usePrimeDataTable() as { filters: any };
 const { t } = useI18n();
-const { getParamsData, lazyParams, exportDataGeneric, resetLazyParams } = useUtilsData();
-
 const statsService = new StatsService();
 
-filters.value = {
-  global: { value: null, matchMode: FilterMatchMode.CONTAINS },
-  user: { value: null, matchMode: FilterMatchMode.CONTAINS } /* ,
-  code: { value: null, matchMode: FilterMatchMode.CONTAINS },
-  inventoryStatus: { value: null, matchMode: FilterMatchMode.STARTS_WITH } */
-};
-
-const clearFilter = () => {
-  initFilters();
-};
-
-const initFilters = () => {
-  filters.value = {
+const {
+  loading,
+  stats,
+  dt,
+  totalRecords,
+  filters,
+  loadData,
+  exportData,
+  clearFilter,
+  onPage,
+  onSort,
+  onFilter
+} = useStatsDataTable({
+  loadFunction: (data: any) => statsService.getPages(data) as Promise<ApiResponse<any>>,
+  exportFunction: (data: any) => statsService.exportPages(data) as Promise<ApiResponse<any>>,
+  exportMessage: t('Exportando datos páginas'),
+  globalFilterFields: ['user', 'title', 'collection'],
+  initialFilters: {
     global: { value: null, matchMode: FilterMatchMode.CONTAINS },
-    user: { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }] }
-  };
-};
-
-const loading = ref(true);
-const stats = ref();
-const dt = ref();
-const totalRecords = ref(0);
-
-const loadData = async () => {
-  loading.value = true;
-
-  const data = getParamsData(lazyParams.value);
-
-  const response = await statsService.getPages(data);
-  if (checkLogged(response)) {
-    stats.value = response?.data?.value?.list;
-    totalRecords.value = response?.data?.value?.total;
+    user: { value: null, matchMode: FilterMatchMode.CONTAINS }
   }
-  loading.value = false;
-};
-
-const exportFunction = async (data: any) => {
-  return await statsService.exportPages(data);
-};
-
-const exportData = async () => {
-  await exportDataGeneric(t('Exportando datos sesiones'), exportFunction);
-};
-
-const onPage = (event: any) => {
-  lazyParams.value = event;
-  loadData();
-};
-
-const onSort = (event: any) => {
-  lazyParams.value = event;
-  loadData();
-};
-
-const onFilter = (event: any) => {
-  lazyParams.value.filters = filters.value;
-  loadData();
-};
-
-onMounted(() => {
-  resetLazyParams(dt.value.rows, filters.value);
-  loadData();
 });
 </script>
 
@@ -104,13 +62,30 @@ onMounted(() => {
 
     <div class="grid grid-cols-12">
       <div class="col-span-12">
-        <DataTable ref="dt" v-model:filters="filters" :value="stats" :paginator="true" :rows="25" :lazy="true"
-          :total-records="totalRecords" filter-display="menu"
+        <DataTable 
+          ref="dt" 
+          v-model:filters="filters" 
+          :value="stats" 
+          :paginator="true" 
+          :rows="25" 
+          :lazy="true"
+          :total-records="totalRecords" 
+          filter-display="menu"
           paginator-template="CurrentPageReport FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink RowsPerPageDropdown"
-          paginatorPosition="both" :rows-per-page-options="[25, 50, 100]" responsive-layout="scroll" data-key="id"
-          striped-rows sort-mode="multiple" show-gridlines :loading="loading"
-          :global-filter-fields="['user', 'title', 'collection']" :current-page-report-template="t('show-per-page')"
-          class="p-datatable-sm" @page="onPage($event)" @sort="onSort($event)" @filter="onFilter($event)">
+          paginator-position="both" 
+          :rows-per-page-options="[25, 50, 100]" 
+          responsive-layout="scroll" 
+          data-key="id"
+          striped-rows 
+          sort-mode="multiple" 
+          show-gridlines 
+          :loading="loading"
+          :global-filter-fields="['user', 'title', 'collection']" 
+          :current-page-report-template="t('show-per-page')"
+          class="p-datatable-sm" 
+          @page="onPage($event)" 
+          @sort="onSort($event)" 
+          @filter="onFilter($event)">
           <!-- Header con acciones mejoradas -->
           <template #header>
             <div class="flex flex-wrap justify-between items-center gap-4 p-4 border-b" style="background-color: var(--surface-card); border-color: var(--surface-border);">

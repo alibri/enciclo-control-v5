@@ -1,75 +1,34 @@
-<script setup  lang="ts">
-// import { FilterMatchMode, FilterOperator } from 'primevue/api';
+<script setup lang="ts">
+import { FilterMatchMode, FilterOperator } from '~/utils/primevue';
 import StatsService from '~/services/statsService';
+import { useStatsDataTable } from '~/composables/useStatsDataTable';
+import type { ApiResponse } from '~/interfaces/ApiResponse';
 
-// const { filters } = usePrimeDataTable();
 const { t } = useI18n();
-const { getParamsData, lazyParams, exportDataGeneric, resetLazyParams } = useUtilsData();
-
 const statsService = new StatsService();
 
-const filters = ref({
-  global: { value: null, matchMode: FilterMatchMode.CONTAINS },
-  name: { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }] },
-  user: { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }] }
-});
-
-const clearFilter = () => {
-  initFilters();
-};
-
-const initFilters = () => {
-  filters.value = {
+const {
+  loading,
+  stats,
+  dt,
+  totalRecords,
+  filters,
+  loadData,
+  exportData,
+  clearFilter,
+  onPage,
+  onSort,
+  onFilter
+} = useStatsDataTable({
+  loadFunction: (data: any) => statsService.getLastSessions(data) as Promise<ApiResponse<any>>,
+  exportFunction: (data: any) => statsService.exportSessions(data) as Promise<ApiResponse<any>>,
+  exportMessage: t('Exportando datos sesiones'),
+  globalFilterFields: ['user', 'name'],
+  initialFilters: {
     global: { value: null, matchMode: FilterMatchMode.CONTAINS },
     name: { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }] },
     user: { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }] }
-  };
-};
-
-const loading = ref(true);
-const stats = ref();
-const dt = ref();
-const totalRecords = ref(0);
-
-const loadData = async () => {
-  loading.value = true;
-
-  const data = getParamsData(lazyParams.value);
-  const response = await statsService.getLastSessions(data);
-  if (checkLogged(response)) {
-    stats.value = response?.data?.value?.list;
-    totalRecords.value = response?.data?.value?.total;
   }
-  loading.value = false;
-};
-
-const exportFunction = async (data: any) => {
-  return await statsService.exportSessions(data);
-};
-
-const exportData = async () => {
-  await exportDataGeneric(t('Exportando datos sesiones'), exportFunction);
-};
-
-const onPage = (event: any) => {
-  lazyParams.value = event;
-  loadData();
-};
-
-const onSort = (event: any) => {
-  lazyParams.value = event;
-  loadData();
-};
-
-const onFilter = (event: any) => {
-  lazyParams.value.filters = filters.value;
-  console.log('onFilter', lazyParams.value);
-  loadData();
-};
-
-onMounted(() => {
-  resetLazyParams(dt.value.rows, filters.value);
-  loadData();
 });
 </script>
 
