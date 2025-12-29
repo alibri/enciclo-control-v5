@@ -1,6 +1,11 @@
 # VERSIONES
 
-## 5.0.20
+## 5.1.21
+
+- Comprueba la sesión del usuario cada 5 minutos
+- Quita el borde redondeado de los inputs
+ 
+## 5.1.20
 
 - Refactorización del código
 

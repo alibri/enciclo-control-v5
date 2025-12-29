@@ -1,6 +1,9 @@
 <script setup>
 import { useLogger } from '~/utils/logger';
 import { getApiUrl } from '~/utils/api';
+import { useSessionCheck } from '~/composables/useSessionCheck';
+import { useAuthStore } from '~/stores/auth';
+import { storeToRefs } from 'pinia';
 
 // En app.vue o en un plugin
 /*
@@ -216,6 +219,36 @@ const logger = useLogger();
 logger.debug('APP_VERSION', runtimeConfig.public.APP_VERSION);
 const apiBaseUrl = getApiUrl();
 logger.debug('apiBaseUrl', apiBaseUrl);
+
+// Verificación periódica de sesión
+const authStore = useAuthStore();
+const { authenticated } = storeToRefs(authStore);
+const { startSessionCheck, stopSessionCheck } = useSessionCheck();
+
+// Iniciar verificación de sesión cuando el usuario está autenticado
+watch(authenticated, (isAuthenticated) => {
+  if (process.client) {
+    if (isAuthenticated) {
+      // Verificar cada 5 minutos (300000 ms)
+      startSessionCheck(5 * 60 * 1000);
+    } else {
+      stopSessionCheck();
+    }
+  }
+}, { immediate: true });
+
+// También verificar al montar el componente si ya está autenticado
+onMounted(() => {
+  if (process.client && authenticated.value) {
+    startSessionCheck(5 * 60 * 1000);
+  }
+});
+
+onUnmounted(() => {
+  if (process.client) {
+    stopSessionCheck();
+  }
+});
 </script>
 
 <template>
@@ -223,6 +256,7 @@ logger.debug('apiBaseUrl', apiBaseUrl);
     <NuxtLoadingIndicator />
     <NuxtPage />
     <AppToast />
+    <SessionExpiredModal />
   </NuxtLayout>
 </template>
 

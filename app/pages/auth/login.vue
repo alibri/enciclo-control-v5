@@ -120,7 +120,7 @@ const login = async () => {
   }
   .custom-input-group {
     position: relative;
-    border-radius: 12px;
+    border-radius: 0;
     overflow: hidden;
     border: 1px solid #e2e8f0;
     transition: all 0.3s ease;
@@ -159,7 +159,24 @@ const login = async () => {
     justify-content: center;
     min-width: 50px;
     transition: all 0.3s ease;
+    border-start-start-radius: 0;
+    border-end-start-radius: 0;
+    border-start-end-radius: 0;
+    border-end-end-radius: 0;
   }
+  .input-addon:first-child {
+    border-start-start-radius: 0;
+    border-end-start-radius: 0;
+    border-start-end-radius: 0;
+    border-end-end-radius: 0;
+  }
+  .input-addon:last-child {
+    border-start-start-radius: 0;
+    border-end-start-radius: 0;
+    border-start-end-radius: 0;
+    border-end-end-radius: 0;
+ }
+
 
   /* Modo oscuro */
   :global(.dark) .input-addon {
@@ -176,6 +193,10 @@ const login = async () => {
     box-shadow: none !important;
     outline: none !important;
     transition: all 0.3s ease !important;
+    border-start-start-radius: 0;
+    border-end-start-radius: 0;
+    border-start-end-radius: 0;
+    border-end-end-radius: 0;
   }
 
   .custom-input:focus {
@@ -202,6 +223,10 @@ const login = async () => {
     box-shadow: none !important;
     outline: none !important;
     transition: all 0.3s ease !important;
+    border-start-start-radius: 0;
+    border-end-start-radius: 0;
+    border-start-end-radius: 0;
+    border-end-end-radius: 0;
   }
 
   .custom-password :deep(.p-password-input):focus {
