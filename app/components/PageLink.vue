@@ -12,10 +12,15 @@ const props = defineProps({
   }
 });
 
+const logger = useLogger();
+
 const openEditor = async () => {
   const response = await pageService.getPageInfo(props.page.collection, props.page.title);
   if (checkLogged(response)) {
-    openPage(getEditorLink(props.page.collection, response.data.value.page.title));
+    const responseData = response?.data?.value as any;
+    if (responseData?.page?.title) {
+      openPage(getEditorLink(props.page.collection, responseData.page.title));
+    }
   }
 };
 </script>
@@ -65,7 +70,7 @@ const openEditor = async () => {
       rounded
       :aria-label="`Edición rápida de ${page.title}`"
       v-tooltip.top="'Edición rápida'"
-      @click="editOnFly(dialog, page as { collection: string, title: string })"
+      @click="editOnFly(dialog, { collection: page.collection, title: page.title })"
     />
   </div>
 </template>

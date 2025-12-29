@@ -20,7 +20,7 @@ export function useLogger() {
      */
     debug: (...args: unknown[]): void => {
       if (!isProduction) {
-        consola.debug(...args);
+        (consola.debug as any).apply(consola, args);
       }
     },
 
@@ -29,7 +29,7 @@ export function useLogger() {
      */
     info: (...args: unknown[]): void => {
       if (!isProduction) {
-        consola.info(...args);
+        (consola.info as any).apply(consola, args);
       }
     },
 
@@ -37,14 +37,14 @@ export function useLogger() {
      * Log de advertencia
      */
     warn: (...args: unknown[]): void => {
-      consola.warn(...args);
+      (consola.warn as any).apply(consola, args);
     },
 
     /**
      * Log de error (siempre activo)
      */
     error: (...args: unknown[]): void => {
-      consola.error(...args);
+      (consola.error as any).apply(consola, args);
     },
 
     /**
@@ -52,7 +52,7 @@ export function useLogger() {
      */
     success: (...args: unknown[]): void => {
       if (!isProduction) {
-        consola.success(...args);
+        (consola.success as any).apply(consola, args);
       }
     }
   };

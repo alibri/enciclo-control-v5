@@ -2,14 +2,20 @@ import PageService from '~/services/pageService';
 import ChatService from '~/services/chatService';
 import WikiEditor from '~/components/WikiEditor.vue';
 import ChatViewer from '~/components/ChatViewer.vue';
+import type { Component } from 'vue';
 
-export const editOnFly = async (dialog: unknown, page: { collection: string, title: string }) => {
+interface DialogService {
+  open: (component: Component, options?: { props?: any; data?: any }) => void;
+}
+
+export const editOnFly = async (dialog: DialogService, page: { collection: string, title: string }) => {
   const pageService = new PageService();
   const response = await pageService.getPageWiki(page.collection, page.title);
   if (checkLogged(response)) {
+    const responseData = response?.data?.value as any;
     dialog.open(WikiEditor, {
       props: {
-        header: response?.data?.value?.page?.title,
+        header: responseData?.page?.title,
         style: {
           width: '75vw'
         },
@@ -21,19 +27,20 @@ export const editOnFly = async (dialog: unknown, page: { collection: string, tit
       },
       data: {
         page: { collection: page.collection, title: page.title },
-        wiki: response?.data?.value?.page?.wikitext
+        wiki: responseData?.page?.wikitext
       }
     });
   }
 };
 
-export const showChat = async (dialog: unknown, id: string | number) => {
+export const showChat = async (dialog: DialogService, id: string | number) => {
   const chatService = new ChatService();
   const response = await chatService.getChat(id);
   if (checkLogged(response)) {
+    const responseData = response?.data?.value as any;
     dialog.open(ChatViewer, {
       props: {
-        header: response?.data?.value?.chat?.query ?? '',
+        header: responseData?.chat?.query ?? '',
         style: {
           width: '75vw'
         },
@@ -44,7 +51,7 @@ export const showChat = async (dialog: unknown, id: string | number) => {
         modal: true
       },
       data: {
-        chat: response?.data?.value?.chat ?? {} as any,
+        chat: responseData?.chat ?? {},
       }
     });
   } else {
