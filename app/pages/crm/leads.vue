@@ -2,6 +2,8 @@
 import CRMService from '~/services/crmService';
 import MessageService from '~/services/messageService';
 
+useAuthGuard();
+
 const { filters } = usePrimeDataTable();
 const { t } = useI18n();
 const { getParamsData, lazyParams, exportDataGeneric, resetLazyParams } = useUtilsData();

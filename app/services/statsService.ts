@@ -6,8 +6,8 @@ import { BaseService } from './BaseService';
 
 export default class StatsService extends BaseService {
 
-  async getActiveSessions (data: StatsParams | null = null): Promise<ApiResponse<unknown[]>> {
-    return await this.get<unknown[]>('sessions', data);
+  async getActiveSessions (data: StatsParams | null = null): Promise<ApiResponse<{ list: unknown[], total?: number }>> {
+    return await this.get<{ list: unknown[], total?: number }>('sessions', data);
   }
 
   async getLastSessions (data: StatsParams | null = null): Promise<ApiResponse<unknown[]>> {

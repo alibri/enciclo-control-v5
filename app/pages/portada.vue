@@ -3,6 +3,8 @@ import Editor from 'primevue/editor';
 import ImagenSelect from '~/components/ImagenSelect.vue';
 import PageService from '~/services/pageService';
 
+useAuthGuard();
+
 const pageService = new PageService();
 
 const { showMessage } = useMessages();

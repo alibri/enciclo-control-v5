@@ -1,6 +1,8 @@
 <script setup lang='ts'>
 import TestService from '~/services/testService';
 
+useAuthGuard();
+
 const { showMessage, removeGroup } = useMessages();
 const { t } = useI18n();
 const runtimeConfig = useRuntimeConfig();

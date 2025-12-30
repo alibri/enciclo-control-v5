@@ -4,6 +4,8 @@ import StatsService from '~/services/statsService';
 import { useStatsDataTable } from '~/composables/useStatsDataTable';
 import type { ApiResponse } from '~/interfaces/ApiResponse';
 
+useAuthGuard();
+
 const { t } = useI18n();
 const statsService = new StatsService();
 

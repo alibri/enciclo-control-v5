@@ -5,6 +5,7 @@ import AppSidebar from './AppSidebar.vue'
 import { useLayout } from './composables/layout'
 
 const { layoutConfig, layoutState, isSidebarActive } = useLayout()
+const { authenticated } = useAuthGuard()
 
 const outsideClickListener = ref(null)
 
@@ -57,6 +58,7 @@ const isOutsideClicked = (event) => {
 
 <template>
   <div
+    v-if="authenticated"
     class="layout-wrapper"
     :class="containerClass"
   >

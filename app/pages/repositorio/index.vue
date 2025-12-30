@@ -7,6 +7,8 @@ import RepositoryService from '@/services/repositoryService';
 import { formatSize } from '@/utils/format';
 import DocumentUploader from '@/components/DocumentUploader.vue';
 
+useAuthGuard();
+
 const { filters } = usePrimeDataTable();
 const { t } = useI18n();
 const { getParamsData, lazyParams, exportDataGeneric, resetLazyParams } = useUtilsData();

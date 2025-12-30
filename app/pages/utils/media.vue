@@ -1,4 +1,5 @@
 <script setup lang='ts'>
+useAuthGuard();
 
 const openEditor = ref(false);
 const url = ref('https://picsum.photos/400/600');

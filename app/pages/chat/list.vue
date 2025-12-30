@@ -7,6 +7,8 @@ import { showChat } from '@/utils/page';
 import IconField from 'primevue/iconfield';
 import InputIcon from 'primevue/inputicon';
 
+useAuthGuard();
+
 const { filters } = usePrimeDataTable();
 const { t } = useI18n();
 const { getParamsData, lazyParams, exportDataGeneric, resetLazyParams } = useUtilsData();

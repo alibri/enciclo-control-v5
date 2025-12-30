@@ -3,6 +3,8 @@ import Editor from 'primevue/editor';
 import ImagenSelect from '~/components/ImagenSelect.vue';
 import MetaService from '~/services/metaService';
 
+useAuthGuard();
+
 const metaService = new MetaService();
 
 const { showMessage } = useMessages();

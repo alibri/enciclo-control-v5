@@ -1,6 +1,8 @@
 <script setup lang='ts'>
-const route = useRoute()
-const slug = route.params.slug.toString()
+useAuthGuard();
+
+const route = useRoute();
+const slug = route.params.slug.toString();
 </script>
 
 <template>

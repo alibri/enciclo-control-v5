@@ -2,6 +2,8 @@
 import { useConfirm } from 'primevue/useconfirm';
 import ProcessService from '~/services/processService';
 
+useAuthGuard();
+
 const { showMessage, removeGroup } = useMessages();
 const { t } = useI18n();
 

@@ -2,6 +2,8 @@
 import TestService from '~/services/testService';
 import RAGResultView from '~/components/RAGResultView.vue';
 
+useAuthGuard();
+
 const { showMessage, removeGroup } = useMessages();
 const { t } = useI18n();
 const { getParamsData, lazyParams, exportDataGeneric, resetLazyParams } = useUtilsData();

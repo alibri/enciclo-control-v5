@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import StatsService from '~/services/statsService';
 
+useAuthGuard();
+
 const statsService = new StatsService();
 
 const route = useRoute();

@@ -2,6 +2,8 @@
 // import { FilterMatchMode, FilterOperator } from 'primevue/api';
 import EntityService from '~/services/entityService';
 
+useAuthGuard();
+
 const { filters } = usePrimeDataTable();
 const { t } = useI18n();
 const { getParamsData, lazyParams, exportDataGeneric, resetLazyParams } =

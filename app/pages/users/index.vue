@@ -9,6 +9,8 @@ import UserDialog from '~/components/UserDialog.vue';
 import UserStatsDialog from '~/components/UserStatsDialog.vue';
 import UserDashboardDialog from '~/components/UserDashboardDialog.vue';
 
+useAuthGuard();
+
 const { filters } = usePrimeDataTable();
 const { t } = useI18n();
 const { getParamsData, lazyParams, exportDataGeneric, resetLazyParams } = useUtilsData();

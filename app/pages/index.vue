@@ -1,10 +1,12 @@
 <script setup lang='ts'>
 import StatsService from '~/services/statsService';
 
+useAuthGuard();
+
 const { t } = useI18n();
 
-const sessions = ref([]);
-const stats = ref([]);
+const sessions = ref<any[]>([]);
+const stats = ref<any[]>([]);
 const dates = ref();
 const desde = new Date();
 desde.setDate(desde.getDate() - 7);
@@ -15,7 +17,7 @@ const statsService = new StatsService();
 const loadActiveSessions = async () => {
   const response = await statsService.getActiveSessions();
   if (checkLogged(response)) {
-    sessions.value = response.data?.value?.list;
+    sessions.value = response.data?.value?.list || [];
   }
 };
 
@@ -27,7 +29,7 @@ const loadData = async () => {
     to: Math.round(dates.value[1].getTime() / 1000)
   });
   if (checkLogged(response2)) {
-    stats.value = response2?.data?.value;
+    stats.value = response2?.data?.value || [];
   }
   blocked.value = false;
 };

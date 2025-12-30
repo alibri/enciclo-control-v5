@@ -1,6 +1,8 @@
 <script setup lang='ts'>
 import PageService from '~/services/pageService';
 
+useAuthGuard();
+
 const { t } = useI18n();
 const pageService = new PageService();
 const { exportDataGeneric } = useUtilsData();

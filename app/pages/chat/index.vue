@@ -13,6 +13,8 @@ import Card from 'primevue/card';
 import Drawer from 'primevue/drawer';
 import ProgressSpinner from 'primevue/progressspinner';
 
+useAuthGuard();
+
 const { filters } = usePrimeDataTable();
 const { t } = useI18n();
 const { getParamsData, lazyParams, exportDataGeneric, resetLazyParams } = useUtilsData();

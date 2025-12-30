@@ -2,6 +2,8 @@
 import MessageService from '~/services/messageService';
 import TipTap from '~/components/tiptap/TipTap.vue';
 
+useAuthGuard();
+
 const messageService = new MessageService();
 
 const { showMessage } = useMessages();
