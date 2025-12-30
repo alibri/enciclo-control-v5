@@ -40,7 +40,7 @@ const loadTestRAGList = async () => {
     removeGroup('listrag');
 
     if (checkLogged(response)) {
-      const data = response?.data?.result || response?.data?.value;
+      const data = response?.data?.value;
       if (data?.success) {
         testRAGList.value = data.list || [];
         totalRecords.value = data.total || 0;
@@ -48,7 +48,7 @@ const loadTestRAGList = async () => {
         showMessage('error', t('Error'), data?.message || t('Error al cargar el listado'), -1);
       }
     } else {
-      showMessage('error', t('Error'), response?.data?.result?.message || response?.data?.value?.message || t('Error al cargar el listado'), -1);
+      showMessage('error', t('Error'), response?.data?.value?.message || t('Error al cargar el listado'), -1);
     }
   } catch (error: any) {
     removeGroup('listrag');
@@ -73,7 +73,7 @@ const openTestRAG = async (item: any) => {
     removeGroup('getrag');
 
     if (checkLogged(response)) {
-      const data = response?.data?.result || response?.data?.value;
+      const data = response?.data?.value;
       if (data?.success && data?.result) {
         const ragData = data.result;
 
@@ -99,9 +99,9 @@ const openTestRAG = async (item: any) => {
         }
 
         // Ensure result has query and test_id
-        if (result) {
-          result.query = ragData.query || result.query;
-          result.test_id = ragData.id;
+        if (result && typeof result === 'object') {
+          (result as any).query = ragData.query || (result as any).query;
+          (result as any).test_id = ragData.id;
         }
 
         selectedResult.value = result;
@@ -123,7 +123,7 @@ const openTestRAG = async (item: any) => {
         showMessage('error', t('Error'), data?.message || t('No se encontró el testRAG'), -1);
       }
     } else {
-      showMessage('error', t('Error'), response?.data?.result?.message || response?.data?.value?.message || t('Error al obtener el testRAG'), -1);
+      showMessage('error', t('Error'), response?.data?.value?.message || t('Error al obtener el testRAG'), -1);
     }
   } catch (error: any) {
     removeGroup('getrag');

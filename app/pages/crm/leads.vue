@@ -50,7 +50,7 @@ const loadMessage = async () => {
   }
 };
 
-let lastId: null = null;
+let lastId: number | string | null = null;
 
 const sendMessage = async (data: any) => {
   lastId = data.id;
@@ -64,8 +64,8 @@ const loadData = async () => {
   const data = getParamsData(lazyParams.value);
   const response = await crmService.getLeads(data);
   if (checkLogged(response)) {
-    stats.value = response?.data?.value?.list;
-    totalRecords.value = response?.data?.value?.total;
+    stats.value = response?.data?.value?.list || [];
+    totalRecords.value = response?.data?.value?.total || 0;
   }
   loading.value = false;
 };

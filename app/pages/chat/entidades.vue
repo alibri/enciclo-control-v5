@@ -42,9 +42,9 @@ const blocked = ref(false);
 
 const modoEntidad = ref(true);
 const entidades = ref('');
-const pages = ref([]);
+const pages = ref<any[]>([]);
 const entidadesEncontradasTexto = ref('');
-const entidadesEncontradas = ref([]);
+const entidadesEncontradas = ref<any[]>([]);
 const respuesta = ref('');
 
 const loadData = async () => {
@@ -54,8 +54,8 @@ const loadData = async () => {
   (data as any).keyword = keyword.value;
   const response = await entityService.getEntities(data);
   if (checkLogged(response)) {
-    stats.value = response?.data?.value?.list;
-    totalRecords.value = response?.data?.value?.total;
+    stats.value = response?.data?.value?.list || [];
+    totalRecords.value = response?.data?.value?.total || 0;
   }
   loading.value = false;
 };
@@ -74,7 +74,7 @@ const doSearchEntidades = async () => {
   showMessage('info', t('Buscando Entradas'), '<i class="pi pi-spin pi-spinner" style="font-size: 2rem"></i>', -1, 'tc');
   const response = await entityService.getPagesFromEntities({ entidades: entidades.value, type: (modoEntidad.value ? 'entities' : 'search') });
   if (checkLogged(response)) {
-    pages.value = response?.data?.value?.list;
+    pages.value = response?.data?.value?.list || [];
   }
   blocked.value = false;
   removeGroup('tc');
@@ -85,9 +85,10 @@ const doSearchEntidadesFromQueries = async () => {
   showMessage('info', t('Buscando Entidades'), '<i class="pi pi-spin pi-spinner" style="font-size: 2rem"></i>', -1, 'tc');
   const response = await entityService.getEntitiesFromText({ texto: respuesta.value });
   if (checkLogged(response)) {
-    const entities = response?.data?.value?.list.map((entity: any) => `Nombre: ${entity.nombre}, Tipo: ${entity.tipo}, Contador: ${entity.contador}`).join('\n');
+    const list = response?.data?.value?.list || [];
+    const entities = list.map((entity: any) => `Nombre: ${entity.nombre}, Tipo: ${entity.tipo}, Contador: ${entity.contador}`).join('\n');
     entidadesEncontradasTexto.value = entities;
-    entidadesEncontradas.value = response?.data?.value?.list;
+    entidadesEncontradas.value = list;
   }
   blocked.value = false;
   removeGroup('tc');

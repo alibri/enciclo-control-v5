@@ -19,3 +19,13 @@ export interface SendMessageParams extends ApiRequestParams {
   status: string | number;
 }
 
+/**
+ * Respuesta de la lista de leads
+ */
+export interface LeadsListResponse {
+  success: boolean;
+  message?: string;
+  list?: unknown[];
+  total?: number;
+}
+

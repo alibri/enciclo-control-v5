@@ -7,6 +7,7 @@ import type { ConfigApiCall } from '~/stores/api';
 export interface ApiError {
   message: string;
   code?: string | number;
+  statusCode?: number;
   details?: unknown;
 }
 

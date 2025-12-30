@@ -27,3 +27,29 @@ export interface ExportChatParams extends ApiRequestParams {
   data: unknown;
 }
 
+/**
+ * Respuesta de la lista de RAG tests
+ */
+export interface RAGListResponse {
+  success: boolean;
+  message?: string;
+  list?: unknown[];
+  total?: number;
+}
+
+/**
+ * Respuesta de un RAG test individual
+ */
+export interface RAGTestResponse {
+  success: boolean;
+  message?: string;
+  result?: {
+    id: number;
+    query: string;
+    result: string | unknown;
+    config: string | unknown;
+    created_at?: string | number;
+    [key: string]: unknown;
+  };
+}
+

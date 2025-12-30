@@ -11,6 +11,16 @@ export interface RepositoryParams extends ApiRequestParams {
 }
 
 /**
+ * Respuesta de la lista de repositorio
+ */
+export interface RepositoryListResponse {
+  success: boolean;
+  message?: string;
+  list?: unknown[];
+  total?: number;
+}
+
+/**
  * Parámetros para exportar chats
  */
 export interface ExportChatsParams extends ApiRequestParams {

@@ -22,7 +22,7 @@ export function useUtilsData () {
   const getParamsData = (localLazyParams?: typeof lazyParams.value) => {
     // consola.log('getParamsData localLazyParams', localLazyParams);
     localLazyParams = localLazyParams ?? lazyParams.value;
-    let sort: string|null = null;
+    let sort: string | undefined = undefined;
     if (localLazyParams?.multiSortMeta.length > 0) {
       const s = localLazyParams.multiSortMeta[0] as unknown as SortField;
       sort = s.field;

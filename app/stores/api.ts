@@ -50,10 +50,12 @@ export function useApiClient (longTask: boolean = false) {
         pending: ref(false),
         status: ref<'success' | 'error'>('success'),
       };
-    } catch (error: unknown) {
-      const apiError: ApiError = error instanceof Error
-        ? { message: error.message }
-        : { message: 'Error desconocido', details: error };
+    } catch (error: any) {
+      const apiError: ApiError = {
+        message: error?.message || 'Error desconocido',
+        statusCode: error?.statusCode || error?.status,
+        details: error
+      };
 
       return {
         data: ref<T | null>(null),

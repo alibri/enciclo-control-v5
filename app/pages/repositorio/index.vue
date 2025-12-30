@@ -50,7 +50,7 @@ const loadData = async (showLoading: boolean = true) => {
       return;
     }
     if (response.data.value?.success === false) {
-      showMessage('error', t('Error'), response.data.value?.message);
+      showMessage('error', t('Error'), response.data.value?.message || t('Error desconocido'));
       return;
     }
     if (checkLogged(response)) {
@@ -58,7 +58,7 @@ const loadData = async (showLoading: boolean = true) => {
         item.metadata = JSON.parse(item.metadata);
         return item;
       });
-      totalRecords.value = response?.data?.value?.total;
+      totalRecords.value = response?.data?.value?.total || 0;
     }
   } catch (e: any) {
     showMessage('error', t('Error'), e.message);
@@ -126,37 +126,46 @@ onUnmounted(() => {
 
 const deleteFile = async (data: any) => {
   const response = await repositoryService.deleteFile(data);
-  if (response.data.value.success) {
+  if (response.data.value?.success) {
     showMessage('success', t('Eliminado'), t('El fichero ha sido eliminado correctamente'));
   } else {
-    showMessage('error', t('Error'), response.data.value.message);
+    showMessage('error', t('Error'), response.data.value?.message || t('Error desconocido'));
   }
   loadData();
 };
 
 const regenerateFile = async (data: any) => {
   const response = await repositoryService.regenerateFile(data);
-  if (response.data.value.success) {
+  if (response.data.value?.success) {
     showMessage('success', t('Actualizado'), t('El fichero ha sido actualizado correctamente'));
   } else {
-    showMessage('error', t('Error'), response.data.value.message);
+    showMessage('error', t('Error'), response.data.value?.message || t('Error desconocido'));
   }
   loadData();
 };
 
+const reactivateFile = async (data: any) => {
+  const response = await repositoryService.reactivateFile(data);
+  if (response.data.value?.success) {
+    showMessage('success', t('Actualizado'), t('El fichero ha sido actualizado correctamente'));
+  } else {
+    showMessage('error', t('Error'), response.data.value?.message || t('Error desconocido'));
+  }
+  loadData();
+};
 const viewOriginal = async (data: any) => {
   const response = await repositoryService.getFileUrl(data);
-  if (response.data.value.success) {
+  if (response.data.value?.url) {
     // Abrir el archivo en una nueva pestaña
     window.open(response.data.value.url, '_blank');
   } else {
-    showMessage('error', t('Error'), response.data.value.message);
+    showMessage('error', t('Error'), t('No se pudo obtener la URL del archivo'));
   }
 };
 
 const updateTitle = async (data: any, newTitle: string) => {
   const response = await repositoryService.updateTitle({ id: data.id, title: newTitle });
-  if (response.data.value.success) {
+  if (response.data.value?.success) {
     updatedTitleId.value = data.id;
     showMessage('success', t('Actualizado'), t('El título ha sido actualizado correctamente'));
     // Resetear el tooltip después de 2 segundos
@@ -165,7 +174,7 @@ const updateTitle = async (data: any, newTitle: string) => {
     }, 2000);
     loadData();
   } else {
-    showMessage('error', t('Error'), response.data.value.message);
+    showMessage('error', t('Error'), response.data.value?.message || t('Error desconocido'));
   }
 };
 
@@ -187,7 +196,13 @@ const items = ref<any[]>([]);
 
 // Función para generar los items del menú basándose en el estado del item
 const generateMenuItems = (data: any) => {
-  const menuItems = [
+  const menuItems: Array<{
+    label?: string;
+    icon?: string;
+    command?: () => void;
+    class?: string;
+    separator?: boolean;
+  }> = [
     {
       label: t('Ver original'),
       icon: 'pi pi-eye',
@@ -213,6 +228,18 @@ const generateMenuItems = (data: any) => {
       icon: 'pi pi-refresh',
       command: () => {
         regenerateFile(data);
+      },
+      class: 'text-blue-500'
+    });
+  }
+
+  if (data?.status === 'error') {
+    menuItems.push({ separator: true });
+    menuItems.push({
+      label: t('Reactivar'),
+      icon: 'pi pi-play',
+      command: () => {
+        reactivateFile(data);
       },
       class: 'text-blue-500'
     });

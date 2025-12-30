@@ -40,9 +40,8 @@ export const useSessionCheck = () => {
         
         // Verificar si es un error HTTP 403 (no autorizado) o 401 (no autenticado)
         if (error) {
-          // $fetch puede lanzar errores con statusCode
-          const errorDetails = error.details as any;
-          if (errorDetails?.statusCode === 403 || errorDetails?.statusCode === 401) {
+          // Verificar statusCode directamente
+          if (error.statusCode === 403 || error.statusCode === 401) {
             isChecking = false;
             return false;
           }

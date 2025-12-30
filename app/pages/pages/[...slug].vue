@@ -3,8 +3,9 @@
 useAuthGuard();
 
 const route = useRoute();
-const page = ref(route.params.slug[1]);
-const collection = ref(route.params.slug[0]);
+const slugArray = Array.isArray(route.params.slug) ? route.params.slug : [];
+const page = ref(slugArray[1] || '');
+const collection = ref(slugArray[0] || '');
 </script>
 
 <template>

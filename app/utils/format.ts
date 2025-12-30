@@ -148,6 +148,7 @@ export const formatStatusRepository = (type: string) => {
     imported: 'success',
     converting: 'warning',
     title: 'danger',
+    ready: 'success',
   };
 
   return types[type] ?? 'secondary';
@@ -162,6 +163,7 @@ export const formatStatusRepositoryIcon = (type: string) => {
     imported: 'pi pi-check-circle',
     converting: 'pi pi-spinner pi-spin',
     title: 'pi pi-info-circle',
+    ready: 'pi pi-arrow-circle-up',
   };
 
   return types[type] ?? 'pi pi-file';

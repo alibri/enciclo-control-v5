@@ -2,7 +2,9 @@
 useAuthGuard();
 
 const route = useRoute();
-const slug = route.params.slug.toString();
+const slug = Array.isArray(route.params.slug) 
+  ? route.params.slug.join('/') 
+  : route.params.slug?.toString() || '';
 </script>
 
 <template>

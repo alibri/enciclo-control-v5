@@ -6,6 +6,7 @@
 - Quita el borde redondeado de los inputs
 - Comprobación sesión iniciada en todas las páginas
 - Ocultación del layout si no está autenticado
+- Activación de la conversión de PDFs en el repositorio si error en la conversión
  
 ## 5.1.20
 
